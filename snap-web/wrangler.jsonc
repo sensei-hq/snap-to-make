@@ -1,0 +1,11 @@
+{
+  "name": "burn-e-snap",
+  "compatibility_date": "2026-10-27",
+  "compatibility_flags": ["nodejs_compat"],
+  "keep_vars": true,
+  "workers_dev": true,
+  "preview_urls": true,
+  "main": "worker-entry.js",
+  "observability": { "enabled": true },
+  "assets": { "binding": "ASSETS", "directory": ".svelte-kit/cloudflare" }
+}

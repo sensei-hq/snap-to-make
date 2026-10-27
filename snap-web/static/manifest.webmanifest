@@ -1,0 +1,1 @@
+{ "name": "Burn-E Snap to Make", "short_name": "Burn-E", "start_url": "/snap", "display": "standalone", "background_color": "#16140F", "theme_color": "#16140F", "icons": [{ "src": "/favicon.svg", "sizes": "any", "type": "image/svg+xml" }] }
