@@ -30,7 +30,7 @@ Plan: [../plans/2026-10-27-snap-make-phase1-plan.md](../plans/2026-10-27-snap-ma
 | Stage | File | Gate |
 |---|---|---|
 | 00 DB foundation (dbd + local Supabase + file import seeding) | [00-db-foundation.md](00-db-foundation.md) | HANDOFF: DB up + seeded demo invite |
-| 01 App scaffold (Dojo fork, Rokkit, PWA, no Kavach) | [01-app-scaffold.md](01-app-scaffold.md) | AUTO |
+| 01 App scaffold (Rokkit, PWA, no Kavach) | [01-app-scaffold.md](01-app-scaffold.md) | AUTO |
 | 02 Domain: schemas, measurement, geometry (Object) | [02-domain-object.md](02-domain-object.md) | AUTO |
 | 03 Device adapters: Laser + Simulator + stubs (Impl) | [03-device-adapters.md](03-device-adapters.md) | HANDOFF: device-switch re-plan |
 | 04 State layer + presentation shell (Workshop) | [04-state-presentation.md](04-state-presentation.md) | AUTO |

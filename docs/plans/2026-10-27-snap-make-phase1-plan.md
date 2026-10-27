@@ -14,7 +14,7 @@
 
 | Decision | Choice |
 |---|---|
-| Scaffold | Fork Dojo (`~/Developer/sensei-hq/sensei/dojo`) patterns into new `app/` SvelteKit app. |
+| Scaffold | New `app/` SvelteKit app. |
 | Auth | **None in P1.** Invite code + 18+ attestation (R-PL-4/5), server-checked signed cookie. Kavach + Supabase Auth in P2 (R-PL-6). |
 | UI | Rokkit 1.9 components/tokens, UnoCSS `presetRokkit`, Workshop style. |
 | State vs presentation | **State** in `*.svelte.ts` rune classes under `src/lib/state/` — owns transitions, reactivity, async. **Presentation** in `*.svelte` under `src/lib/components/` + routes — props in, events out, no fetch, no store mutation. |

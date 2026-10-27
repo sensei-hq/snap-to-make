@@ -10,10 +10,7 @@ enabled = true
 port = 56331
 # Schemas to expose in your API. Tables, views and stored procedures in this schema will get API
 # endpoints. `public` and `graphql_public` schemas are included by default.
-# `sensei` is NOT exposed: it is the daemon's schema, reached only via `dojo` views/functions
-# (which qualify sensei.* internally) — keeping its RLS-disabled daemon tables off PostgREST
-# (no rls_disabled advisor findings) and off the attack surface. See dojo.namespaces / the
-# dojo.rule_pack_* views + dojo.set_pack_adoption for the sanctioned cross-schema reads.
+# `snap` is exposed for the server (service role); RLS has no anon/authenticated policies in P1.
 schemas = ["public", "graphql_public", "snap"]
 # Extra schemas to add to the search_path of every request.
 extra_search_path = ["public", "extensions", "snap"]
@@ -302,43 +299,7 @@ max_frequency = "5s"
 # Use an external OAuth provider. The full list of providers are: `apple`, `azure`, `bitbucket`,
 # `discord`, `facebook`, `github`, `gitlab`, `google`, `keycloak`, `linkedin_oidc`, `notion`, `twitch`,
 # `twitter`, `x`, `slack`, `spotify`, `workos`, `zoom`.
-# GitHub OAuth. Local parity with the deployed dōjō, which already uses it.
-#
-# The secret is read from the environment and MUST NOT be committed. Export
-# SUPABASE_AUTH_EXTERNAL_GITHUB_SECRET (and _CLIENT_ID) before `supabase start`,
-# or the provider silently stays disabled — /auth/v1/settings reporting only
-# `email` is how you tell.
-#
-# The GitHub OAuth App's callback must be the Supabase auth callback, NOT the
-# app: http://127.0.0.1:54321/auth/v1/callback
-[auth.external.github]
-enabled = true
-client_id = "env(SUPABASE_AUTH_EXTERNAL_GITHUB_CLIENT_ID)"
-secret = "env(SUPABASE_AUTH_EXTERNAL_GITHUB_SECRET)"
-redirect_uri = ""
-url = ""
-skip_nonce_check = false
-
-# Microsoft (Supabase's `azure` provider): Sign in with Microsoft (#308 R5c, D45).
-#
-# The SAME multi-tenant Entra app registration as the Azure DevOps connect (R5b);
-# setup: docs/spec/dojo/git-integration-import.md, "R5b · one-time setup" and
-# "R5c as built". Like GitHub's, the id and secret come from the environment and
-# MUST NOT be committed: export SUPABASE_AUTH_EXTERNAL_AZURE_CLIENT_ID and
-# SUPABASE_AUTH_EXTERNAL_AZURE_SECRET before `supabase start`. Unset, the CLI
-# warns and starts anyway; only the Microsoft button fails, at Microsoft.
-#
-# `url` is the multi-tenant `organizations` authority (work or school accounts;
-# GoTrue then accepts an ID token from any Entra tenant). Microsoft accepts plain
-# http only for `localhost`, so Microsoft returns to the localhost callback — the
-# one registered on the app — and the dōjō runs at http://localhost:5173.
-[auth.external.azure]
-enabled = true
-client_id = "env(SUPABASE_AUTH_EXTERNAL_AZURE_CLIENT_ID)"
-secret = "env(SUPABASE_AUTH_EXTERNAL_AZURE_SECRET)"
-redirect_uri = "http://localhost:54321/auth/v1/callback"
-url = "https://login.microsoftonline.com/organizations"
-skip_nonce_check = false
+# No external OAuth providers in P1 (invite code + 18+ attestation; Supabase Auth arrives in P2).
 
 [auth.external.apple]
 enabled = false

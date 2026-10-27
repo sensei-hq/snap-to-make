@@ -21,7 +21,7 @@ Rule: an item closes only with evidence (test run, URL check, file). Update this
 - [x] Seed via `dbd import`: DEMO-JUDGES/DEMO-LOCAL present; re-run idempotent (counts unchanged)
 - [x] DB contract tests (Vitest `test:db`: one DDL+policy file per table, CSV seeding) + live psql round-trip verified
 
-## 2. App scaffold (Dojo fork, no Kavach)
+## 2. App scaffold (no Kavach)
 - [~] `app/package.json` (SvelteKit 2, Svelte 5, Rokkit 1.9, UnoCSS, Vitest, Playwright) — no `@kavach/*`
 - [ ] `svelte.config.js`, `vite.config.ts` (no kavach plugin), `uno.config.js`, `rokkit.config.js` (Workshop tokens)
 - [ ] `src/app.html` (PWA manifest + theme-color), `src/app.css`, `src/service-worker.ts` (app-shell cache)

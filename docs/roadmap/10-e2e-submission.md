@@ -13,7 +13,7 @@ Prereqs: Stage 09. PRD: `docs/prd/09-demo-and-submission.md`, roadmap D6–D9.
 
 ## Deploy
 
-- Build (`bun run build`), Cloudflare Worker deploy (Dojo `wrangler` pattern), `META_API_KEY` + Supabase service key as Worker secrets, public URL + judges invite live, budget/kill-switch verified on the public URL (not just local).
+- Build (`bun run build`), Cloudflare Worker deploy (`wrangler`), `META_API_KEY` + Supabase service key as Worker secrets, public URL + judges invite live, budget/kill-switch verified on the public URL (not just local).
 
 ## HANDOFF 1 — Draft package (EOD D7 Mon Nov 2)
 
