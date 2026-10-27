@@ -1,5 +1,5 @@
 // Burn-E Workshop — Rokkit named-token config (Workshop style, docs/prd/07-design-language.md)
-import { sumiPalette } from './src/lib/sumi-palette.js';
+import { sumiPalette } from './src/lib/design/sumi-palette.js';
 export default {
   palettes: sumiPalette,
   colorSpace: 'oklch',
