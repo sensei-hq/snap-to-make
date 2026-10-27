@@ -1,0 +1,37 @@
+project:
+  name: Example
+source:
+  dialect: postgresql
+target:
+  postgres:
+    url: $DATABASE_URL
+    extensions:
+    - name: uuid-ossp
+      schema: extensions
+schemas:
+- extensions
+- staging
+- snap
+import:
+  staging:
+  - staging
+  options:
+    truncate: true
+    null_value: ''
+  tables:
+  - staging.snap_invites
+  - staging.snap_sessions
+  after:
+  - import/loader.sql
+dbml:
+  base:
+    exclude:
+      schemas:
+      - staging
+      - extensions
+ignore: []
+
+scopes:
+  snap:
+    schemas: [snap]
+    deps: report
