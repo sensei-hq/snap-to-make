@@ -1,41 +1,61 @@
-// Burn-E Workshop — Rokkit named-token config (Workshop style, docs/prd/07-design-language.md)
+// Burn-E · Rokkit named-token config. Source of truth: the design mock
+// (mockups/svelte/src/lib/design/burn-e.uno.js, Zen-Sumi: washi paper, sumi ink, one vermillion accent).
+// Mock role → Rokkit token: bg→paper · surface→paper-soft · sunken→paper-mute · line→paper-edge ·
+// fg→ink · muted→ink-mute · faint→ink-soft · ghost→ink-faint · action→primary · ok→success · warn→warning.
+// Guarded by src/lib/design/tokens.spec.ts.
 import { sumiPalette } from './src/lib/design/sumi-palette.js';
+
 export default {
   palettes: sumiPalette,
   colorSpace: 'oklch',
   skin: {
     surface: { light: 'kami', dark: 'sumi' },
     ink: { light: 'kami', dark: 'sumi' },
-    primary: 'shu', secondary: 'murasaki', accent: 'shu',
+    primary: 'shu', accent: 'shu',
     success: 'hisui', warning: 'kohaku', danger: 'beni', error: 'beni', info: 'ai'
   },
   overrides: {
+    // surfaces
     paper: { light: 'kami.100', dark: 'sumi.50' },
     'paper-soft': { light: 'kami.200', dark: 'sumi.100' },
     'paper-mute': { light: 'kami.300', dark: 'sumi.200' },
-    'paper-edge': { light: 'kami.400', dark: 'sumi.300' },
+    'paper-edge': { light: 'oklch(0.880 0.015 85)', dark: 'oklch(0.300 0.010 50)' },
+    // text ramp: ink > ink-mute > ink-soft > ink-faint
     ink: { light: 'kami.900', dark: 'sumi.900' },
-    'ink-soft': { light: 'kami.700', dark: 'sumi.800' },
-    'ink-mute': { light: 'kami.600', dark: 'sumi.700' },
+    'ink-mute': { light: 'kami.700', dark: 'sumi.800' },
+    'ink-soft': { light: 'kami.600', dark: 'sumi.700' },
     'ink-faint': { light: 'kami.500', dark: 'sumi.600' },
+    // the one vermillion accent
     accent: { light: 'shu.500', dark: 'shu.400' },
+    'accent-soft': { light: 'oklch(0.580 0.150 35 / 0.12)', dark: 'oklch(0.700 0.150 35 / 0.18)' },
+    'on-accent': { light: 'oklch(0.985 0.006 85)', dark: 'sumi.50' },
+    'focus-ring': { light: 'shu.500', dark: 'shu.400' },
+    // action = ink fill
     primary: { light: 'kami.900', dark: 'sumi.900' },
     'on-primary': { light: 'kami.100', dark: 'sumi.50' },
-    success: { light: 'hisui.500', dark: 'hisui.400' },
-    warning: { light: 'kohaku.500', dark: 'kohaku.400' },
+    // status
+    success: { light: 'hisui.500', dark: 'oklch(0.720 0.090 160)' },
+    'success-soft': { light: 'oklch(0.620 0.080 160 / 0.14)', dark: 'oklch(0.720 0.090 160 / 0.18)' },
+    warning: { light: 'kohaku.500', dark: 'oklch(0.780 0.120 75)' },
+    'warning-soft': { light: 'oklch(0.720 0.120 75 / 0.15)', dark: 'oklch(0.780 0.120 75 / 0.18)' },
+    'warning-ink': { light: 'oklch(0.55 0.130 60)', dark: 'oklch(0.800 0.110 70)' },
     danger: { light: 'beni.500', dark: 'beni.400' },
+    'danger-soft': { light: 'oklch(0.570 0.185 27 / 0.12)', dark: 'oklch(0.740 0.155 26 / 0.18)' },
     info: { light: 'ai.500', dark: 'ai.400' },
-    // Workshop tokens (PRD 07): ember primary, cut red, engrave blue, reference amber
-    ember: '#FF8A1F', cut: '#E5484D', engrave: '#3E8BFF', reference: '#F5B83D',
-    charcoal: '#16140F', soot: '#221F19', ash: '#3A352C', birch: '#EAD9B8'
+    // fabrication layers (mock Make screen): cut = accent, engrave = ink
+    cut: { light: 'shu.500', dark: 'shu.400' },
+    engrave: { light: 'kami.900', dark: 'sumi.900' },
+    // birch texture and the always-dark camera
+    texture: { light: 'oklch(0.580 0.010 50)', dark: 'oklch(0.600 0.010 85)' },
+    camera: 'oklch(0.140 0.008 255)'
   },
   typography: {
-    sans: "'Inter Variable', 'Inter', system-ui, sans-serif",
-    mono: "'JetBrains Mono', 'SF Mono', Menlo, monospace",
-    display: "Georgia, 'Iowan Old Style', 'Times New Roman', serif"
+    display: "'Fraunces', 'Iowan Old Style', Georgia, serif",
+    sans: "'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif",
+    mono: "'JetBrains Mono', 'SF Mono', Menlo, monospace"
   },
-  shape: { radius: 'soft' },
+  shape: { radius: { sm: '4px', md: '6px', lg: '10px', xl: '12px', full: '9999px' } },
   icons: { solar: '@iconify-json/solar/icons.json', overrides: {} },
   switcher: 'manual',
-  storageKey: 'burn-e-theme'
+  storageKey: 'snap-to-make-theme'
 };

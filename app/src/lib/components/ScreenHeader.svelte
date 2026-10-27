@@ -1,12 +1,15 @@
 <script lang="ts">
-let { title, subtitle = '', pill = '', onToggleMode }: { title: string; subtitle?: string; pill?: string; onToggleMode?: () => void } = $props();
+import { Pill } from '@rokkit/ui';
+import { ThemeSwitcherToggle } from '@rokkit/app';
+import BurnEMark from './BurnEMark.svelte';
+let { title, subtitle = '', pill = '' }: { title: string; subtitle?: string; pill?: string } = $props();
 </script>
-<header class="flex items-start gap-3 px-5 pt-5 pb-4" style="border-bottom:1px solid var(--paper-edge)">
-  <span aria-hidden="true" class="mt-1 grid place-items-center w-6 h-6 rounded-full shrink-0" style="border:1.5px solid var(--ink)"><span class="w-2 h-2 rounded-full" style="background:var(--accent)"></span></span>
+<header class="h-14 shrink-0 flex items-center gap-2.5 pl-4 pr-2 bg-paper-soft hair-b">
+  <BurnEMark class="text-ink shrink-0" />
   <div class="flex-1 min-w-0">
-    <h1 class="font-display text-xl leading-tight">{title}</h1>
-    {#if subtitle}<p class="mono text-xs" style="color:var(--ink-mute)">{subtitle}</p>{/if}
+    <h1 class="font-heading text-lede font-normal leading-tight truncate">{title}</h1>
+    {#if subtitle}<p class="meta truncate">{subtitle}</p>{/if}
   </div>
-  {#if pill}<span class="pill mono">{pill}</span>{/if}
-  <button type="button" aria-label="Toggle dark mode" class="text-lg leading-none px-1" onclick={() => onToggleMode?.()}>☾</button>
+  {#if pill}<Pill value={pill} class="meta" />{/if}
+  <ThemeSwitcherToggle variant="single" />
 </header>

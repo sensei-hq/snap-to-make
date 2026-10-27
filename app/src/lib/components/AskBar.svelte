@@ -1,16 +1,12 @@
 <script lang="ts">
+import { Button, ChatComposer } from '@rokkit/ui';
 let { placeholder = 'Ask Burn-E — cut, engrave, change…', micLabel = 'Voice input', onSubmit, onMicDown, onMicUp, onCamera }: {
   placeholder?: string; micLabel?: string;
   onSubmit?: (v: string) => void; onMicDown?: () => void; onMicUp?: () => void; onCamera?: () => void;
 } = $props();
-let typed = $state('');
 </script>
-<div class="flex items-center gap-2 px-4 py-3" style="border-top:1px solid var(--paper-edge);background:var(--paper-soft)">
-  <label class="sr-only" for="ask-input">Ask Burn-E</label>
-  <input id="ask-input" bind:value={typed} placeholder={placeholder} class="flex-1 rounded-lg px-3 py-2.5 text-sm"
-    style="background:var(--paper);border:1px solid var(--paper-edge);color:var(--ink)"
-    onkeydown={(e) => { if (e.key === 'Enter') { onSubmit?.(typed); } }} />
-  {#if onCamera}<button type="button" aria-label="Open camera" class="chip" onclick={() => onCamera?.()}>📷</button>{/if}
-  <button type="button" aria-label={micLabel} class="grid place-items-center w-11 h-11 rounded-full shrink-0" style="background:var(--ink);color:var(--paper)"
-    onpointerdown={() => onMicDown?.()} onpointerup={() => onMicUp?.()}>🎙</button>
+<div class="shrink-0 flex items-end gap-2.5 px-4 pt-3 pb-6 bg-paper-soft hair-t" role="group" aria-label="Ask Burn-E">
+  <div class="flex-1 min-w-0"><ChatComposer {placeholder} onsubmit={(t) => onSubmit?.(t)} /></div>
+  {#if onCamera}<Button style="outline" icon="i-solar:camera-linear" aria-label="Open camera" onclick={() => onCamera?.()} />{/if}
+  <Button variant="primary" icon="i-solar:microphone-3-linear" aria-label={micLabel} onpointerdown={() => onMicDown?.()} onpointerup={() => onMicUp?.()} />
 </div>

@@ -64,9 +64,13 @@
     "wrangler": "^4.152.0"
   },
   "dependencies": {
+    "@fontsource/fraunces": "^5.3.0",
+    "@fontsource/inter": "^5.3.0",
+    "@fontsource/jetbrains-mono": "^5.3.0",
     "@rokkit/actions": "^1.9.0",
     "@rokkit/app": "^1.9.0",
     "@rokkit/core": "^1.9.0",
+    "@rokkit/forms": "^1.9.1",
     "@rokkit/icons": "^1.9.0",
     "@rokkit/states": "^1.9.0",
     "@rokkit/themes": "^1.9.0",

@@ -1,26 +1,36 @@
 <script lang="ts">
+import { Button, Card, StatusList } from '@rokkit/ui';
+import BurnEMark from './BurnEMark.svelte';
 let { plan, onExportSvg, onDownloadGcode }: { plan: any; onExportSvg?: () => void; onDownloadGcode?: () => void } = $props();
+const checks = $derived((plan?.preflight ?? []).map((c: any) => ({ text: c.label, status: c.ok === false ? 'warn' : 'pass' })));
+const legend = [{ label: 'cut', swatch: 'bg-cut' }, { label: 'engrave', swatch: 'bg-engrave' }];
 </script>
-<section aria-label="Canvas" class="px-5 py-4 flex flex-col gap-3">
-  <div class="relative rounded-lg" style="background:var(--paper-soft);border:1px solid var(--paper-edge)" role="img" aria-label="Nested sheet layout 300 by 300 millimetres">
-    <svg viewBox="0 0 300 300" class="w-full block">
-      <rect x="6" y="6" width="288" height="288" fill="none" stroke="var(--paper-edge)" />
+<section aria-label="Canvas" class="px-4 py-4 flex flex-col gap-3.5">
+  <div class="relative rounded-lg grid-bed bg-paper-soft border border-paper-edge" role="img" aria-label="Nested sheet layout 300 by 300 millimetres">
+    <svg viewBox="0 0 300 300" class="w-full block" fill="none" stroke-width="1.4">
+      <rect x="6" y="6" width="288" height="288" stroke="var(--paper-edge)" stroke-width="1" />
       {#each plan?.pieces ?? [] as p (p.id)}
-        {#if p.kind === 'circle'}<circle cx={p.xMm + p.wMm / 2} cy={p.yMm + p.hMm / 2} r={p.wMm / 2} fill="none" stroke="var(--danger, #C93A3A)" stroke-width="1.4" />{#if p.label}<text x={p.xMm + p.wMm / 2} y={p.yMm + p.hMm / 2 + 7} text-anchor="middle" font-size="22" fill="var(--ink)">{p.label}</text>{/if}
-        {:else}<rect x={p.xMm} y={p.yMm} width={p.wMm} height={p.hMm} fill="none" stroke="var(--danger, #C93A3A)" stroke-width="1.4" />{/if}
+        {#if p.kind === 'circle'}<circle cx={p.xMm + p.wMm / 2} cy={p.yMm + p.hMm / 2} r={p.wMm / 2} stroke="var(--cut)" />{#if p.label}<text x={p.xMm + p.wMm / 2} y={p.yMm + p.hMm / 2 + 7} text-anchor="middle" font-size="22" fill="var(--engrave)" stroke="none">{p.label}</text>{/if}
+        {:else}<rect x={p.xMm} y={p.yMm} width={p.wMm} height={p.hMm} stroke="var(--cut)" />{/if}
       {/each}
     </svg>
-    <span class="mono absolute right-2 top-2 text-xs px-2 py-1 rounded" style="background:var(--paper)"><span style="color:var(--danger,#C93A3A)">—</span> cut · <span style="color:var(--ink)">—</span> engrave</span>
-    <span class="mono absolute right-2 bottom-2 text-xs" style="color:var(--ink-mute)">300 × 300 mm</span>
+    <ul class="absolute right-2 top-2 flex gap-1.5">
+      {#each legend as l (l.label)}<li class="meta inline-flex items-center gap-1.5 px-2 py-1 rounded-sm bg-paper-soft border border-paper-edge"><span class="w-2.5 h-0.5 {l.swatch}"></span>{l.label}</li>{/each}
+    </ul>
+    <span class="meta absolute right-2 bottom-2">300 × 300 mm</span>
   </div>
-  <p class="text-sm"><span aria-hidden="true" class="inline-block w-5 h-5 rounded-full text-center mr-2" style="background:var(--paper-mute)">●</span>{plan?.suggestion ?? ''} <button type="button" class="chip ml-2">Add lid</button> <button type="button" class="chip">No</button></p>
-  <div>
-    <p class="flex justify-between"><span class="mono text-xs tracking-widest" style="color:var(--ink-mute)">PREFLIGHT</span><span class="mono text-sm">est. {plan?.estMin ?? 0} min</span></p>
-    <p class="text-sm mt-1">{#each plan?.preflight ?? [] as c (c.label)}<span class="mr-3"><span style="color:var(--success)">✓</span> {c.label}</span>{/each}</p>
-    <p class="mono text-xs mt-1" style="color:var(--ink-mute)">{plan?.deviceLabel ?? ''}</p>
+  <div class="flex items-center gap-2.5 text-ui">
+    <BurnEMark size={20} class="text-ink shrink-0" />
+    <span class="flex-1">{plan?.suggestion ?? ''}</span>
+    <Button style="outline" size="sm" label="Add lid" /><Button size="sm" style="ghost" label="No" />
   </div>
-  <div class="flex gap-3">
-    <button type="button" class="btn-line flex-1" onclick={() => onExportSvg?.()}>Export SVG</button>
-    <button type="button" class="btn-ink flex-1" onclick={() => onDownloadGcode?.()}>Download G-code</button>
+  <Card>
+    {#snippet header()}<p class="flex justify-between items-baseline"><span class="eyebrow">Preflight</span><span class="readout text-ink">est. {plan?.estMin ?? 0} min</span></p>{/snippet}
+    <StatusList items={checks} />
+    {#snippet footer()}<p class="meta">{plan?.deviceLabel ?? ''}</p>{/snippet}
+  </Card>
+  <div class="flex gap-2.5">
+    <Button style="outline" size="lg" class="flex-1" icon="i-solar:export-linear" label="Export SVG" onclick={() => onExportSvg?.()} />
+    <Button size="lg" variant="primary" class="flex-1" icon="i-solar:download-linear" label="Download G-code" onclick={() => onDownloadGcode?.()} />
   </div>
 </section>

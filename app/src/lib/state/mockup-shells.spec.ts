@@ -43,7 +43,6 @@ describe('ConversationState listening shell', () => {
 import { WatchState } from './watch.svelte';
 import { TraceState } from './trace.svelte';
 import { SessionState } from './session.svelte';
-import { UiState } from './ui.svelte';
 import { FlowState } from './flow.svelte';
 
 describe('WatchState alert shell', () => {
@@ -86,10 +85,8 @@ describe('SessionState form gate (First run)', () => {
   });
 });
 
-describe('UiState + FlowState listening wiring', () => {
-  it('toggles mode and listen start/stop', () => {
-    const ui = new UiState();
-    const before = ui.dark; ui.toggleMode(); expect(ui.dark).toBe(!before); ui.toggleMode(); expect(ui.dark).toBe(before);
+describe('FlowState listening wiring', () => {
+  it('starts and stops listening', () => {
     globalThis.fetch = (async () => ({ json: async () => ({ trace: [], measure: null }) })) as any;
     const f = new FlowState();
     f.startListen(); expect(f.conversation.listening).toBe(true);

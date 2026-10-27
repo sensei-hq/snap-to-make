@@ -3,11 +3,12 @@ import 'uno.css';
 import '../app.css';
 import { vibe } from '@rokkit/states';
 import { themable } from '@rokkit/actions';
+import config from '../../rokkit.config.js';
 let { children } = $props();
 vibe.allowedStyles = ['zen-sumi'];
 vibe.style = 'zen-sumi';
-vibe.mode = 'light';
-vibe.density = 'comfortable';
+// Load the persisted theme before any child (ThemeSwitcherToggle) mounts and adopts vibe's default mode.
+if (typeof localStorage !== 'undefined') vibe.load(config.storageKey);
 </script>
-<svelte:body use:themable={{ theme: vibe, storageKey: 'burn-e-theme' }} />
+<svelte:body use:themable={{ theme: vibe, storageKey: config.storageKey }} />
 {@render children()}

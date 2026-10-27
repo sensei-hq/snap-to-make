@@ -1,10 +1,46 @@
+// Colour, components and their states come from Rokkit (presetRokkit + @rokkit/themes zen-sumi).
+// This file only adds what Rokkit has no primitive for, taken from the design mock
+// (mockups/svelte/src/lib/design/burn-e.uno.js): the type scale, type roles, and the
+// graph-paper / birch textures drawn from named tokens.
 import { defineConfig } from 'unocss';
 import { presetRokkit } from '@rokkit/unocss';
 import config from './rokkit.config.js';
+
+const reducedMotion = `@media (prefers-reduced-motion: reduce) {
+  *, ::before, ::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; }
+}`;
+
+const mix = (token, pct) => `color-mix(in oklab, var(--${token}) ${pct}%, transparent)`;
+const graph = (pct, size) => ({
+  'background-image': `linear-gradient(${mix('ink', pct)} 1px, transparent 1px), linear-gradient(90deg, ${mix('ink', pct)} 1px, transparent 1px)`,
+  'background-size': `${size}px ${size}px`
+});
+
 export default defineConfig({
   presets: [presetRokkit(config)],
+  preflights: [{ getCSS: () => reducedMotion }],
   theme: {
-    fontSize: { xs: ['11px','1.4'], sm: ['13px','1.5'], base: ['15px','1.6'], lg: ['17px','1.5'], xl: ['22px','1.2'], '2xl': ['28px','1.2'] },
-    borderRadius: { sm: '4px', DEFAULT: '6px', lg: '10px', full: '9999px' }
+    fontSize: {
+      micro: ['11px', '1.3'], ui: ['13px', '1.4'], body: ['15px', '1.6'], lede: ['17px', '1.5'],
+      title: ['22px', '1.3'], head: ['28px', '1.2'], display: ['40px', '1.05'], hero: ['56px', '1.02']
+    },
+    letterSpacing: { display: '-0.02em', lane: '0.06em', eyebrow: '0.18em' }
+  },
+  rules: [
+    ['grid-bed', graph(6, 20)],
+    ['grid-thumb', graph(5, 16)],
+    ['swatch-birch', { background: `repeating-linear-gradient(90deg, ${mix('texture', 22)} 0 2px, transparent 2px 4px), ${mix('texture', 8)}` }],
+    ['tabular', { 'font-variant-numeric': 'tabular-nums' }]
+  ],
+  shortcuts: {
+    'phone-col': 'mx-auto w-full max-w-[430px] min-h-dvh flex flex-col bg-paper text-ink font-sans text-body md:border-x md:border-paper-edge',
+    eyebrow: 'font-mono text-micro font-medium uppercase tracking-eyebrow text-ink-soft',
+    meta: 'font-mono text-micro font-medium text-ink-soft tabular',
+    readout: 'font-mono text-ui font-medium text-ink-mute tabular',
+    lane: 'font-mono text-micro font-medium uppercase tracking-lane text-ink-mute',
+    'section-title': 'font-heading text-head font-normal tracking-display text-ink',
+    'panel-title': 'font-heading text-title font-normal tracking-display text-ink',
+    'hair-b': 'border-b border-paper-edge',
+    'hair-t': 'border-t border-paper-edge'
   }
 });
