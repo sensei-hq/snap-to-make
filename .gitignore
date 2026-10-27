@@ -1,0 +1,15 @@
+.DS_Store
+node_modules
+.env
+.env.*
+!.env.example
+.dev.vars
+
+# Local-only design mockups and sample assets (not published)
+mockups/
+docs/mockups/
+docs/sample/
+
+# Supabase CLI local state
+supabase/.temp/
+supabase/.branches/
