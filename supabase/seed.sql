@@ -1,0 +1,4 @@
+-- Burn-E seeding is NOT done here. Source of truth: dbd file import.
+--   database/import/staging/*.csv  ->  staging tables  ->  staging.import_*()  ->  target schemas
+--   Orchestrated by database/import/loader.sql via `dbd import` (design.yaml: import.after).
+-- This file intentionally contains no statements so `supabase db reset` does not load foreign seed data.
