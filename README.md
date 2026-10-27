@@ -11,7 +11,7 @@ Built for the **Meta Global AI Developer Hackathon** (Oct 26 – Nov 4, 2026), I
 
 | | |
 |---|---|
-| Live demo | https://burn-e-snap.hi-073.workers.dev/snap (invite `DEMO-JUDGES`) |
+| Live demo | https://snap-to-make.sensei-hq.com/snap (invite `DEMO-JUDGES`) |
 | Hackathon | [Meta Global AI Developer Hackathon](https://dev.meta.ai/events/global-hackathon) · [event page on Cerebral Valley](https://cerebralvalley.ai/e/meta-ai-developer-hackathon) · [submission](https://cerebralvalley.ai/e/meta-ai-developer-hackathon/hackathon/submit) |
 | Meta Model API | [Product page](https://developer.meta.com/ai/products/meta-model-api/) · [Build with Muse Spark](https://developer.meta.com/ai/resources/blog/build-with-muse-spark/) · [dev.meta.ai](https://dev.meta.ai/) · base URL `https://api.meta.ai/v1` |
 | Product docs | [PRD](docs/prd/README.md) · [Plan](docs/plans/2026-10-27-snap-make-phase1-plan.md) · [Roadmap](docs/roadmap/README.md) · [Submission package](docs/submission/README.md) |
@@ -41,7 +41,7 @@ The design flow is **Object → Impl**: one measured design, many fabrication ta
 
 ## Try it
 
-**Live demo:** https://burn-e-snap.hi-073.workers.dev/snap — invite `DEMO-JUDGES` (+ 18+ tick) at `/snap/welcome`. Live Muse Spark scene analysis is enabled on the server.
+**Live demo:** https://snap-to-make.sensei-hq.com/snap — invite `DEMO-JUDGES` (+ 18+ tick) at `/snap/welcome`. Live Muse Spark scene analysis is enabled on the server.
 
 ```bash
 cd app
@@ -68,7 +68,8 @@ snap-to-make/
 │       ├── lib/devices/ # Device adapters: laser (full: G-code/SVG/.burn), simulator (playback),
 │       │                # cricut + printer3d (Phase 2 stubs) behind one interface + contract tests
 │       ├── lib/state/   # Svelte rune state classes (*.svelte.ts): all transitions, reactivity, async.
-│       ├── lib/components/ # Presentation only (Rokkit): props in, events out — no fetch, no store writes.
+│       ├── lib/components/ # Presentation only (Rokkit components): props in, events out — no fetch, no store writes.
+│       ├── lib/design/  # Zen-Sumi palette + token spec pinned to the design mock
 │       └── lib/server/  # Server-only: Meta clients, budget/invite guard, cost/trace ledger.
 ├── database/            # dbd-managed schema (files are the source of truth)
 │   ├── ddl/table/<schema>/<table>.ddl   # one file per table (snap, staging)
@@ -90,7 +91,7 @@ The design mockups (`mockups/`, `docs/mockups/`) and the sample photo set (`docs
 ```text
 ```
 
-State and presentation are deliberately separated: **state classes (`*.svelte.ts`) own every transition and side effect; components only render props and fire events.** That is enforced by an architecture test (`bun run test:arch`), not just convention.
+State and presentation are deliberately separated: **state classes (`*.svelte.ts`) own every transition and side effect; components only render props and fire events.** That is enforced by an architecture test (`bun run test:arch`), not just convention; the same test rejects raw colours, inline colour styles and emoji icons in presentation code, so every screen uses Rokkit components and named tokens (see [`docs/prd/07-design-language.md`](docs/prd/07-design-language.md)).
 
 ## Development
 

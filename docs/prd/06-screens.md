@@ -11,7 +11,7 @@ Shared chrome: `ScreenHeader` (title, subtitle, cost pill, light/dark toggle via
 - **Route:** `/snap` (`src/routes/snap/+page.svelte`).
 - **Components:** `WorkshopShell` (Burn-E avatar, greeting, live transcript, mic button, suggestion chips), `AskBar`, `ScreenHeader`.
 - **State:** `FlowState` (step, mic, transcript), `ConversationState` (slots: intent, qty, material, thickness, device, art).
-- **States:** idle · listening (ring pulses with level) · thinking (ember glow) · speaking (captions type on) · offline (Glimmer badge).
+- **States:** idle · listening (ring pulses with level) · thinking (vermillion glow) · speaking (captions type on) · offline (Glimmer badge).
 - **Design notes:**
   > Full-screen "Workshop" home for Burn-E, a laser-maker assistant. Dark charcoal background with a subtle birch-wood grain texture at 6% opacity. Centered: an animated circular ember avatar (amber glow) above a large round push-to-talk mic button with an animated level ring. Below it a caption area showing Burn-E's reply in warm off-white sans text and the user's live transcript in muted gray. A slim text input with placeholder "Or type: what are we making today?" is pinned at the bottom with 3 suggestion chips: "Coasters from my sketch", "Box that fits this", "Ornaments for 40 names". No menus or sidebars. Top-right: a tiny cost pill "$0.00 · Meta AI" and an "Under the hood" icon button. Rokkit buttons and chips, radius 10 px.
 

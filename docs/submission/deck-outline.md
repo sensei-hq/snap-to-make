@@ -1,4 +1,4 @@
-# Deck (10 slides, Workshop template: charcoal #16140F, ember #FF8A1F, Inter, model chips as legends)
+# Deck (10 slides, Zen-Sumi template: washi paper, sumi ink, vermillion accent, Fraunces + Inter, model chips as legends)
 1. Title — Burn-E: Show it. Say it. Burn it. (sketch → coasters photo strip)
 2. Problem — millions of idle cutters; the design wall: measure, trace, imagine
 3. Demo moment — 4 frames: photo → glowing masks (Ø 82 mm) → preview → held object [needs burn photo]

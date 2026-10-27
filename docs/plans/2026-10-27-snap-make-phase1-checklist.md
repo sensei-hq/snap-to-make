@@ -23,7 +23,7 @@ Rule: an item closes only with evidence (test run, URL check, file). Update this
 
 ## 2. App scaffold (no Kavach)
 - [~] `app/package.json` (SvelteKit 2, Svelte 5, Rokkit 1.9, UnoCSS, Vitest, Playwright) — no `@kavach/*`
-- [ ] `svelte.config.js`, `vite.config.ts` (no kavach plugin), `uno.config.js`, `rokkit.config.js` (Workshop tokens)
+- [ ] `svelte.config.js`, `vite.config.ts` (no kavach plugin), `uno.config.js`, `rokkit.config.js` (Zen-Sumi tokens)
 - [ ] `src/app.html` (PWA manifest + theme-color), `src/app.css`, `src/service-worker.ts` (app-shell cache)
 - [ ] `static/manifest.webmanifest` + icons
 - [ ] `.env.example` (PUBLIC_SUPABASE_URL/ANON_KEY, server-only SUPABASE_SERVICE_ROLE_KEY, META_API_KEY)

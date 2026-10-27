@@ -1,7 +1,7 @@
 # Submission package — final checklist
 
 ## Ready (agent-produced)
-- [x] Live demo: https://burn-e-snap.hi-073.workers.dev/snap (+ /snap/convert), invite DEMO-JUDGES
+- [x] Live demo: https://snap-to-make.sensei-hq.com/snap (+ /snap/convert), invite DEMO-JUDGES
 - [x] White paper draft: docs/submission/white-paper.md ([TRACE] filled from live run)
 - [x] Deck outline: docs/submission/deck-outline.md
 - [x] Trace export: docs/submission/trace-export.json (Spark 4,955 ms / $0.0057)

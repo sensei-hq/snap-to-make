@@ -9,7 +9,10 @@ node_modules
 mockups/
 docs/mockups/
 docs/sample/
+docs/transcripts/
 
 # Supabase CLI local state
 supabase/.temp/
 supabase/.branches/
+
+docs/transcripts
