@@ -2,10 +2,10 @@
 
 Prereqs: Stage 00 exit. Reference: `~/Developer/sensei-hq/sensei/dojo` (read its `package.json`, `vite.config.ts`, `svelte.config.js`, `uno.config.js`, `rokkit.config.js`, `src/hooks.server.ts` — copy patterns, not Kavach).
 
-## Target layout (`snap-web/`, new app)
+## Target layout (`app/`, new app)
 
 ```
-snap-web/
+app/
   package.json  svelte.config.js  vite.config.ts  uno.config.js  rokkit.config.js
   playwright.config.ts  vitest.config.ts  .env.example
   src/app.html  src/app.css  src/service-worker.ts  src/app.d.ts
@@ -33,4 +33,4 @@ snap-web/
 
 ## Exit criteria
 
-- `bun run dev` serves `/snap`; smoke e2e green; grep finds no `kavach` in `snap-web/`; `check` clean. Record in checklist §2. Proceed to Stage 02 unattended.
+- `bun run dev` serves `/snap`; smoke e2e green; grep finds no `kavach` in `app/`; `check` clean. Record in checklist §2. Proceed to Stage 02 unattended.

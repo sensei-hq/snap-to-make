@@ -8,7 +8,7 @@
 - [x] Sample conversion study: 32/33 convertible (docs/sample, git-ignored)
 
 ## Pending deploy (approval-enabled session)
-- [ ] `cd snap-web && bun run test:e2e && bun run deploy` — ships SAM segment overlays on Convert
+- [ ] `cd app && bun run test:e2e && bun run deploy` — ships SAM segment overlays on Convert
 - [ ] Retest /snap/convert: tap a piece -> its region highlights on the photo
 
 ## Needs you (physical / judgement)

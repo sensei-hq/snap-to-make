@@ -2,7 +2,7 @@
 
 Prereqs: Stage 02. PRD: R-DS-3..5, R-MK-1..4. Core idea (user-confirmed): **Object → Impl**; Impl differs per object×device; user selection generates pieces + assembly.
 
-## Files (`snap-web/src/lib/devices/`)
+## Files (`app/src/lib/devices/`)
 
 - `types.ts` — abstract ops (`cut-through|engrave-surface|score-crease|draw-line|extrude-solid`); `DeviceAdapter { id, kind, capabilities, validate(obj,target), plan(obj,target): ImplPlan, emit(plan): Artifact[], preview(plan): PlaybackTimeline, estimate(plan) }`; `Target { adapterId, deviceId, materialId, thickness_mm }`; registry.
 - `laser.ts` — FULL. Longer Ray 5 10W/20W (device + material presets as data): kerf 0.1mm, finger-joint geometry rendered here (not in templates), engrave-before-cut ordering, nesting via Stage 02 packer, emits G-code (written in this adapter; `.burn` is an internal laser artifact), SVG (red cut/blue engrave), `.burn`+ZIP.

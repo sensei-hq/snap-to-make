@@ -1,7 +1,7 @@
 # 05 — Architecture
 
 ## 5.1 Principles
-1. **One new app, `snap-web/`:** a SvelteKit 2 + Svelte 5 PWA styled with Rokkit + UnoCSS, deployed as a single Cloudflare Worker. Pages and server routes ship together.
+1. **One new app, `app/`:** a SvelteKit 2 + Svelte 5 PWA styled with Rokkit + UnoCSS, deployed as a single Cloudflare Worker. Pages and server routes ship together.
 2. **Thin server, fat pipeline:** SvelteKit `+server.ts` routes own the Meta API key, orchestration, budget and trace. The browser never sees the key.
 3. **Object → Impl:** one device-agnostic **Object** (intent, mm dimensions, art, assembly intent); a **device adapter** turns it into an **Impl** (pieces, joints, layout, toolpaths, files). Switching device re-plans in code only, zero model calls.
 4. **State vs presentation:** `*.svelte.ts` rune classes own every transition, side effect and async call; `*.svelte` components render props and fire events (no fetch, no store writes). Enforced by `bun run test:arch`.
@@ -10,7 +10,7 @@
 
 ## 5.2 System diagram
 ```
-┌──────────────────────── Browser (snap-web PWA · SvelteKit 2 + Svelte 5 + Rokkit) ────────────────────┐
+┌──────────────────────── Browser (app/ PWA · SvelteKit 2 + Svelte 5 + Rokkit) ────────────────────────┐
 │ /snap Workshop · Scene/Plan/Art/Preview cards · /snap/canvas · Simulate · /snap/watch · /snap/batch  │
 │ state/*.svelte.ts (flow, conversation, capture, design, playback, trace…) → components/*.svelte      │
 │ Mic: browser SpeechRecognition (fallback) · speechSynthesis (local TTS) ──── fetch /api/* ──┐        │
@@ -36,7 +36,7 @@ Without `META_API_KEY` the server routes return clearly labelled demo fixtures, 
 ```
 snap-to-make/
 ├── docs/prd/                     ← this PRD
-├── snap-web/                     ← the app
+├── app/                          ← the app
 │   ├── rokkit.config.js  uno.config.js  svelte.config.js  wrangler.jsonc  worker-entry.js
 │   ├── src/app.css  src/service-worker.ts
 │   ├── src/routes/snap/          ← pages: Workshop, capture, canvas, convert, watch, batch, welcome
@@ -73,7 +73,7 @@ snap-to-make/
 - Respect the Muse API ToS: no reselling access, label AI-generated previews ("AI preview").
 
 ## 5.7 Deployment (hackathon)
-- One Cloudflare Worker (`snap-web/wrangler.jsonc`, name `burn-e-snap`) serves the PWA assets and the `/api/*` routes: `bun run deploy:dry` to validate, `bun run deploy` to ship.
+- One Cloudflare Worker (`app/wrangler.jsonc`, name `burn-e-snap`) serves the PWA assets and the `/api/*` routes: `bun run deploy:dry` to validate, `bun run deploy` to ship.
 - Database: Supabase Postgres, schema deployed and seeded with `dbd deploy -d $DATABASE_URL -e dev --scope snap` (`bun run db:deploy`).
 - Demo laptop runs everything locally as a backup (`bun run dev` + local Glimmer).
 

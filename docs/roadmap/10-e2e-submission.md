@@ -2,7 +2,7 @@
 
 Prereqs: Stage 09. PRD: `docs/prd/09-demo-and-submission.md`, roadmap D6–D9.
 
-## E2E suite (Playwright, `snap-web/tests/e2e/`, `bun run test:e2e`)
+## E2E suite (Playwright, `app/tests/e2e/`, `bun run test:e2e`)
 
 - `smoke.spec.ts` (Stage 01) · `hero.spec.ts` (Stages 06–08) · `playback.spec.ts` (Stage 07) · `impl-switch.spec.ts` (Laser→Cricut re-plan, no new trace cost) · `gate-and-guard.spec.ts` (Stage 09) · `watch.spec.ts` (Stage 09).
 - Config: `playwright.config.ts` boots `bun run dev` + local Supabase (Stage 00), seeded DEMO-JUDGES session; Meta APIs mocked by route interception by default, live mode only with `E2E_LIVE=1` + key. Traces/videos on failure. All specs green is a hard gate for both handoffs below.

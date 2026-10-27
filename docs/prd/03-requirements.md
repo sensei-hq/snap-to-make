@@ -65,7 +65,7 @@ IDs: `R-<module>-<n>`. Phase: **P1** (demo-critical) · **P1+** (stretch this we
 | ID | Requirement | Phase |
 |---|---|---|
 | R-DS-1 | Spark 1.3 converts intent + measurements into a **`DesignSpec` JSON** (strict schema): parts (name, qty, primitive: `circle`/`rect`/`rounded_rect`/`traced_outline`, dimensions mm), joints (finger joints between named edges, material thickness, kerf), engrave placements (art id, size, position), sheet, material, device. | P1 |
-| R-DS-2 | A **deterministic geometry generator** (TypeScript, `snap-web/src/lib/domain/geometry.ts`) turns the `DesignSpec` into a device-agnostic `ObjectSpec`; the device adapter (`src/lib/devices/laser.ts`) renders it into pieces: rectangles, circles, finger-joint edges, traced paths. **The LLM never emits raw coordinates.** | P1 |
+| R-DS-2 | A **deterministic geometry generator** (TypeScript, `app/src/lib/domain/geometry.ts`) turns the `DesignSpec` into a device-agnostic `ObjectSpec`; the device adapter (`src/lib/devices/laser.ts`) renders it into pieces: rectangles, circles, finger-joint edges, traced paths. **The LLM never emits raw coordinates.** | P1 |
 | R-DS-3 | Built-in parametric templates: **coaster (round/square/hex)**, **open box / holder with finger joints**, **ornament (star/circle/custom outline)**, **phone/tablet stand**, **name sign**. | P1 (coaster, box, ornament); P1+ (stand, sign) |
 | R-DS-4 | Kerf compensation (default 0.1 mm diode laser) and clearance (default +1 mm for fit targets) are applied by the generator. | P1 |
 | R-DS-5 | Simple **nesting** (shelf/row packing, 3 mm spacing) onto the sheet size; overflow creates new sheets (`src/lib/domain/nesting.ts`). | P1 |

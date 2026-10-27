@@ -1,6 +1,6 @@
 # 06 — Screens
 
-Each screen lists: **purpose · route · components · state · states · design notes**. All screens live in `snap-web/`: pages under `src/routes/snap/`, presentation-only Svelte components under `src/lib/components/` (Rokkit primitives + UnoCSS), and the state class that owns their data under `src/lib/state/`. Components take props and fire events; they never fetch. Visual rules are in [07-design-language.md](07-design-language.md).
+Each screen lists: **purpose · route · components · state · states · design notes**. All screens live in `app/`: pages under `src/routes/snap/`, presentation-only Svelte components under `src/lib/components/` (Rokkit primitives + UnoCSS), and the state class that owns their data under `src/lib/state/`. Components take props and fire events; they never fetch. Visual rules are in [07-design-language.md](07-design-language.md).
 
 Shared chrome: `ScreenHeader` (title, subtitle, cost pill, light/dark toggle via `UiState`), `AppNav` (Workshop · capture · canvas · convert · watch · batch), `AskBar` (text input, always visible). Layout is a phone column (`.phone-col`, max 430 px) that also works on a laptop.
 

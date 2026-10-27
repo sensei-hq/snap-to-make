@@ -2,7 +2,7 @@
 
 Plan: [../plans/2026-10-27-snap-make-phase1-plan.md](../plans/2026-10-27-snap-make-phase1-plan.md) · Checklist: [../plans/2026-10-27-snap-make-phase1-checklist.md](../plans/2026-10-27-snap-make-phase1-checklist.md) · PRD: `docs/prd/`
 
-## Standard commands (snap-web/package.json — always use these, no ad-hoc runners)
+## Standard commands (app/package.json — always use these, no ad-hoc runners)
 
 | Gate | Command |
 |---|---|

@@ -6,7 +6,7 @@ One visual system for **the app, the pitch deck, the white paper and the demo vi
 Warm workshop at night: charcoal benches, birch plywood, the amber glow of a laser. Calm, crafted, confident, never "sci-fi AI". The two operation colors (**red = cut, blue = engrave**) are the backbone of the system.
 
 ## 7.2 Color tokens
-Defined in `snap-web/rokkit.config.js`: the Workshop colors are named-token `overrides` (`ember`, `cut`, `engrave`, `reference`, `charcoal`, `soot`, `ash`, `birch`); the remaining roles map to Rokkit semantic tokens (`success`, `ink`, `ink-mute`, light/dark per skin). `snap-web/uno.config.js` compiles them with UnoCSS `presetRokkit` into utilities and CSS variables (`var(--ink)`, `var(--paper)`…); `snap-web/src/app.css` loads the Rokkit base theme and the shared `.card`, `.chip`, `.pill`, `.btn-ink`/`.btn-line` classes. Use the same hex values in the deck and the white paper.
+Defined in `app/rokkit.config.js`: the Workshop colors are named-token `overrides` (`ember`, `cut`, `engrave`, `reference`, `charcoal`, `soot`, `ash`, `birch`); the remaining roles map to Rokkit semantic tokens (`success`, `ink`, `ink-mute`, light/dark per skin). `app/uno.config.js` compiles them with UnoCSS `presetRokkit` into utilities and CSS variables (`var(--ink)`, `var(--paper)`…); `app/src/app.css` loads the Rokkit base theme and the shared `.card`, `.chip`, `.pill`, `.btn-ink`/`.btn-line` classes. Use the same hex values in the deck and the white paper.
 
 | Token | Rokkit token | Hex | Use |
 |---|---|---|---|
@@ -23,7 +23,7 @@ Defined in `snap-web/rokkit.config.js`: the Workshop colors are named-token `ove
 | `--ws-text` | `ink` (dark) | `#F3EDE2` | Primary text on dark |
 | `--ws-text-muted` | `ink-mute` (dark) | `#A39A8A` | Secondary text |
 
-Rows without an override (`—`, `success`, `ink`, `ink-mute`) take their app values from the Rokkit palette in `snap-web/src/lib/sumi-palette.js`; the hex shown is the deck and white-paper value.
+Rows without an override (`—`, `success`, `ink`, `ink-mute`) take their app values from the Rokkit palette in `app/src/lib/sumi-palette.js`; the hex shown is the deck and white-paper value.
 
 **Model chips** (Under the hood, deck, white paper): Voice Transcribe `#9B7BFF` · Spark 1.3 `#3E8BFF` · SAM 3.1 `#2FC2B5` · Muse Image `#FF6FAE` · Wonder `#FF8A1F` · Glimmer `#B4E05A` · Muse Code `#A39A8A`.
 

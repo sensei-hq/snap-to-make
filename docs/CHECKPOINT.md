@@ -5,6 +5,6 @@
 - Gates (sandbox): 70 unit tests pass, arch/lint/check 0 errors, coverage 91.08%.
 - Blocked this run: e2e + deploy need unsandboxed execution; approval prompts disabled in this session.
 - Also ready: docs/submission/checklist.md (package tracker).
-- Next command: `cd snap-web && bun run test:e2e && bun run deploy` in an approval-enabled session, then user retest on /snap/convert.
+- Next command: `cd app && bun run test:e2e && bun run deploy` in an approval-enabled session, then user retest on /snap/convert.
 - Open: caliper truth samples, Ray 5 burn film, final submission assembly.
 - Known broken: none in code; deployed site still at prior version (no SAM overlay yet).

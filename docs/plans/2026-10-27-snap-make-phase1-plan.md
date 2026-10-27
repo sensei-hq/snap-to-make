@@ -14,7 +14,7 @@
 
 | Decision | Choice |
 |---|---|
-| Scaffold | Fork Dojo (`~/Developer/sensei-hq/sensei/dojo`) patterns into new `snap-web/` SvelteKit app. |
+| Scaffold | Fork Dojo (`~/Developer/sensei-hq/sensei/dojo`) patterns into new `app/` SvelteKit app. |
 | Auth | **None in P1.** Invite code + 18+ attestation (R-PL-4/5), server-checked signed cookie. Kavach + Supabase Auth in P2 (R-PL-6). |
 | UI | Rokkit 1.9 components/tokens, UnoCSS `presetRokkit`, Workshop style. |
 | State vs presentation | **State** in `*.svelte.ts` rune classes under `src/lib/state/` — owns transitions, reactivity, async. **Presentation** in `*.svelte` under `src/lib/components/` + routes — props in, events out, no fetch, no store mutation. |
@@ -22,7 +22,7 @@
 | Abstraction | **Object → Impl.** Object = device-agnostic (intent, mm dims, art, assembly intent). Impl = device+material+process plan (pieces, joints, layout, toolpaths, assembly steps). User picks target at "Make it with…"; switching re-plans with code only, $0. |
 | Devices | Adapter pattern (`validate/plan/emit/preview/estimate`). P1 full: Laser (Longer Ray 5 10W/20W) + Simulator. P1 stub: Cricut, 3D printer (capabilities/validate/preview, emit disabled "Phase 2"). |
 | Playback | Demo/playback mode on canvas: Simulate (toolpath playback, play/pause/scrub/speed) + Assembly (exploded↔assembled). No hardware needed. |
-| Testing | **TDD throughout.** Vitest unit (target ≥90% lines on `src/lib/domain`, `src/lib/devices`, `src/lib/state`), Playwright e2e in `snap-web/tests/e2e/`. No production code without a failing test first. |
+| Testing | **TDD throughout.** Vitest unit (target ≥90% lines on `src/lib/domain`, `src/lib/devices`, `src/lib/state`), Playwright e2e in `app/tests/e2e/`. No production code without a failing test first. |
 | Server | SvelteKit `+server.ts` routes own `META_API_KEY`. Routes: `/api/scene|design|art|preview|watch|batch`, `/ws/voice` relay. Budget guard $1/session, $10/day + kill switch (R-PL-2). |
 
 ## 3. Architecture
@@ -32,13 +32,13 @@ Photo+voice → SceneAnalysis/MeasureResult (Spark+SAM; code measures)
   → DesignSpec (Spark strict JSON) → ObjectSpec (deterministic, canonical)
   → [user picks target] → DeviceAdapter.plan() → ImplPlan (pieces/layout/toolpaths)
   → emit() files (G-code/SVG/ZIP/STL-later) · preview() playback timeline
-snap-web/src/lib/
+app/src/lib/
   domain/    pure TS: schemas (zod), Object/Impl types, measurement math, geometry, templates, nesting
   devices/   adapter interface + registry; laser/, simulator/, cricut-stub/, printer3d-stub/
   state/     *.svelte.ts rune state classes (session, conversation, design, playback, trace)
   components/ pure presentation (Rokkit) — props/events only
   server/    Meta clients, vision (scale/contour/potrace), guard, trace ledger (server-only)
-snap-web/src/routes/  /snap (Workshop), /snap/canvas, /snap/watch, /snap/batch, /snap/welcome, api/*
+app/src/routes/  /snap (Workshop), /snap/canvas, /snap/watch, /snap/batch, /snap/welcome, api/*
 ```
 
 DB (schema `snap`, §5 of checklist): `sessions, media, scenes, objects, impls, trace_events, batch_jobs`. RLS enabled, no policies in P1 (server service-role only; browser never talks to Supabase directly).

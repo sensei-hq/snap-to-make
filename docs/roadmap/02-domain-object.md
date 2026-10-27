@@ -1,6 +1,6 @@
 # Stage 02 — Domain: schemas, measurement, geometry (Object layer) · AUTO
 
-Prereqs: Stage 01. PRD: R-UN-1..6, R-TR-1..3, R-DS-1..5, `docs/prd/04-model-orchestration.md` §SceneAnalysis/DesignSpec. Pure TS in `snap-web/src/lib/domain/` — no Svelte, no fetch, fully unit-testable.
+Prereqs: Stage 01. PRD: R-UN-1..6, R-TR-1..3, R-DS-1..5, `docs/prd/04-model-orchestration.md` §SceneAnalysis/DesignSpec. Pure TS in `app/src/lib/domain/` — no Svelte, no fetch, fully unit-testable.
 
 ## Files
 

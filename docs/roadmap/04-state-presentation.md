@@ -4,7 +4,7 @@ Prereqs: Stage 03. Enforces the user's separation rule. PRD screens S1/S10 shell
 
 ## Architecture rule (enforced by tests + grep gate)
 
-- **State** = `snap-web/src/lib/state/*.svelte.ts` rune classes. Own ALL transitions/reactivity/async: `session.svelte.ts` (invite/attestation/budget), `conversation.svelte.ts` (transcript/captions/slots intent·device·material·thickness·dims·art), `design.svelte.ts` (Scene→Object→selected Target→ImplPlan), `playback.svelte.ts` (play/pause/scrub/speed/current op), `trace.svelte.ts` (entries, totals, cost pill).
+- **State** = `app/src/lib/state/*.svelte.ts` rune classes. Own ALL transitions/reactivity/async: `session.svelte.ts` (invite/attestation/budget), `conversation.svelte.ts` (transcript/captions/slots intent·device·material·thickness·dims·art), `design.svelte.ts` (Scene→Object→selected Target→ImplPlan), `playback.svelte.ts` (play/pause/scrub/speed/current op), `trace.svelte.ts` (entries, totals, cost pill).
 - **Presentation** = `src/lib/components/*.svelte` + route pages. Props in, callbacks/events out. Forbidden in components/routes: `fetch(`, direct store writes to another component's state, Meta/Supabase imports. Rokkit primitives only for visuals.
 - State classes are unit-testable without rendering (plain Vitest, fake timers for playback).
 

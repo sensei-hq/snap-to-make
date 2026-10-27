@@ -13,7 +13,7 @@ Prereqs: `dbd` 0.27+, `supabase` CLI, Docker running. PRD: R-PL-2/4/5, `docs/prd
 ## Tasks (in order)
 
 1. [x] Snap + invites DDL (one file/table), staging tables + CSVs (`snap_invites`, `snap_sessions`), import procedures, loader calls, `design.yaml` (snap schema + `snap` scope + import tables), policies per table.
-2. TDD: write failing Vitest DB test `snap-web/src/lib/server/db.spec.ts` (or `tests/db/`): session→object→impl→trace insert round-trip + seeded invite `DEMO-JUDGES` exists. Run red (no DB yet).
+2. TDD: write failing Vitest DB test `app/src/lib/server/db.spec.ts` (or `tests/db/`): session→object→impl→trace insert round-trip + seeded invite `DEMO-JUDGES` exists. Run red (no DB yet).
 3. Boot local cluster: `supabase start` (in repo root; config `supabase/config.toml`, project `burn-e-snap`, API 54321 / DB 54322 / Studio 54323). If ports clash, report and stop (preflight: `lsof -i :54322`, `df -h`).
 4. **Deploy (canonical path): from `database/`, `dbd deploy -d $DATABASE_URL -e dev --scope snap`** — one command: apply DDL scripts + run file imports (`import/loader.sql` → `import_*` procedures) + apply RLS policies. Local URL: `postgresql://postgres:postgres@127.0.0.1:56332/postgres` (burn-e cluster; 54322 is the Sensei stack — do not touch it). Verify `\dt snap.*` lists 8 tables and `snap.invites` has DEMO-JUDGES/DEMO-LOCAL. Re-run deploy/import — idempotent (counts unchanged). The `supabase/migrations/*` file only mirrors DDL for Supabase bootstrap; `dbd deploy` is the deploy of record.
 6. Run DB test green. Record outputs in checklist §1.

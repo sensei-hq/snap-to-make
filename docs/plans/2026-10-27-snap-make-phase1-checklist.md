@@ -22,7 +22,7 @@ Rule: an item closes only with evidence (test run, URL check, file). Update this
 - [x] DB contract tests (Vitest `test:db`: one DDL+policy file per table, CSV seeding) + live psql round-trip verified
 
 ## 2. App scaffold (Dojo fork, no Kavach)
-- [~] `snap-web/package.json` (SvelteKit 2, Svelte 5, Rokkit 1.9, UnoCSS, Vitest, Playwright) — no `@kavach/*`
+- [~] `app/package.json` (SvelteKit 2, Svelte 5, Rokkit 1.9, UnoCSS, Vitest, Playwright) — no `@kavach/*`
 - [ ] `svelte.config.js`, `vite.config.ts` (no kavach plugin), `uno.config.js`, `rokkit.config.js` (Workshop tokens)
 - [ ] `src/app.html` (PWA manifest + theme-color), `src/app.css`, `src/service-worker.ts` (app-shell cache)
 - [ ] `static/manifest.webmanifest` + icons
@@ -69,7 +69,7 @@ Rule: an item closes only with evidence (test run, URL check, file). Update this
 - [ ] S7 Burn Watch recorded (timeline events) R-BW-1/3 · S9 Under-the-hood drawer + cost pill R-UT-1..3
 - [ ] S8 Wonder batch (P1+, cut-first) R-WB-1..4
 
-## 8. E2E (Playwright) — `snap-web/tests/e2e/`
+## 8. E2E (Playwright) — `app/tests/e2e/`
 - [ ] Config: `playwright.config.ts` (webServer `bun run dev`, local Supabase, trace on failure)
 - [ ] `hero.spec.ts` — voice-stub→photo→measure→Object→Impl→art→preview→simulate→download G-code; trace shows ≥5 models
 - [ ] `playback.spec.ts` — Simulate without device: play advances op label, scrub seeks, assembly slider assembles

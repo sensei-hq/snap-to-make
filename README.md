@@ -19,7 +19,7 @@ Built for the **Meta Global AI Developer Hackathon** (Oct 26 – Nov 4, 2026), I
 
 ## What was built during the hackathon
 
-Everything in this repository was built during the Meta Global AI Developer Hackathon (Oct 26 – Nov 4, 2026): the PRD, plan and roadmap, the `snap` database schema, the Supabase config and the `snap-web` app. The commit history starts on day 2.
+Everything in this repository was built during the Meta Global AI Developer Hackathon (Oct 26 – Nov 4, 2026): the PRD, plan and roadmap, the `snap` database schema, the Supabase config and the app in `app/`. The commit history starts on day 2.
 
 ## How it works
 
@@ -44,7 +44,7 @@ The design flow is **Object → Impl**: one measured design, many fabrication ta
 **Live demo:** https://burn-e-snap.hi-073.workers.dev/snap — invite `DEMO-JUDGES` (+ 18+ tick) at `/snap/welcome`. Live Muse Spark scene analysis is enabled on the server.
 
 ```bash
-cd snap-web
+cd app
 bun install
 bun run dev        # http://127.0.0.1:5174/snap
 ```
@@ -53,13 +53,13 @@ bun run dev        # http://127.0.0.1:5174/snap
 - Workshop: http://127.0.0.1:5174/snap — type or say “make four coasters 3 mm birch”, snap a photo, build the plan, switch the device, hit Play in Simulate.
 - Burn Watch: `/snap/watch` · Wonder batch: `/snap/batch`.
 
-Meta calls need a server-side key: copy `snap-web/.env.example` to `snap-web/.env` and set `META_API_KEY`. Without it, the server serves clearly-labelled demo fixtures so the whole flow still runs offline. The key never reaches the browser.
+Meta calls need a server-side key: copy `app/.env.example` to `app/.env` and set `META_API_KEY`. Without it, the server serves clearly-labelled demo fixtures so the whole flow still runs offline. The key never reaches the browser.
 
 ## Code organization
 
 ```
 snap-to-make/
-├── snap-web/            # The Snap → Make PWA (SvelteKit 2 + Svelte 5 + Rokkit). Start here.
+├── app/                 # The Snap → Make PWA (SvelteKit 2 + Svelte 5 + Rokkit). Start here.
 │   └── src/
 │       ├── routes/      # Pages (/snap, /snap/canvas views, /snap/watch, /snap/batch, /snap/welcome)
 │       │                # + server routes (/api/scene|design|art|preview|watch|batch|gate) owning the API key
@@ -94,7 +94,7 @@ State and presentation are deliberately separated: **state classes (`*.svelte.ts
 
 ## Development
 
-All commands run from `snap-web/` and are defined in its `package.json` — no ad-hoc runners:
+All commands run from `app/` and are defined in its `package.json` — no ad-hoc runners:
 
 | Task | Command |
 |---|---|

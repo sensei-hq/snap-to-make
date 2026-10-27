@@ -6,7 +6,7 @@
 Codename **meta-snap**. Built for the **Meta Global AI Developer Hackathon** (Oct 26 – Nov 4, 2026). Indie track, theme *Build for Your World* (with a nod to *Push the Frontier: manufacturing*).
 
 This PRD is the **single source of truth** for the hackathon build. It is written so that:
-1. the **app** (`snap-web/`, SvelteKit + Svelte 5 + Rokkit) can be built screen by screen (see [05-architecture.md](05-architecture.md) and [06-screens.md](06-screens.md));
+1. the **app** (`app/`, SvelteKit + Svelte 5 + Rokkit) can be built screen by screen (see [05-architecture.md](05-architecture.md) and [06-screens.md](06-screens.md));
 2. the **pitch deck and white paper** reuse the same story, diagrams and visual language (see [07-design-language.md](07-design-language.md) and [09-demo-and-submission.md](09-demo-and-submission.md));
 3. **Muse Code** (Meta's coding agent) can implement it module by module from the requirement IDs (see [03-requirements.md](03-requirements.md) and [08-roadmap.md](08-roadmap.md)).
 
@@ -19,7 +19,7 @@ This PRD is the **single source of truth** for the hackathon build. It is writte
 | 03 | [Requirements](03-requirements.md) | Numbered requirements `R-<module>-<n>` with phase tags and acceptance criteria |
 | 04 | [Model orchestration](04-model-orchestration.md) | Which Meta model does what, the exact API shapes, prompts/schemas, fallbacks, cost |
 | 05 | [Architecture](05-architecture.md) | System design, data flow, Object → Impl contracts, security, budget guard |
-| 06 | [Screens](06-screens.md) | Screen-by-screen specs mapped to `snap-web` routes, components and state, plus design notes |
+| 06 | [Screens](06-screens.md) | Screen-by-screen specs mapped to `app/` routes, components and state, plus design notes |
 | 07 | [Design language](07-design-language.md) | Shared tokens for the app, deck and white paper |
 | 08 | [Roadmap](08-roadmap.md) | The 9-day hackathon plan (day by day) and the ambitious post-hackathon phases |
 | 09 | [Demo & submission](09-demo-and-submission.md) | Demo script, deck outline, white-paper outline, judging-criteria map |
