@@ -177,6 +177,6 @@ describe('LayerFlowState · image → layers (docs/design/01 S1–S9)', () => {
     const f = new LayerFlowState();
     expect(f.currentDevice.id).toBe('cricut');
     f.setDevice('xtool');
-    expect(f.currentDevice.cta).toBe('Start cut');
+    expect(f.currentDevice.cta).toBe('Cut');
   });
 });
