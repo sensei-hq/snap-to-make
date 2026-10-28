@@ -115,5 +115,7 @@ Rule: an item closes only with evidence (test run, URL check, file). Update this
 - [ ] Live layered sample once doc 04 #1–7 land (HANDOFF) — UI runs on the fixture until `/api/segment` + `/api/layers` return masks
 
 ## 15. Desktop editor + rail screens (Stage 15, stretch)
-- [ ] Editor state + toolbar, canvas, Properties/Layers/Job, chat action cards
-- [ ] Rail screens: materials, settings (density), annotations; projects after auth (P2)
+- [x] Editor state + toolbar, zoomable grid canvas, Properties/Layers/Job panel (one right panel at a time with the chat)
+- [ ] Chat action cards that patch the editor (mock `applyAct`) and rulers — not built
+- [x] Rail screens: materials (presets table), settings (devices, density, theme), annotations
+- [ ] Projects screen — needs Supabase auth + saved projects (P2)
