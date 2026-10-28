@@ -114,10 +114,30 @@ export class LayerFlowState {
   // output · device adapter (docs/design/03)
   device = $state<DeviceId>('cricut');
   get currentDevice() { return devices.find((d) => d.id === this.device) ?? devices[0]; }
-  setDevice(d: DeviceId) { this.device = d; }
+  setDevice(d: DeviceId) { this.device = d; this.job = { sheet: 1, phase: 'feed', progress: 0 }; }
+
+  // output · cutters take one sheet at a time: feed the sheet's material, send, watch it cut, verify, next
+  job = $state<{ sheet: number; phase: 'feed' | 'cutting' | 'verify' | 'done'; progress: number }>({ sheet: 1, phase: 'feed', progress: 0 });
+  get jobLayer() { return this.layers[Math.min(this.job.sheet, this.layers.length) - 1]; }
+  get feedText() { return `Feed ${this.jobLayer.material}`; }
+  sheetStatus(n: number): 'cut' | 'current' | 'waiting' {
+    if (this.job.phase === 'done' || n < this.job.sheet) return 'cut';
+    return n === this.job.sheet ? 'current' : 'waiting';
+  }
+  beginCut() { if (this.job.phase === 'feed') this.job = { ...this.job, phase: 'cutting', progress: 0 }; }
+  advanceCut(pct: number) {
+    if (this.job.phase !== 'cutting') return;
+    const progress = Math.min(100, this.job.progress + pct);
+    this.job = { ...this.job, progress, phase: progress >= 100 ? 'verify' : 'cutting' };
+  }
+  recut() { this.job = { ...this.job, phase: 'feed', progress: 0 }; }
+  confirmCut() {
+    if (this.job.phase !== 'verify') return;
+    this.job = this.job.sheet >= this.layers.length ? { ...this.job, phase: 'done' } : { sheet: this.job.sheet + 1, phase: 'feed', progress: 0 };
+  }
 
   // project save / reopen: every choice above, as plain data
-  private static readonly SAVED = ['kind', 'makeAs', 'cutoutView', 'keep', 'segmentView', 'refineTool', 'set', 'stack', 'sel', 'gapChoice', 'applyAll', 'gapRule', 'overrides', 'done', 'joinery', 'skipped', 'device', 'showSolid', 'showHidden'] as const;
+  private static readonly SAVED = ['kind', 'makeAs', 'cutoutView', 'keep', 'segmentView', 'refineTool', 'set', 'stack', 'sel', 'gapChoice', 'applyAll', 'gapRule', 'overrides', 'done', 'joinery', 'skipped', 'device', 'showSolid', 'showHidden', 'job'] as const;
   /** a fresh flow's choices (New starts from these) */
   static defaults() { return new LayerFlowState().snapshot(); }
   snapshot(): Record<string, unknown> {

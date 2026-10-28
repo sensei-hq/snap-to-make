@@ -138,9 +138,9 @@ export const changes = [
 
 export type DeviceId = 'cricut' | 'xtool' | 'glowforge' | 'file';
 export const devices: { id: DeviceId; label: string; adapter: string; status: string; format: string; settings: string; time: string; cta: string }[] = [
-  { id: 'cricut', label: 'Cricut Maker 3', adapter: 'blade · cricut-svg · design-space', status: 'paired', format: 'SVG · one mat per layer', settings: 'Medium cardstock · 2 passes', time: '≈ 22 min', cta: 'Send 6 sheets' },
-  { id: 'xtool', label: 'xTool S1 laser', adapter: 'laser · svg-colour-ops · lan-http', status: 'online', format: 'SVG · cut + score', settings: '10 W · 8% power · 300 mm/s', time: '≈ 12 min', cta: 'Start cut' },
-  { id: 'glowforge', label: 'Glowforge Pro', adapter: 'laser · svg · cloud', status: 'offline', format: 'SVG · Proofgrade', settings: 'Uncertified cardstock', time: '≈ 16 min', cta: 'Queue job' },
+  { id: 'cricut', label: 'Cricut Maker 3', adapter: 'blade · cricut-svg · design-space', status: 'paired', format: 'SVG · one mat per layer', settings: 'Medium cardstock · 2 passes', time: '≈ 22 min', cta: 'Send' },
+  { id: 'xtool', label: 'xTool S1 laser', adapter: 'laser · svg-colour-ops · lan-http', status: 'online', format: 'SVG · cut + score', settings: '10 W · 8% power · 300 mm/s', time: '≈ 12 min', cta: 'Cut' },
+  { id: 'glowforge', label: 'Glowforge Pro', adapter: 'laser · svg · cloud', status: 'offline', format: 'SVG · Proofgrade', settings: 'Uncertified cardstock', time: '≈ 16 min', cta: 'Queue' },
   { id: 'file', label: 'Just the files', adapter: 'export · download', status: '', format: 'SVG · DXF · PDF', settings: '—', time: '—', cta: 'Export files' }
 ];
 

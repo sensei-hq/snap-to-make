@@ -1,5 +1,5 @@
 <script lang="ts">
-import { Button, Card } from '@rokkit/ui';
+import { Button, Card, ProgressBar } from '@rokkit/ui';
 import { InputField } from '@rokkit/forms';
 import StepScreen from '$lib/components/StepScreen.svelte';
 import LayeredScene from '$lib/components/illustrations/LayeredScene.svelte';
@@ -7,14 +7,23 @@ import LayerSwatch from '$lib/components/illustrations/LayerSwatch.svelte';
 import { copy, devices, guide } from '$lib/content/layers';
 import { useApp } from '$lib/state/context';
 import { stepContext } from '$lib/state/step-context.svelte';
-// D6 · Output + device (studio) · 07 · Stack & cut (phone)
+// D6 · Output + device (studio) · 07 · Stack & cut (phone). Cutters take one sheet at a time:
+// feed the sheet's material, send it, watch it cut, check it, then the next sheet.
 const app = useApp();
 const f = app.layers;
 $effect(() => app.setScreen(app.title, `${copy.output.sub} · ${f.layers.length} sheets`));
 const ctx = stepContext(app, 'Output', output);
 const rows = $derived<[string, string][]>([['Format', f.currentDevice.format], ['Settings', f.currentDevice.settings], ['Time', f.currentDevice.time]]);
 const pad = (n: number) => String(n).padStart(2, '0');
-const sheet = $derived(f.set === 'paper' ? '12 × 12 in cardstock' : '300 × 300 mm birch');
+const sheetSize = $derived(f.set === 'paper' ? '12 × 12 in' : '300 × 300 mm');
+const cutting = $derived(f.currentDevice.id !== 'file');
+const statusText = { cut: 'cut', current: 'next', waiting: '' } as const;
+// The device reports progress while it cuts (simulated here until the adapters are live).
+$effect(() => {
+  if (f.job.phase !== 'cutting') return;
+  const t = setInterval(() => f.advanceCut(8), 200);
+  return () => clearInterval(t);
+});
 </script>
 {#snippet output()}
   <div class="flex flex-col gap-3">
@@ -26,34 +35,57 @@ const sheet = $derived(f.set === 'paper' ? '12 × 12 in cardstock' : '300 × 300
 {/snippet}
 {#snippet actions()}
   <span class="flex-1 grid md:flex-none"><Button style="outline" size="lg" icon="i-solar:download-linear" label={ctx.wide ? 'Download .zip' : copy.output.export} /></span>
-  <span class="flex-[1.3] grid md:flex-none"><Button variant="primary" size="lg" label={f.currentDevice.cta} /></span>
 {/snippet}
-<svelte:head><title>Katachi · Cut</title></svelte:head>
+<svelte:head><title>Katachi · Output</title></svelte:head>
 <StepScreen {actions} context={ctx.inline} note={guide.output.text}>
-  <div class="md:hidden flex flex-col gap-3">
-    <figure class="relative m-0 aspect-[4/3] rounded-lg border border-paper-edge grid-bed p-2">
-      <LayeredScene layers={f.layers} mode="stack" label="Exploded stack, back to front" />
-      <span class="absolute right-2.5 bottom-2.5 meta rounded-sm bg-paper px-2 py-0.5 border border-paper-edge">Ø 300 · {f.layers.length} × {f.data.mmPerLayer} mm</span>
-    </figure>
-    <div class="flex gap-1.5 overflow-x-auto" aria-hidden="true">{#each f.layers as l (l.n)}<span class="w-11 h-11 shrink-0 rounded-md bg-paper-mute"><LayeredScene layers={f.layers} mode="layer" selected={l.n} label="" /></span>{/each}</div>
-  </div>
-  <section aria-label="Sheets" class="lt-md:hidden flex flex-col gap-5">
-    <header class="flex items-start justify-between gap-4">
-      <div><h2 class="font-heading text-head font-normal tracking-display">{f.layers.length} sheets · {sheet}</h2><p class="text-ui text-ink-mute mt-1">Each sheet has 3 registration holes (accent) so the stack lines up on pins.</p></div>
-      <p class="readout text-ink whitespace-nowrap mt-2">mountain-sunset_L01–L{pad(f.layers.length)}</p>
-    </header>
-    <div class="grid grid-cols-3 lg:grid-cols-4 gap-4">
-      {#each f.layers as l (l.n)}
-        <div class="rounded-lg border border-paper-edge bg-paper-soft p-3 flex flex-col gap-2.5">
-          <div class="relative aspect-square rounded-md bg-paper border border-paper-edge p-4">
-            <LayeredScene layers={f.layers} mode="layer" selected={l.n} label={`Sheet ${pad(l.n)}, ${l.name}`} />
-            <span class="absolute left-2 top-2 w-2 h-2 rounded-full border border-accent" aria-hidden="true"></span>
-            <span class="absolute right-2 top-2 w-2 h-2 rounded-full border border-accent" aria-hidden="true"></span>
-            <span class="absolute left-2 bottom-2 w-2 h-2 rounded-full border border-accent" aria-hidden="true"></span>
-          </div>
-          <p class="flex items-center gap-2 text-ui"><LayerSwatch colour={l.colour} size="sm" /><span class="flex-1">{pad(l.n)} · {l.name}</span><span class="meta">.svg</span></p>
+  <div class="flex flex-col gap-5">
+    {#if cutting}
+      <section aria-label="Cutting" class="rounded-lg border border-paper-edge bg-paper-soft p-4 grid gap-4 md:grid-cols-[180px_1fr] items-center">
+        <div class="aspect-square rounded-md bg-paper border border-paper-edge p-3"><LayeredScene layers={f.layers} mode="layer" selected={f.jobLayer.n} label={`Sheet ${pad(f.jobLayer.n)}, ${f.jobLayer.name}`} /></div>
+        <div class="flex flex-col gap-3">
+          {#if f.job.phase === 'done'}
+            <p class="eyebrow">All sheets cut</p>
+            <h2 class="font-heading text-title font-normal">{f.layers.length} sheets ready to stack</h2>
+            <p class="text-ui text-ink-mute">{copy.output.assembly[0]}</p>
+          {:else}
+            <p class="eyebrow">Sheet {f.job.sheet} of {f.layers.length} · {f.currentDevice.label}</p>
+            <h2 class="font-heading text-title font-normal">{f.jobLayer.name}</h2>
+            {#if f.job.phase === 'feed'}
+              <p class="flex items-center gap-2 text-body"><LayerSwatch colour={f.jobLayer.colour} size="sm" />{f.feedText} · {sheetSize}</p>
+              <div class="flex gap-2"><Button variant="primary" icon="i-solar:play-linear" label={`${f.currentDevice.cta} sheet ${f.job.sheet}`} onclick={() => f.beginCut()} /></div>
+            {:else if f.job.phase === 'cutting'}
+              <p class="text-ui text-ink-mute">Cutting… {f.job.progress}%</p>
+              <ProgressBar value={f.job.progress} max={100} />
+            {:else}
+              <p class="text-body">Did it cut cleanly? Peel the sheet and check the small details.</p>
+              <div class="flex flex-wrap gap-2">
+                <Button style="outline" icon="i-solar:refresh-linear" label="Cut again" onclick={() => f.recut()} />
+                <Button variant="primary" iconRight="i-solar:arrow-right-linear" label={f.job.sheet < f.layers.length ? 'Looks good — next sheet' : 'Looks good — finish'} onclick={() => f.confirmCut()} />
+              </div>
+            {/if}
+          {/if}
         </div>
-      {/each}
-    </div>
-  </section>
+      </section>
+    {/if}
+    <section aria-label="Sheets" class="flex flex-col gap-4">
+      <header class="lt-md:hidden flex items-start justify-between gap-4">
+        <div><h2 class="font-heading text-head font-normal tracking-display">{f.layers.length} sheets · {sheetSize}</h2><p class="text-ui text-ink-mute mt-1">Each sheet has 3 registration holes (accent) so the stack lines up on pins.</p></div>
+        <p class="readout text-ink whitespace-nowrap mt-2">{app.title.toLowerCase().replace(/\s+/g, '-')}_L01–L{pad(f.layers.length)}</p>
+      </header>
+      <div class="grid grid-cols-3 lg:grid-cols-4 gap-3 md:gap-4">
+        {#each f.layers as l (l.n)}
+          {@const status = cutting ? f.sheetStatus(l.n) : 'waiting'}
+          <div class="rounded-lg border bg-paper-soft p-2 md:p-3 flex flex-col gap-2 {status === 'current' ? 'border-accent' : 'border-paper-edge'}">
+            <div class="relative aspect-square rounded-md bg-paper border border-paper-edge p-3 md:p-4">
+              <LayeredScene layers={f.layers} mode="layer" selected={l.n} label={`Sheet ${pad(l.n)}, ${l.name}`} />
+              <span class="absolute left-2 top-2 w-2 h-2 rounded-full border border-accent" aria-hidden="true"></span>
+              <span class="absolute right-2 top-2 w-2 h-2 rounded-full border border-accent" aria-hidden="true"></span>
+              <span class="absolute left-2 bottom-2 w-2 h-2 rounded-full border border-accent" aria-hidden="true"></span>
+            </div>
+            <p class="flex items-center gap-2 text-ui"><LayerSwatch colour={l.colour} size="sm" /><span class="flex-1 truncate">{pad(l.n)} · {l.name}</span><span class="meta {status === 'cut' ? 'text-success' : ''}">{cutting ? statusText[status] : '.svg'}</span></p>
+          </div>
+        {/each}
+      </div>
+    </section>
+  </div>
 </StepScreen>
