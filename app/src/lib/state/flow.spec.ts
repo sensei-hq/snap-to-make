@@ -28,7 +28,7 @@ describe('SessionState.enter', () => {
   it('accepts on ok gate response', async () => {
     const s = new SessionState();
     expect(await s.enter('DEMO-JUDGES', true)).toBe(true);
-    expect(s.sessionId).toBe('sess-9');
+    expect(s.gated).toBe(true);
   });
 });
 describe('FlowState.talk fallback', () => {

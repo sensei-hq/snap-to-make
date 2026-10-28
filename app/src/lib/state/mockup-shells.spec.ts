@@ -45,14 +45,20 @@ describe('TraceState totals for Under the hood', () => {
 });
 
 describe('SessionState form gate (First run)', () => {
-  it('canEnter requires code + all three attestations', async () => {
+  it('says which part is missing: the code, the three ticks, or what the gate said', async () => {
     const s = new SessionState();
     expect(s.canEnter).toBe(false);
     expect(await s.enterFromForm()).toBe(false);
-    expect(s.msg).toContain('Invalid invite');
-    s.code = 'DEMO-JUDGES'; s.attested = true; s.safetyAck = true; s.noPersonalAck = true;
+    expect(s.msg).toBe('Enter your invite code');
+    s.code = 'NOPE';
+    expect(await s.enterFromForm()).toBe(false);
+    expect(s.msg).toBe('Tick all three to continue');
+    s.attested = true; s.safetyAck = true; s.noPersonalAck = true;
     expect(s.canEnter).toBe(true);
-    globalThis.fetch = (async () => ({ ok: true, json: async () => ({ sessionId: 'sess-1' }) })) as any;
+    globalThis.fetch = (async () => ({ ok: false, json: async () => ({ ok: false, reason: 'That invite code isn’t valid' }) })) as any;
+    expect(await s.enterFromForm()).toBe(false);
+    expect(s.msg).toBe('That invite code isn’t valid');
+    globalThis.fetch = (async () => ({ ok: true, json: async () => ({ ok: true }) })) as any;
     expect(await s.enterFromForm()).toBe(true);
     expect(s.msg).toContain('Welcome');
   });
