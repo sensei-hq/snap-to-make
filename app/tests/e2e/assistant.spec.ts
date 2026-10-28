@@ -10,6 +10,14 @@ test.describe('three parts: nav · work area · assistant (1280×800)', () => {
     await expect(assistant).toContainText('what are we making today');
     await expect(page.getByRole('main')).not.toContainText('what are we making today');
   });
+  test('the composer sends with its arrow button (Rokkit ChatComposer toolbar); the voice button sits beside it', async ({ page }) => {
+    await page.goto('/snap/layers/layers'); await page.waitForLoadState('networkidle');
+    const assistant = page.getByRole('complementary', { name: 'Katachi chat' });
+    await assistant.getByRole('textbox').fill('merge sun and sky');
+    await assistant.getByRole('button', { name: 'Send' }).click();
+    await expect(assistant.getByRole('log')).toContainText('merge sun and sky');
+    await expect(assistant.getByRole('button', { name: 'Voice input' })).toBeVisible();
+  });
   test('measuring posts the reply in the assistant', async ({ page }) => {
     await page.route('**/api/scene', (r) => r.fulfill({ json: { measure: { status: 'measured', targets: [{ valueMm: 82 }] }, trace: [] } }));
     await page.goto('/snap'); await page.waitForLoadState('networkidle');

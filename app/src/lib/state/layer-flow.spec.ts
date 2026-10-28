@@ -12,6 +12,38 @@ describe('LayerFlowState · image → layers (docs/design/01 S1–S9)', () => {
     expect(f.currentKind.next).toBe('/snap/layers/views');
   });
 
+  it('D1: the start source sets the kind; "make it as" paper or wood picks the layer set', () => {
+    const f = new LayerFlowState();
+    expect([f.source, f.makeAs]).toEqual(['upload', 'auto']);
+    f.setSource('3d');
+    expect([f.kind, f.currentKind.next]).toEqual(['3d', '/snap/layers/views']);
+    f.setSource('phone');
+    expect(f.kind).toBe('flat');
+    f.setMakeAs('wood');
+    expect([f.makeAs, f.set]).toEqual(['wood', 'wood']);
+    f.setMakeAs('acrylic');
+    expect([f.makeAs, f.set]).toEqual(['acrylic', 'wood']);
+    f.setMakeAs('paper');
+    expect(f.set).toBe('paper');
+  });
+
+  it('D2: segment view (masks · cutout · original) and refine tool', () => {
+    const f = new LayerFlowState();
+    expect([f.segmentView, f.refineTool]).toEqual(['masks', 'pick']);
+    f.setSegmentView('original');
+    f.setRefineTool('box');
+    expect([f.segmentView, f.refineTool]).toEqual(['original', 'box']);
+  });
+
+  it('M05: "next layer" walks the stack and wraps to the back', () => {
+    const f = new LayerFlowState();
+    f.selectLayer(f.layers.length);
+    f.nextLayer();
+    expect(f.selected.n).toBe(1);
+    f.nextLayer();
+    expect(f.selected.n).toBe(2);
+  });
+
   it('S4: keeps regions by default except the bought frame; toggling updates the kept share', () => {
     const f = new LayerFlowState();
     expect(f.regions.find((r) => r.id === 'frame')?.on).toBe(false);

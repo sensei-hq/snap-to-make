@@ -2,12 +2,17 @@ import { test, expect } from '@playwright/test';
 
 test.describe('phone layout below 1024 px', () => {
   test.use({ viewport: { width: 390, height: 844 } });
-  test('shows the section tabs and the docked composer, hides the rail and chat panel', async ({ page }) => {
+  test('icon nav docked at the bottom (sections + Katachi); the rail and chat panel are hidden; the composer is in the sheet', async ({ page }) => {
     await page.goto('/snap'); await page.waitForLoadState('networkidle');
-    await expect(page.getByRole('navigation', { name: 'Snap sections' })).toBeVisible();
+    const nav = page.getByRole('navigation', { name: 'Snap sections' });
+    await expect(nav).toBeVisible();
+    const box = await nav.boundingBox();
+    expect(box && box.y + box.height).toBeGreaterThan(800);
+    await expect(nav.getByRole('link', { name: 'Burn Watch' })).toBeVisible();
     await expect(page.getByRole('navigation', { name: 'Studio sections' })).toBeHidden();
     await expect(page.getByRole('complementary', { name: 'Katachi chat' })).toBeHidden();
-    await expect(page.getByRole('group', { name: 'Ask Katachi' })).toBeVisible();
+    await nav.getByRole('button', { name: 'Open Katachi chat' }).click();
+    await expect(page.getByRole('dialog', { name: 'Katachi chat' }).getByRole('group', { name: 'Ask Katachi' })).toBeVisible();
   });
 });
 

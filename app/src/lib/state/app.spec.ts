@@ -72,17 +72,15 @@ describe('AppState (one per app, shared by every section)', () => {
     expect(app.sheetOpen).toBe(true);
   });
 
-  it('hands a page’s info view to the assistant (Chat | Info) and clears it when the page leaves', () => {
+  it('a page’s context sits above the chat in the assistant column (no tabs) and clears when the page leaves', () => {
     const app = new AppState();
     expect(app.info).toBeNull();
     const body = (() => {}) as never;
-    app.setInfo('Regions', body);
-    expect(app.info?.title).toBe('Regions');
-    expect(app.panelTab).toBe('info');
-    app.setPanelTab('chat');
-    expect(app.panelTab).toBe('chat');
+    app.setInfo('Layer', body);
+    expect(app.info?.title).toBe('Layer');
+    expect('panelTab' in app).toBe(false);
     app.clearInfo();
-    expect([app.info, app.panelTab]).toEqual([null, 'chat']);
+    expect(app.info).toBeNull();
   });
 
   it('guides each layers step once in the chat, with Previous / Next and the step’s suggestions', () => {
