@@ -38,17 +38,17 @@ test.describe('studio layout at 1024 px and up (tablet landscape, desktop)', () 
   });
 
   test('every page has a Katachi title', async ({ page }) => {
-    for (const [path, title] of [['/workshop', 'Katachi · Workshop'], ['/watch', 'Katachi · Burn Watch'], ['/', 'Katachi · Welcome']]) {
+    for (const [path, title] of [['/workshop', 'Katachi · Workshop'], ['/watch', 'Katachi · Burn Watch']]) {
       await page.goto(path);
       await expect(page).toHaveTitle(title);
     }
   });
 });
 
-test('the root is the gate; old /snap links redirect to the root routes', async ({ page }) => {
+test('signed in, the gate at / opens the workshop; old /snap links redirect to the root routes', async ({ page }) => {
   await seedProject(page);
   await page.goto('/');
-  await expect(page).toHaveTitle('Katachi · Welcome');
+  await expect(page).toHaveURL(/\/workshop$/);
   await page.goto('/snap/layers/layers');
   await expect(page).toHaveURL(/\/make\/layers$/);
   await page.goto('/snap/convert');
