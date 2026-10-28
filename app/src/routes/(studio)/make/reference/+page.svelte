@@ -10,7 +10,7 @@ import { useApp } from '$lib/state/context';
 // 09 · Reference + changes (phone); the studio shows the same with the changes on the left
 const app = useApp();
 const f = app.layers;
-app.setScreen(copy.reference.title, copy.reference.sub);
+$effect(() => app.setScreen(app.title, copy.reference.sub));
 </script>
 {#snippet aside()}
   <p class="md:hidden self-end max-w-[88%] rounded-lg bg-paper-mute px-3 py-2 text-ui">{copy.reference.ask}</p>

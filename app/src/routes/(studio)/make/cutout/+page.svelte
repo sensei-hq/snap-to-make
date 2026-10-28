@@ -9,7 +9,7 @@ import { useApp } from '$lib/state/context';
 // 02 · Cutout (phone); in the studio it is the first half of Segment
 const app = useApp();
 const f = app.layers;
-app.setScreen(f.data.project, copy.cutout.sub);
+$effect(() => app.setScreen(app.title, copy.cutout.sub));
 const views = [{ label: copy.cutout.original, value: 'original' }, { label: copy.cutout.cutout, value: 'cutout' }];
 </script>
 {#snippet aside()}

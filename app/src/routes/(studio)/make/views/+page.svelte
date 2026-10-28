@@ -10,7 +10,7 @@ import { stepContext } from '$lib/state/step-context.svelte';
 // D5 · 3D object six views (studio) · 08 · six views (phone)
 const app = useApp();
 const f = app.layers;
-$effect(() => app.setScreen(copy.views.title, `${copy.views.sub} · ${f.done.length} of 6 in`));
+$effect(() => app.setScreen(app.title, `${copy.views.sub} · ${f.done.length} of 6 in`));
 const ctx = stepContext(app, 'Parts', parts);
 const has = (id: string) => f.done.includes(id as never);
 const rows = $derived<[string, string, boolean][]>([

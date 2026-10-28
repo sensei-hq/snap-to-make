@@ -1,9 +1,9 @@
 <script lang="ts">
 import type { Snippet } from 'svelte';
-// The work area's image: one captured image full size, or the live view (children); optional 3×3 guide and the side prompt.
+// Fills the space it is given (the capture page sizes it to the viewport). The work area's image: one captured image full size, or the live view (children); optional 3×3 guide and the side prompt.
 let { url = '', alt = '', prompt = '', showGrid = false, children }: { url?: string; alt?: string; prompt?: string; showGrid?: boolean; children?: Snippet } = $props();
 </script>
-<div class="relative w-full aspect-[4/3] rounded-lg overflow-hidden bg-camera" data-mode="dark">
+<div class="relative w-full h-full min-h-[240px] rounded-lg overflow-hidden bg-camera" data-mode="dark">
   {#if url}<img src={url} {alt} class="absolute inset-0 w-full h-full object-contain" />{:else}{@render children?.()}{/if}
   {#if showGrid}
     <div data-testid="grid-guide" aria-hidden="true" class="absolute inset-0 grid grid-cols-3 grid-rows-3 pointer-events-none">

@@ -11,7 +11,7 @@ import { stepContext } from '$lib/state/step-context.svelte';
 // D4 · Gap review (studio) · 05 · Gap fill guidance (phone)
 const app = useApp();
 const f = app.layers;
-$effect(() => app.setScreen(f.data.project, `${copy.gaps.sub} · ${f.layers.length} layers`));
+$effect(() => app.setScreen(app.title, `${copy.gaps.sub} · ${f.layers.length} layers`));
 const ctx = stepContext(app, 'Gap rule', rule);
 const go = () => void goto(resolve('/make/output'));
 const card = $derived(f.gapCards.find((c) => c.n === f.selected.n) ?? f.gapCards[0]);

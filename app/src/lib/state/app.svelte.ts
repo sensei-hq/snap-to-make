@@ -4,6 +4,10 @@ import type { ChatAction } from './conversation.svelte';
 import type { Snippet } from 'svelte';
 import { guide, steps, type StepId } from '../content/layers';
 
+type FlowPage = StepId | 'views' | 'reference';
+const flowPath = (id: FlowPage) => `/make/${id}`;
+const browserStore = () => new ProjectStore(typeof globalThis.localStorage?.getItem === 'function' ? globalThis.localStorage : undefined);
+
 const WORKSHOP_CHIPS = ['Coasters from my sketch', 'Box that fits this', 'Ornaments for 40 names'];
 import { ConvertState } from './convert.svelte';
 import { WatchState } from './watch.svelte';
@@ -11,6 +15,7 @@ import { BatchState } from './batch.svelte';
 import { CaptureState } from './capture.svelte';
 import { SessionState } from './session.svelte';
 import { LayerFlowState } from './layer-flow.svelte';
+import { ProjectStore, projectName, type ProjectRecord } from './project.svelte';
 import { EditorState } from './editor.svelte';
 
 // One per app, created by routes/+layout.svelte and read by every page through useApp(),
@@ -21,12 +26,70 @@ export class AppState {
   convert = new ConvertState();
   watch = new WatchState();
   batch = new BatchState();
-  capture = new CaptureState();
+  capture = $state(new CaptureState());
   layers = new LayerFlowState();
   editor = new EditorState();
   chatOpen = $state(true);
   propsOpen = $state(false);
   screen = $state({ title: 'Workshop', subtitle: '' });
+
+  // ── Projects: New → capture → the make flow → cuts. Named by the first step, saved as you go, reopened from Open.
+  project = $state<ProjectRecord | null>(null);
+  projects = $state<ProjectRecord[]>([]);
+  constructor(private store: ProjectStore = browserStore()) {
+    this.projects = store.list();
+    const id = store.current();
+    const saved = id ? store.load(id) : null;
+    if (saved) this.apply(saved);
+  }
+  private apply(p: ProjectRecord) {
+    this.layers.restore({ ...LayerFlowState.defaults(), ...p.choices });
+    this.project = p;
+  }
+  /** The project's name, or the example subject until something is captured. */
+  get title() { return this.project?.name || this.layers.data.project; }
+  newProject() {
+    const now = Date.now();
+    this.capture = new CaptureState();
+    this.layers.restore(LayerFlowState.defaults());
+    this.project = { id: crypto.randomUUID(), name: '', createdAt: now, updatedAt: now, reached: -1, kind: 'flat', path: '/capture', image: '', choices: {} };
+  }
+  /** The first step: what was captured names the project and opens the flow (six sides go to the six-view step). */
+  startFromCapture({ fileName, images, mode, at }: { fileName?: string; images: string[]; mode: 'single' | 'multi'; at?: Date }) {
+    if (!this.project) this.newProject();
+    const p = this.project!;
+    const kind = mode === 'multi' ? '3d' : 'flat';
+    this.layers.setKind(kind);
+    // eslint-disable-next-line svelte/prefer-svelte-reactivity -- a one-off timestamp for the name, not reactive state
+    const when = at ?? new Date();
+    this.project = { ...p, name: p.name || projectName({ fileName, at: when }), kind, image: images[0] ?? p.image,
+      reached: Math.max(p.reached, 0), path: flowPath(mode === 'multi' ? 'views' : 'import') };
+    this.save();
+  }
+  /** A step is open once the one before it has been reached; the branch screens once anything is captured. */
+  canVisit(id: FlowPage) {
+    const reached = this.project?.reached ?? -1;
+    if (reached < 0) return false;
+    if (id === 'views' || id === 'reference') return true;
+    return steps.findIndex((s) => s.id === id) <= reached + 1;
+  }
+  /** The furthest open step (where a blocked visit lands). */
+  get resumePath() { return this.project && this.project.reached >= 0 ? this.project.path : '/workshop'; }
+  visit(id: FlowPage) {
+    if (!this.project || !this.canVisit(id)) return;
+    const i = steps.findIndex((s) => s.id === id);
+    this.project = { ...this.project, reached: Math.max(this.project.reached, i), path: flowPath(id) };
+  }
+  /** Autosave: called whenever the project or its choices change (a draft with nothing captured is not saved). */
+  save() {
+    const p = this.project;
+    if (!p || p.reached < 0) return;
+    const record: ProjectRecord = { ...$state.snapshot(p) as ProjectRecord, updatedAt: Date.now(), choices: this.layers.snapshot() };
+    this.store.save(record);
+    this.store.setCurrent(record.id);
+    this.projects = this.store.list();
+  }
+  open(id: string) { const p = this.store.load(id); if (p) { this.apply(p); this.store.setCurrent(id); } }
 
   get trace() { return this.flow.trace; }
   get costPill() { return this.trace.label; }

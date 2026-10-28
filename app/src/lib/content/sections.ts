@@ -5,7 +5,7 @@ export interface Section { id: SectionId; href: string; label: string; icon: str
 export const sections: Section[] = [
   { id: 'workshop', href: '/workshop', label: 'Workshop', icon: 'i-solar:microphone-3-linear' },
   { id: 'capture', href: '/capture', label: 'Snap', icon: 'i-solar:camera-linear' },
-  { id: 'layers', href: '/make/import', label: 'Image to layers', icon: 'i-solar:layers-linear', match: '/make' },
+  { id: 'layers', href: '/make', label: 'Image to layers', icon: 'i-solar:layers-linear', match: '/make' },
   { id: 'canvas', href: '/canvas', label: 'Canvas', icon: 'i-solar:ruler-linear' },
   { id: 'watch', href: '/watch', label: 'Burn Watch', icon: 'i-solar:eye-linear' },
   { id: 'batch', href: '/batch', label: 'Batch', icon: 'i-solar:widget-4-linear' }

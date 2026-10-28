@@ -14,6 +14,7 @@ import { goto } from '$app/navigation';
 import { resolve } from '$app/paths';
 import { Button } from '@rokkit/ui';
 import type { ChatAction } from '$lib/state/conversation.svelte';
+import { untrack } from 'svelte';
 let { children } = $props();
 const app = useApp();
 const path = $derived(page.url.pathname);
@@ -26,6 +27,8 @@ const act = (a: ChatAction) => {
   if (a.href) return void goto(resolve(a.href as '/workshop'));
   if (a.id === 'capture.measure') void app.flow.analyse().then(() => goto(resolve('/scene')));
 };
+// Autosave: any change to the project or its flow choices is written to the saved project.
+$effect(() => { void app.layers.snapshot(); if (app.project) void $state.snapshot(app.project); untrack(() => app.save()); });
 const listen = { onMicDown: () => app.flow.startListen(), onMicUp: () => app.flow.stopListen() };
 </script>
 <!-- Studio (≥ md, incl. tablet landscape): icon rail · top bar + page · Katachi column (mockups/desktop).
@@ -35,7 +38,7 @@ const listen = { onMicDown: () => app.flow.startListen(), onMicUp: () => app.flo
   <div class="flex-1 min-w-0 flex flex-col md:min-h-0">
     <div class="lt-md:sticky lt-md:top-0 z-10">
       <ScreenHeader title={app.screen.title} subtitle={app.screen.subtitle} pill={app.costPill} {back}>
-        {#snippet center()}{#if step}<StepTabs steps={desktopSteps} current={step} />{/if}{/snippet}
+        {#snippet center()}{#if step}<StepTabs steps={desktopSteps} current={step} open={(id) => app.canVisit(id)} />{/if}{/snippet}
       </ScreenHeader>
     </div>
     <main class="flex-1 md:min-h-0 md:overflow-auto">{@render children()}</main>

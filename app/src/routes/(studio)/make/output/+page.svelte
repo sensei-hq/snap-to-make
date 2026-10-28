@@ -10,7 +10,7 @@ import { stepContext } from '$lib/state/step-context.svelte';
 // D6 · Output + device (studio) · 07 · Stack & cut (phone)
 const app = useApp();
 const f = app.layers;
-$effect(() => app.setScreen(f.data.project, `${copy.output.sub} · ${f.layers.length} sheets`));
+$effect(() => app.setScreen(app.title, `${copy.output.sub} · ${f.layers.length} sheets`));
 const ctx = stepContext(app, 'Output', output);
 const rows = $derived<[string, string][]>([['Format', f.currentDevice.format], ['Settings', f.currentDevice.settings], ['Time', f.currentDevice.time]]);
 const pad = (n: number) => String(n).padStart(2, '0');

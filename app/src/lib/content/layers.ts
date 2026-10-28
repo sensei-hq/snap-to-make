@@ -94,14 +94,7 @@ export const kinds: { id: Kind; label: string; hint: string; next: string }[] = 
   { id: 'ref', label: 'Reference + changes', hint: 'Use this as the starting point and tell me what to change.', next: '/make/reference' }
 ];
 
-/** D1 · start from (the kind follows the source) and "make it as". */
-export type SourceId = 'upload' | 'phone' | '3d' | 'ref';
-export const sources: { id: SourceId; label: string; hint: string; kind: Kind }[] = [
-  { id: 'upload', label: 'Upload an image', hint: 'PNG, JPG, HEIC · drag in or browse', kind: 'flat' },
-  { id: 'phone', label: 'From your phone', hint: 'Snap with Katachi mobile, lands here', kind: 'flat' },
-  { id: '3d', label: '3D object · 6 views', hint: 'Guided capture of every side', kind: '3d' },
-  { id: 'ref', label: 'Reference + changes', hint: 'Start from a picture, then edit it', kind: 'ref' }
-];
+/** D1 · "make it as" (the image itself comes in through Capture). */
 export type MakeAs = 'auto' | 'paper' | 'wood' | 'acrylic';
 export const makeAs: { id: MakeAs; label: string }[] = [
   { id: 'auto', label: 'Let Katachi pick' }, { id: 'paper', label: 'Paper layers' }, { id: 'wood', label: 'Laser wood' }, { id: 'acrylic', label: 'Acrylic' }
@@ -166,9 +159,7 @@ export const copy = {
     what: 'What is it?',
     agent: 'Looks like layered paper art in a round hoop. I’ll lift it off the wall, then split it into the parts you’d cut.',
     change: 'Change it first', next: 'Find the outline',
-    startFrom: 'Start from', makeAs: 'Make it as', recent: 'mountain-sunset-wood.png',
-    drop: 'Drop an image to turn into layers', dropHint: 'Layered paper or wood art, a sketch, a photo of an object — I’ll find the outline and the parts.',
-    phone: 'Send from phone', phoneHint: 'Scan, snap, and it appears here. Best for 6-view captures.',
+    makeAs: 'Make it as',
     privacy: 'Images never leave your workspace without asking. Analysis runs on Muse; cut paths are computed locally.'
   },
   cutout: {

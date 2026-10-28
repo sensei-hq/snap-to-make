@@ -9,7 +9,7 @@ import { useApp } from '$lib/state/context';
 // D2 · Segment + pick regions (studio) · 03 · Objects (phone)
 const app = useApp();
 const f = app.layers;
-app.setScreen(f.data.project, copy.segment.sub);
+$effect(() => app.setScreen(app.title, copy.segment.sub));
 const fill: Record<string, string> = { muted: 'bg-ink-soft', warn: 'bg-warning', accent: 'bg-accent', ok: 'bg-success', ink: 'bg-ink' };
 const ring: Record<string, string> = { muted: 'border-ink-soft', warn: 'border-warning', accent: 'border-accent', ok: 'border-success', ink: 'border-ink' };
 const views = [{ label: 'Masks', value: 'masks' }, { label: 'Cutout', value: 'cutout' }, { label: 'Original', value: 'original' }];

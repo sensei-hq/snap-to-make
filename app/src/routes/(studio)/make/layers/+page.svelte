@@ -11,7 +11,7 @@ import { stepContext } from '$lib/state/step-context.svelte';
 // D3 · Layer stack editor (studio) · 04 · Colour-graded layers (phone)
 const app = useApp();
 const f = app.layers;
-$effect(() => app.setScreen(f.data.project, `${copy.layers.sub} · ${f.layers.length} layers`));
+$effect(() => app.setScreen(app.title, `${copy.layers.sub} · ${f.layers.length} layers`));
 stepContext(app, 'Layer', inspector);
 const sets = Object.entries(layerSets).map(([value, s]) => ({ label: s.label.replace(' + paint', ''), value }));
 const items = $derived(f.layers.map((l) => ({ label: l.name, value: l.n, layer: l })));

@@ -1,4 +1,4 @@
-import { changes, devices, gapChoices, kinds, layerSets, regions, sources, views, type DeviceId, type GapChoice, type GapRule, type Joinery, type Kind, type LayerSetId, type MakeAs, type RefineTool, type RegionId, type SegmentView, type SourceId, type ViewId } from '../content/layers';
+import { changes, devices, gapChoices, kinds, layerSets, regions, views, type DeviceId, type GapChoice, type GapRule, type Joinery, type Kind, type LayerSetId, type MakeAs, type RefineTool, type RegionId, type SegmentView, type ViewId } from '../content/layers';
 
 // Every choice in the image → layers flow (phone steps and studio). Pages read fields and call methods;
 // components only get values. Stages mirror docs/design/01-image-pipeline.md (S1–S9).
@@ -7,10 +7,8 @@ export class LayerFlowState {
   kind = $state<Kind>('flat');
   get currentKind() { return kinds.find((k) => k.id === this.kind) ?? kinds[0]; }
   setKind(k: Kind) { this.kind = k; }
-  // D1 · where the image comes from (sets the kind) and what to make it as (paper or wood picks the set)
-  source = $state<SourceId>('upload');
+  // D1 · what to make it as (paper or wood picks the set)
   makeAs = $state<MakeAs>('auto');
-  setSource(id: SourceId) { this.source = id; this.kind = sources.find((s) => s.id === id)?.kind ?? 'flat'; }
   setMakeAs(m: MakeAs) { this.makeAs = m; if (m === 'paper' || m === 'wood') this.setSet(m); }
 
   // S3 · cutout
@@ -81,4 +79,16 @@ export class LayerFlowState {
   device = $state<DeviceId>('cricut');
   get currentDevice() { return devices.find((d) => d.id === this.device) ?? devices[0]; }
   setDevice(d: DeviceId) { this.device = d; }
+
+  // project save / reopen: every choice above, as plain data
+  private static readonly SAVED = ['kind', 'makeAs', 'cutoutView', 'keep', 'segmentView', 'refineTool', 'set', 'sel', 'gapChoice', 'applyAll', 'gapRule', 'overrides', 'done', 'joinery', 'skipped', 'device'] as const;
+  /** a fresh flow's choices (New starts from these) */
+  static defaults() { return new LayerFlowState().snapshot(); }
+  snapshot(): Record<string, unknown> {
+    return Object.fromEntries(LayerFlowState.SAVED.map((k) => [k, $state.snapshot(this[k])]));
+  }
+  restore(saved: Record<string, unknown>) {
+    const self = this as unknown as Record<string, unknown>;
+    for (const k of LayerFlowState.SAVED) if (k in saved) self[k] = saved[k];
+  }
 }
