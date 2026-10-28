@@ -30,7 +30,7 @@ const listen = { onMicDown: () => app.flow.startListen(), onMicUp: () => app.flo
 </script>
 <!-- Studio (≥ md, incl. tablet landscape): icon rail · top bar + page · Katachi column (mockups/desktop).
      Phone (< md): top bar, page, icon nav docked at the bottom; Katachi opens as a sheet (mockups/mobile). -->
-<div class="min-h-dvh flex bg-paper text-ink font-sans text-body md:h-dvh md:overflow-hidden">
+<div data-studio-frame class="min-h-dvh flex bg-paper text-ink font-sans text-body md:h-dvh md:overflow-hidden">
   <div class="lt-md:hidden flex"><NavRail {sections} {tools} {current} chatOpen={app.chatOpen} onToggleChat={() => app.toggleChat()} /></div>
   <div class="flex-1 min-w-0 flex flex-col md:min-h-0">
     <div class="lt-md:sticky lt-md:top-0 z-10">

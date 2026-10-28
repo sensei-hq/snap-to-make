@@ -48,3 +48,9 @@ body {
 /* Rokkit InputRadio rows: keep the native radio round next to long labels, and give each row a touch target */
 radio-group label { min-height: 40px; }
 radio-group input[type='radio'] { flex: 0 0 auto; width: 16px; height: 16px; }
+
+/* The studio (≥ md) is an app frame pinned to the viewport: only its panes scroll, never the window
+   (otherwise anything laid out below the frame lets Space / the wheel scroll the whole app away). */
+@media (min-width: 1024px) {
+  html:has([data-studio-frame]), body:has([data-studio-frame]) { height: 100%; overflow: hidden; }
+}
