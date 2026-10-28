@@ -16,7 +16,10 @@ let { children } = $props();
 const app = useApp();
 const current = $derived(tools.find((t) => page.url.pathname === t.href)?.id ?? sectionFor(page.url.pathname));
 const ask = (text: string) => void app.ask(text);
-const act = (a: ChatAction) => { if (a.href) void goto(resolve(a.href as '/snap')); };
+const act = (a: ChatAction) => {
+  if (a.href) return void goto(resolve(a.href as '/snap'));
+  if (a.id === 'capture.measure') void app.flow.analyse().then(() => goto(resolve('/snap/scene')));
+};
 </script>
 <!-- Phone (< md): header, tabs, page, docked composer. Studio (≥ md, incl. tablet landscape): rail, header + page, chat panel. -->
 <div class="min-h-dvh flex bg-paper text-ink font-sans text-body md:h-dvh md:overflow-hidden">
