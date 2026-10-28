@@ -86,7 +86,7 @@ export class FlowState {
     for (const t of r.trace ?? []) this.trace.add(t);
     if (r.measure?.status === 'measured') {
       this.setMeasurement('mug', Math.round(r.measure.targets[0].valueMm));
-      this.conversation.say(`Measured the mug base: ${this.measureLabel}. Check the scene — fix a number if it looks off.`, [{ label: 'Check the scene', href: '/snap/scene' }]);
+      this.conversation.say(`Measured the mug base: ${this.measureLabel}. Check the scene — fix a number if it looks off.`, [{ label: 'Check the scene', href: '/scene' }]);
     }
     this.status = 'measured';
   }
@@ -99,7 +99,7 @@ export class FlowState {
     const { DesignSpecSchema } = await import('../domain/schemas');
     this.design.setObject(designSpecToObject(DesignSpecSchema.parse(spec)), { ...getAdapter(this.adapterId).defaultTarget });
     this.playback = new PlaybackState(getAdapter('simulator').preview(this.design.impl!));
-    this.conversation.say('Build plan ready — check the parts, then simulate before you burn.', [{ label: 'Open the canvas', href: '/snap/canvas' }]);
+    this.conversation.say('Build plan ready — check the parts, then simulate before you burn.', [{ label: 'Open the canvas', href: '/canvas' }]);
     this.status = 'planned';
   }
   selectAdapter(id: string) {

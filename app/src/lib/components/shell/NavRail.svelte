@@ -8,7 +8,7 @@ import type { Section, Tool } from '$lib/content/sections';
 let { sections, tools = [], current, chatOpen, onToggleChat }: { sections: Section[]; tools?: Tool[]; current: string; chatOpen: boolean; onToggleChat: () => void } = $props();
 </script>
 <nav aria-label="Studio sections" class="w-14 shrink-0 flex flex-col items-center gap-1.5 py-3 bg-paper-soft border-r border-paper-edge">
-  <a href={resolve('/snap')} aria-label="Katachi home" class="mb-2 grid place-items-center w-10 h-10 rounded-md bg-brand-tile"><KatachiMark size={26} /></a>
+  <a href={resolve('/workshop')} aria-label="Katachi home" class="mb-2 grid place-items-center w-10 h-10 rounded-md bg-brand-tile"><KatachiMark size={26} /></a>
   {#each sections as s (s.id)}
     <Button target="" href={s.href} icon={s.icon} title={s.label} aria-label={s.label} aria-current={current === s.id ? 'page' : undefined}
       variant={current === s.id ? 'primary' : 'default'} style={current === s.id ? 'default' : 'ghost'} />

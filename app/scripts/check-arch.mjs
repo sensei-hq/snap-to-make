@@ -14,7 +14,7 @@ const failures = { fetch: [], colour: [], style: [], emoji: [], state: [], link:
 // the page (wiping AppState). Every Button link must pass target="".
 const buttonLink = /<Button\b[^\n]*\bhref=/;
 // Pages read the shared AppState (useApp()); only the snap layout constructs state.
-const stateOwner = 'src/routes/snap/+layout.svelte';
+const stateOwner = 'src/routes/+layout.svelte';
 const newState = /new [A-Z][A-Za-z]*State\(/;
 function walk(dir) {
   for (const n of readdirSync(dir)) {

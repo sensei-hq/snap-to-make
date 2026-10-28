@@ -10,7 +10,7 @@ let { title, subtitle = '', pill = '', back = null, center }: { title: string; s
 </script>
 <header class="h-14 md:h-[54px] shrink-0 flex items-center gap-2.5 pl-4 pr-2 md:pl-5 bg-paper-soft hair-b">
   <span class="md:hidden -ml-1">
-    {#if back}<a href={resolve(back as '/snap')} aria-label="Back" class="grid place-items-center w-9 h-11 text-ink hover:no-underline"><span class="i-solar:alt-arrow-left-linear text-lede" aria-hidden="true"></span></a>
+    {#if back}<a href={resolve(back as '/workshop')} aria-label="Back" class="grid place-items-center w-9 h-11 text-ink hover:no-underline"><span class="i-solar:alt-arrow-left-linear text-lede" aria-hidden="true"></span></a>
     {:else}<span class="grid place-items-center w-8 h-8 rounded-md bg-brand-tile"><KatachiMark size={20} /></span>{/if}
   </span>
   <div class="min-w-0 flex-1 md:flex-none md:w-[220px]">
@@ -18,6 +18,6 @@ let { title, subtitle = '', pill = '', back = null, center }: { title: string; s
     {#if subtitle}<p class="meta truncate mt-0.5">{subtitle}</p>{/if}
   </div>
   <div class="lt-md:hidden flex-1 flex justify-center">{#if center}{@render center()}{/if}</div>
-  {#if pill}<a href={resolve('/snap/hood')} title="Under the hood" class="no-underline hover:no-underline"><Pill value={pill} class="meta" /></a>{/if}
+  {#if pill}<a href={resolve('/hood')} title="Under the hood" class="no-underline hover:no-underline"><Pill value={pill} class="meta" /></a>{/if}
   <span class="md:hidden"><ThemeSwitcherToggle variant="single" /></span>
 </header>

@@ -13,7 +13,7 @@ import { SessionState } from './session.svelte';
 import { LayerFlowState } from './layer-flow.svelte';
 import { EditorState } from './editor.svelte';
 
-// One per app, created by routes/snap/+layout.svelte and read by every page through useApp(),
+// One per app, created by routes/+layout.svelte and read by every page through useApp(),
 // so section state (and the session's cost trace) survives navigation.
 export class AppState {
   session = new SessionState();

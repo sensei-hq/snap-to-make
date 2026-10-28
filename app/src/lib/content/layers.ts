@@ -56,32 +56,31 @@ export const regions: { id: RegionId; name: string; pct: number; note: string; t
 ];
 
 export const steps = [
-  { id: 'source', label: 'Source', path: '/snap/layers/source' },
-  { id: 'cutout', label: 'Cutout', path: '/snap/layers/cutout' },
-  { id: 'objects', label: 'Objects', path: '/snap/layers/objects' },
-  { id: 'layers', label: 'Layers', path: '/snap/layers/layers' },
-  { id: 'gaps', label: 'Gaps', path: '/snap/layers/gaps' },
-  { id: 'material', label: 'Material', path: '/snap/layers/material' },
-  { id: 'cut', label: 'Cut', path: '/snap/layers/cut' }
+  { id: 'import', label: 'Import', path: '/make/import' },
+  { id: 'cutout', label: 'Cutout', path: '/make/cutout' },
+  { id: 'segment', label: 'Segment', path: '/make/segment' },
+  { id: 'layers', label: 'Layers', path: '/make/layers' },
+  { id: 'gaps', label: 'Gaps', path: '/make/gaps' },
+  { id: 'output', label: 'Output', path: '/make/output' }
 ] as const;
 export type StepId = (typeof steps)[number]['id'];
 
 /** Studio (≥ md) step tabs, mockups/desktop D1–D6: one tab can own several routes (cutout is part of Segment). */
 export const desktopSteps = [
-  { id: 'import', label: 'Import', path: '/snap/layers/source', routes: ['source', 'reference'] },
-  { id: 'segment', label: 'Segment', path: '/snap/layers/objects', routes: ['cutout', 'objects'] },
-  { id: 'layers', label: 'Layers', path: '/snap/layers/layers', routes: ['layers', 'material'] },
-  { id: 'gaps', label: 'Gaps', path: '/snap/layers/gaps', routes: ['gaps'] },
-  { id: 'views', label: '6 views', path: '/snap/layers/views', routes: ['views'] },
-  { id: 'output', label: 'Output', path: '/snap/layers/cut', routes: ['cut'] }
+  { id: 'import', label: 'Import', path: '/make/import', routes: ['import', 'reference'] },
+  { id: 'segment', label: 'Segment', path: '/make/segment', routes: ['cutout', 'segment'] },
+  { id: 'layers', label: 'Layers', path: '/make/layers', routes: ['layers'] },
+  { id: 'gaps', label: 'Gaps', path: '/make/gaps', routes: ['gaps'] },
+  { id: 'views', label: '6 views', path: '/make/views', routes: ['views'] },
+  { id: 'output', label: 'Output', path: '/make/output', routes: ['output'] }
 ] as const;
 export type DesktopStepId = (typeof desktopSteps)[number]['id'];
-const routeOf = (path: string) => path.match(/^\/snap\/layers\/([a-z]+)$/)?.[1] ?? '';
+const routeOf = (path: string) => path.match(/^\/make\/([a-z]+)$/)?.[1] ?? '';
 export function desktopStepFor(path: string): DesktopStepId | '' {
   const r = routeOf(path);
   return desktopSteps.find((s) => (s.routes as readonly string[]).includes(r))?.id ?? '';
 }
-/** Phone step strip, mockups/mobile 01–07 ("04 / 07 · Layers · next · gaps"); the branch screens (views, reference) have none. */
+/** Phone step strip, mockups/mobile 01–07 ("04 / 06 · Layers · next · gaps"; no Material step — the medium is picked at Import); the branch screens (views, reference) have none. */
 export function phoneStep(path: string): { n: number; total: number; label: string; next: string | null; back: string | null } | null {
   const i = steps.findIndex((s) => s.id === routeOf(path));
   if (i < 0) return null;
@@ -90,9 +89,9 @@ export function phoneStep(path: string): { n: number; total: number; label: stri
 
 export type Kind = 'flat' | '3d' | 'ref';
 export const kinds: { id: Kind; label: string; hint: string; next: string }[] = [
-  { id: 'flat', label: 'Flat · layered art', hint: 'Paper, wood or acrylic layers stacked for depth. One photo is enough.', next: '/snap/layers/cutout' },
-  { id: '3d', label: '3D object · 6 views', hint: 'A real object to rebuild in parts. I will ask for front, back, sides, top and bottom.', next: '/snap/layers/views' },
-  { id: 'ref', label: 'Reference + changes', hint: 'Use this as the starting point and tell me what to change.', next: '/snap/layers/reference' }
+  { id: 'flat', label: 'Flat · layered art', hint: 'Paper, wood or acrylic layers stacked for depth. One photo is enough.', next: '/make/cutout' },
+  { id: '3d', label: '3D object · 6 views', hint: 'A real object to rebuild in parts. I will ask for front, back, sides, top and bottom.', next: '/make/views' },
+  { id: 'ref', label: 'Reference + changes', hint: 'Use this as the starting point and tell me what to change.', next: '/make/reference' }
 ];
 
 /** D1 · start from (the kind follows the source) and "make it as". */
@@ -153,18 +152,17 @@ export const devices: { id: DeviceId; label: string; adapter: string; status: st
 
 /** Katachi's guidance as each step opens (chat), with suggestions for the composer. */
 export const guide: Record<StepId, { text: string; chips: string[] }> = {
-  source: { text: 'Looks like layered paper art in a round hoop. I’ll lift it off the wall, then split it into the parts you’d cut.', chips: ['It’s 3D', 'Change it first'] },
+  import: { text: 'Looks like layered paper art in a round hoop. I’ll lift it off the wall, then split it into the parts you’d cut.', chips: ['It’s 3D', 'Change it first'] },
   cutout: { text: 'Background removed and the outline found: a circle, about Ø 300 mm. Check the edge, then I’ll find the objects.', chips: ['Erase the shadow', 'It’s square, not round'] },
-  objects: { text: 'I found 5 regions. Which should become parts? The hoop looks bought, so I left it out — toggle any region, or click the image to add one.', chips: ['Keep the hoop', 'Raise the sun on a spacer', 'Split the mountains'] },
+  segment: { text: 'I found 5 regions. Which should become parts? The hoop looks bought, so I left it out — toggle any region, or click the image to add one.', chips: ['Keep the hoop', 'Raise the sun on a spacer', 'Split the mountains'] },
   layers: { text: 'Six colour groups, back to front. Pick a layer to see what shows and what hides behind the ones in front.', chips: ['Merge sun and sky', 'Split the hills'] },
   gaps: { text: 'Most back layers are hidden behind the ones in front. I’d keep the sky and the front two solid as the structure and open the rest.', chips: ['Do that', 'Imagine the hidden parts'] },
-  material: { text: 'Matched each layer to the nearest colour in your supplies. Switch the whole set to wood if you’d rather laser it.', chips: ['Use wood instead', 'Darker greens'] },
-  cut: { text: 'Sheets are ready, each with 3 registration holes so the stack lines up on pins. Pick a device to send to.', chips: ['Just the files', 'How long will it take?'] }
+  output: { text: 'Sheets are ready, each with 3 registration holes so the stack lines up on pins. Pick a device to send to.', chips: ['Just the files', 'How long will it take?'] }
 };
 
 export const copy = {
-  source: {
-    title: 'New from an image', sub: 'source · upload or snap', file: 'mountain-sunset.png', fileMeta: '2048 × 2048 · from Photos',
+  import: {
+    title: 'New from an image', sub: 'import · upload or snap', file: 'mountain-sunset.png', fileMeta: '2048 × 2048 · from Photos',
     what: 'What is it?',
     agent: 'Looks like layered paper art in a round hoop. I’ll lift it off the wall, then split it into the parts you’d cut.',
     change: 'Change it first', next: 'Find the outline',
@@ -182,16 +180,15 @@ export const copy = {
     ],
     touch: 'Touch up edge', next: 'Find the objects'
   },
-  objects: { sub: 'objects · 5 regions', agent: 'I found 5 regions. Which should become parts? The hoop looks bought — I left it out.', next: 'Separate into layers', background: 'Wall and shadow' },
+  segment: { sub: 'segment · 5 regions', agent: 'I found 5 regions. Which should become parts? The hoop looks bought — I left it out.', next: 'Separate into layers', background: 'Wall and shadow' },
   layers: { sub: 'layers · colour groups', order: 'Back → front', next: 'Fill the gaps' },
   gaps: {
     sub: 'gaps · what sits behind',
     agent: 'Most of the back layers are hidden behind the ones in front. The photo can’t show what’s there — how should I fill it?',
-    all: 'Use this for all layers', rule: 'Rule for all layers', next: 'Pick materials'
+    all: 'Use this for all layers', rule: 'Rule for all layers', next: 'Stack & cut'
   },
-  material: { sub: 'material · per layer', next: 'Stack & cut' },
-  cut: {
-    sub: 'cut · sheets ready', export: 'Export files',
+  output: {
+    sub: 'output · sheets ready', export: 'Export files',
     rows: [['Registration', '3 pin holes per sheet'], ['Stack', 'Ø 300 · back → front']] as [string, string][],
     assembly: ['Glue sheet 01 to a backing board.', 'Foam dots (1.5 mm) on each sheet, back to front.', 'Seat the sun on a double spacer.']
   },

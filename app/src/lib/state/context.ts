@@ -3,7 +3,7 @@ import { AppState } from './app.svelte';
 
 const KEY = Symbol('katachi-app');
 
-/** Called once, by routes/snap/+layout.svelte. */
+/** Called once, by routes/+layout.svelte. */
 export function provideApp(): AppState { return setContext(KEY, new AppState()); }
 
 /** Every page and shell component reads the shared state through this. */
