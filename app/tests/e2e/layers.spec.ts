@@ -94,6 +94,18 @@ test.describe('image → layers · studio (1280×800)', () => {
     await expect(page.getByRole('main').getByRole('button', { name: /Download/ })).toBeVisible();
   });
 
+  test('import: describe what you want; Katachi proposes variations in the chat; the pick becomes the plan', async ({ page }) => {
+    await page.route('**/api/convert', (r) => r.fulfill({ json: { objective: 'A layered sunset panel', variations: [{ title: 'Night sky', change: 'moon for sun' }, { title: 'Autumn', change: 'warm trees' }] } }));
+    await page.goto('/make/import'); await page.waitForLoadState('networkidle');
+    const controls = page.getByRole('complementary', { name: 'Step controls' });
+    await controls.getByRole('textbox', { name: /What do you want to make of it/ }).fill('a piece for the hallway');
+    await controls.getByRole('button', { name: 'Ask Katachi' }).click();
+    const assistant = page.getByRole('complementary', { name: 'Katachi chat' });
+    await expect(assistant).toContainText('A layered sunset panel');
+    await assistant.getByRole('button', { name: 'Autumn' }).click();
+    await expect(controls).toContainText('Plan: Autumn — warm trees');
+  });
+
   test('walks import → output', async ({ page }) => {
     await page.goto('/make/import'); await page.waitForLoadState('networkidle');
     const controls = page.getByRole('complementary', { name: 'Step controls' });

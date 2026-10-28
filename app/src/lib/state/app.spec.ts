@@ -150,4 +150,24 @@ describe('AppState (one per app, shared by every section)', () => {
     b.open(store.list().find((p) => p.name === 'Lake')!.id);
     expect(b.project?.path).toBe('/make/layers');
   });
+
+  it('Import: Katachi turns what you want into a plan — objective, then variations to pick in the chat (was Convert)', async () => {
+    const { MemoryStorage, ProjectStore } = await import('./project.svelte');
+    const app = new AppState(new ProjectStore(new MemoryStorage()));
+    app.newProject();
+    app.startFromCapture({ fileName: 'lake.jpg', images: ['data:image/png;base64,AAAA'], mode: 'single' });
+    let sent: Record<string, unknown> = {};
+    globalThis.fetch = (async (_url: string, init: { body: string }) => {
+      sent = JSON.parse(init.body);
+      return { ok: true, json: async () => ({ objective: 'A layered lake panel', variations: [{ title: 'Night sky', change: 'moon for sun' }, { title: 'Autumn', change: 'warm trees' }] }) };
+    }) as never;
+    await app.askForBrief('a piece for the hallway');
+    expect(sent).toMatchObject({ imageDataUrl: 'data:image/png;base64,AAAA', description: 'a piece for the hallway', group: 'laser-cut' });
+    const last = app.messages.at(-1)!;
+    expect(last.text).toContain('A layered lake panel');
+    expect(last.data?.actions.map((a) => a.label)).toEqual(['Night sky', 'Autumn']);
+    app.chooseVariation(1);
+    expect(app.layers.brief).toBe('Autumn — warm trees');
+    expect(app.layers.snapshot().brief).toBe('Autumn — warm trees');
+  });
 });
