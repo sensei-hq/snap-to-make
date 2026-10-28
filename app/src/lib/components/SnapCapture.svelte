@@ -27,7 +27,7 @@ const tips = $derived(hints.map((h) => ({ text: h.text, status: h.ok ? 'pass' : 
     {:else if !analyzed}
       <Button size="lg" variant="primary" label={busy ? 'Analyzing…' : 'Analyze scene'} loading={busy} onclick={() => onAnalyze?.()} />
     {:else}
-      <Button size="lg" variant="primary" href={resolve('/snap')} label="Open in Workshop" iconRight="i-solar:arrow-right-linear" />
+      <Button size="lg" variant="primary" target="" href={resolve('/snap')} label="Open in Workshop" iconRight="i-solar:arrow-right-linear" />
     {/if}
     <Button style="outline" icon="i-solar:videocamera-linear" aria-label="Record a clip" />
   </div>

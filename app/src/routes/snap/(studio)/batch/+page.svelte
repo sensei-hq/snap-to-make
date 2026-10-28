@@ -1,16 +1,15 @@
 <script lang="ts">
 import { Button, Card, Timeline } from '@rokkit/ui';
 import { InputField } from '@rokkit/forms';
-import { BatchState } from '$lib/state/batch.svelte';
-import ScreenHeader from '$lib/components/ScreenHeader.svelte';
-import AppNav from '$lib/components/AppNav.svelte';
-const batch = new BatchState();
+import { useApp } from '$lib/state/context';
+const app = useApp();
+const batch = app.batch;
+app.setScreen('Batch project', 'star ornaments · Muse Wonder');
 let names = $state('Maya, Leo, Priya');
 const steps = $derived((batch.job?.steps ?? []).map((s: string) => ({ label: s })));
 </script>
-<div class="phone-col">
-  <ScreenHeader title="Batch project" subtitle="star ornaments · Muse Wonder" pill="background" />
-  <AppNav current="batch" />
+<svelte:head><title>Katachi · Batch</title></svelte:head>
+<div class="stage">
   <main class="px-5 py-4 flex flex-col gap-4">
     <p>Star ornaments, 3 inch, birch 3 mm — runs in the background, never blocks the workshop.</p>
     <InputField name="names" type="text" label="Names (comma separated)" bind:value={names} />

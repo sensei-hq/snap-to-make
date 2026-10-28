@@ -19,7 +19,11 @@ const graph = (pct, size) => ({
 export default defineConfig({
   presets: [presetRokkit(config)],
   preflights: [{ getCSS: () => reducedMotion }],
+  // lib/content/*.ts carries icon class names (the section list), so UnoCSS must scan it too.
+  content: { pipeline: { include: [/\.(svelte|html)($|\?)/, /src\/lib\/content\/.*\.(js|ts)($|\?)/] } },
   theme: {
+    // The mock's breakpoints: phone layout below md, studio (rail + workspace + chat) from md (tablet landscape) up.
+    breakpoints: { sm: '640px', md: '1024px', lg: '1320px' },
     fontSize: {
       micro: ['11px', '1.3'], ui: ['13px', '1.4'], body: ['15px', '1.6'], lede: ['17px', '1.5'],
       title: ['22px', '1.3'], head: ['28px', '1.2'], display: ['40px', '1.05'], hero: ['56px', '1.02']
@@ -33,6 +37,8 @@ export default defineConfig({
     ['tabular', { 'font-variant-numeric': 'tabular-nums' }]
   ],
   shortcuts: {
+    // A studio page's content column: phone width below md, a centred reading column in the studio.
+    stage: 'mx-auto w-full max-w-[430px] md:max-w-[760px] md:py-4 flex flex-col',
     'phone-col': 'mx-auto w-full max-w-[430px] min-h-dvh flex flex-col bg-paper text-ink font-sans text-body md:border-x md:border-paper-edge',
     eyebrow: 'font-mono text-micro font-medium uppercase tracking-eyebrow text-ink-soft',
     meta: 'font-mono text-micro font-medium text-ink-soft tabular',

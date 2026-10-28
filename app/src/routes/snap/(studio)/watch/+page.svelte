@@ -1,19 +1,18 @@
 <script lang="ts">
 import { onMount } from 'svelte';
 import { Button, Card, List, Message } from '@rokkit/ui';
-import { WatchState } from '$lib/state/watch.svelte';
-import ScreenHeader from '$lib/components/ScreenHeader.svelte';
-import AppNav from '$lib/components/AppNav.svelte';
+import { useApp } from '$lib/state/context';
 import WatchFeed from '$lib/components/illustrations/WatchFeed.svelte';
-const watch = new WatchState();
+const app = useApp();
+const watch = app.watch;
+app.setScreen('Burn Watch', 'recorded clip · 0:58');
 onMount(() => watch.load());
 const mmss = (s: number) => `0:${String(Math.floor(s)).padStart(2, '0')}`;
 const tone = (e: { kind: string; note: string }) => /flare/i.test(e.kind + e.note) ? 'bg-danger' : /smoke/i.test(e.kind + e.note) ? 'bg-warning' : 'bg-success';
 const items = $derived(watch.events.map(e => ({ label: e.note, value: String(e.atSec), at: mmss(e.atSec), tone: tone(e) })));
 </script>
-<div class="phone-col">
-  <ScreenHeader title="Burn Watch" subtitle="recorded clip · 0:58" pill="● watching" />
-  <AppNav current="watch" />
+<svelte:head><title>Katachi · Burn Watch</title></svelte:head>
+<div class="stage">
   {#if watch.alert}
     <Message type="error" class="mx-5 mt-4" text={`${watch.alert.note} · ${mmss(watch.alert.atSec)} — pause and check the air assist.`} />
   {/if}

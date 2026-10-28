@@ -2,15 +2,15 @@
 import { resolve } from '$app/paths';
 import { Button, Card } from '@rokkit/ui';
 import { InputField } from '@rokkit/forms';
-import KatachiMark from '$lib/components/KatachiMark.svelte';
 import DropStage from '$lib/components/DropStage.svelte';
-import AppNav from '$lib/components/AppNav.svelte';
 import ChatThread from '$lib/components/ChatThread.svelte';
 import PieceGallery from '$lib/components/PieceGallery.svelte';
 import PieceDetail from '$lib/components/PieceDetail.svelte';
 import SegmentsStrip from '$lib/components/SegmentsStrip.svelte';
-import { ConvertState } from '$lib/state/convert.svelte';
-const flow = new ConvertState();
+import { useApp } from '$lib/state/context';
+const app = useApp();
+const flow = app.convert;
+app.setScreen('Convert — from photo to build', 'snap → dissect → agree → pieces');
 const groups = [{ label: 'Laser cutting', value: 'laser-cut' }, { label: 'Cricut paper', value: 'cricut-paper' }, { label: 'Shrink plastic', value: 'shrink-plastic' }];
 const groupOption = $derived(groups.find((g) => g.value === flow.group));
 let videoEl = $state<HTMLVideoElement | null>(null);
@@ -47,13 +47,9 @@ function onWindowDrop(e: DragEvent) {
   if (f && f.type.startsWith('image/')) void onFile(f);
 }
 </script>
+<svelte:head><title>Katachi · Convert</title></svelte:head>
 <svelte:window ondragover={onWindowDragOver} ondrop={onWindowDrop} />
-<main class="bg-paper text-ink mx-auto max-w-6xl p-4 min-h-screen flex flex-col gap-4">
-  <header class="flex items-center gap-3">
-    <KatachiMark size={32} class="text-ink" />
-    <div><h1 class="section-title">Convert — from photo to build</h1><p class="meta">snap → dissect → agree → pieces</p></div>
-  </header>
-  <AppNav current="convert" />
+<div class="mx-auto w-full max-w-6xl p-4 flex flex-col gap-4">
   <div class="grid gap-4 lg:grid-cols-[1fr_1.15fr] items-start">
     <div class="flex flex-col gap-3">
       <DropStage imageUrl={flow.imageUrl} imageName={flow.imageName} dissection={flow.dissection} group={flow.group} {onFile} {onCamera} selectedPiece={flow.selectedPiece?.name} overlayBoxes={flow.overlayBoxes} onSelectPiece={(n) => { flow.selectPiece(n); void flow.segmentSelected(); }} />
@@ -80,7 +76,7 @@ function onWindowDrop(e: DragEvent) {
           <Card>{#snippet header()}<h3 class="font-semibold">Tools</h3>{/snippet}<ul class="text-ui">{#each flow.breakdown.tools as t (t)}<li>{t}</li>{/each}</ul></Card>
         </div>
         <Card>{#snippet header()}<h3 class="font-semibold">Assembly</h3>{/snippet}<ol class="list-decimal ml-5 text-ui">{#each flow.breakdown.assemblySteps as s (s)}<li>{s}</li>{/each}</ol></Card>
-        <Button style="outline" href={resolve('/snap')} iconRight="i-solar:arrow-right-linear" label="Open in Workshop — measure, simulate & make" /></section>{/if}
+        <Button style="outline" target="" href={resolve('/snap')} iconRight="i-solar:arrow-right-linear" label="Open in Workshop — measure, simulate & make" /></section>{/if}
     </div>
   </div>
-</main>
+</div>

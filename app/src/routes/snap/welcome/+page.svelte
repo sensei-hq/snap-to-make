@@ -3,8 +3,8 @@ import { Button } from '@rokkit/ui';
 import { InputCheckbox, InputField } from '@rokkit/forms';
 import { ThemeSwitcherToggle } from '@rokkit/app';
 import KatachiMark from '$lib/components/KatachiMark.svelte';
-import { SessionState } from '$lib/state/session.svelte';
-const session = new SessionState();
+import { useApp } from '$lib/state/context';
+const session = useApp().session;
 const consents = [
   { key: 'attested', label: 'I confirm I am 18+', hint: 'Required by the Meta model terms.' },
   { key: 'safetyAck', label: "I'll never leave my laser unattended", hint: "Burn Watch is advisory — it can't stop a fire." },
@@ -12,6 +12,7 @@ const consents = [
 ] as const;
 async function enter() { if (await session.enterFromForm()) location.href = '/snap'; }
 </script>
+<svelte:head><title>Katachi · Welcome</title></svelte:head>
 <div class="phone-col relative">
   <ThemeSwitcherToggle variant="single" class="absolute top-2 right-2" />
   <div class="flex-1 flex flex-col px-6 pt-14">

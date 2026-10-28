@@ -29,9 +29,21 @@ describe('AppState (one per app, shared by every section)', () => {
   });
 
   it('routes a composer message into the conversation and the analysis', async () => {
-    globalThis.fetch = (async () => ({ json: async () => ({ trace: [], measure: null }) })) as typeof fetch;
+    globalThis.fetch = (async () => ({ json: async () => ({ trace: [], measure: null }) })) as unknown as typeof fetch;
     const app = new AppState();
     await app.ask('make four coasters 3 mm birch');
     expect(app.flow.conversation.slots).toMatchObject({ qty: 4, thicknessMm: 3, material: 'birch' });
+  });
+
+  it('builds the chat panel thread from the conversation: greeting, what you said, Katachi’s replies', () => {
+    const app = new AppState();
+    expect(app.messages).toEqual([{ role: 'katachi', text: 'Hi Dev — what are we making today?' }]);
+    app.flow.conversation.ingestTranscript('make four coasters');
+    app.flow.conversation.say('Build plan ready.');
+    expect(app.messages).toEqual([
+      { role: 'katachi', text: 'Hi Dev — what are we making today?' },
+      { role: 'user', text: 'make four coasters' },
+      { role: 'katachi', text: 'Build plan ready.' }
+    ]);
   });
 });

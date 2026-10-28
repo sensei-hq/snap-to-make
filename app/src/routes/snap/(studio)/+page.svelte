@@ -2,11 +2,8 @@
 import { resolve } from '$app/paths';
 import { Button, Card } from '@rokkit/ui';
 import { InputField } from '@rokkit/forms';
-import ScreenHeader from '$lib/components/ScreenHeader.svelte';
 import WorkshopShell from '$lib/components/WorkshopShell.svelte';
 import SceneCard from '$lib/components/SceneCard.svelte';
-import AskBar from '$lib/components/AskBar.svelte';
-import AppNav from '$lib/components/AppNav.svelte';
 import ImplPicker from '$lib/components/ImplPicker.svelte';
 import PlanCard from '$lib/components/PlanCard.svelte';
 import SimulateView from '$lib/components/SimulateView.svelte';
@@ -14,8 +11,9 @@ import AssemblyPlayer from '$lib/components/AssemblyPlayer.svelte';
 import TraceDrawer from '$lib/components/TraceDrawer.svelte';
 import ArtPicker from '$lib/components/ArtPicker.svelte';
 import PreviewStage from '$lib/components/PreviewStage.svelte';
-import { FlowState } from '$lib/state/flow.svelte';
-const flow = new FlowState();
+import { useApp } from '$lib/state/context';
+const app = useApp();
+const flow = app.flow;
 let typed = $state('');
 let photoInput = $state<HTMLInputElement | null>(null);
 function submitTyped() { flow.conversation.ingestTranscript(typed); flow.analyse(); }
@@ -23,11 +21,11 @@ function onWindowDrop(e: DragEvent) { e.preventDefault(); if (e.dataTransfer?.fi
 function download(name: string, content: string) { const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([content])); a.download = name; a.click(); }
 const stageTitle = $derived(flow.design.impl ? 'Coasters for Maya' : 'Workshop');
 const stageSub = $derived(flow.design.impl ? 'build plan · 6 parts' : flow.measureLabel ? 'scene · measured' : 'new project');
+$effect(() => app.setScreen(stageTitle, stageSub));
 </script>
+<svelte:head><title>Katachi · Workshop</title></svelte:head>
 <svelte:window ondragover={(e) => e.preventDefault()} ondrop={onWindowDrop} />
-<div class="phone-col">
-  <ScreenHeader title={stageTitle} subtitle={stageSub} pill={flow.trace.label} />
-  <AppNav current="workshop" />
+<div class="stage">
   <WorkshopShell listening={flow.conversation.listening} partial={flow.conversation.partial} listenLabel={flow.conversation.listenLabel}
     onMicDown={() => flow.startListen()} onMicUp={() => flow.stopListen()} />
 
@@ -73,6 +71,4 @@ const stageSub = $derived(flow.design.impl ? 'build plan · 6 parts' : flow.meas
     </div>
   {/if}
   <TraceDrawer entries={flow.trace.entries} label={flow.trace.label} onExport={() => download('trace.json', flow.trace.exportJson())} />
-  <div class="flex-1"></div>
-  <AskBar onSubmit={(v) => { flow.conversation.ingestTranscript(v); flow.analyse(); }} onMicDown={() => flow.startListen()} onMicUp={() => flow.stopListen()} onCamera={() => { location.href = '/snap/capture'; }} />
 </div>
