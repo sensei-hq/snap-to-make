@@ -46,4 +46,11 @@ describe('AppState (one per app, shared by every section)', () => {
       { role: 'katachi', text: 'Build plan ready.' }
     ]);
   });
+
+  it('a suggestion chip becomes what you said (the page then opens the camera)', () => {
+    const app = new AppState();
+    app.pickSuggestion('Coasters from my sketch');
+    expect(app.flow.conversation.transcript).toBe('Coasters from my sketch');
+    expect(app.flow.conversation.slots.intent).toBe('coasters');
+  });
 });
