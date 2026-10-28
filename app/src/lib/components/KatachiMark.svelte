@@ -1,7 +1,7 @@
 <script lang="ts">
 	/* The Katachi mark: a K built from an ink bar and three stacked layers (repo root katachi.svg).
 	   Ink parts follow currentColor so the mark works in both themes; the two layer
-	   colours are named brand tokens (uno.config.js: fill-brand-tan, fill-brand-stone). */
+	   colours are named brand tokens (rokkit.config.js overrides → fill-brand-tan, fill-brand-stone). */
 	let { size = 22, class: cls = '' }: { size?: number; class?: string } = $props();
 </script>
 

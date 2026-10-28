@@ -30,10 +30,7 @@ export default defineConfig({
     ['grid-bed', graph(6, 20)],
     ['grid-thumb', graph(5, 16)],
     ['swatch-birch', { background: `repeating-linear-gradient(90deg, ${mix('texture', 22)} 0 2px, transparent 2px 4px), ${mix('texture', 8)}` }],
-    ['tabular', { 'font-variant-numeric': 'tabular-nums' }],
-    // Katachi mark layer colours (katachi.svg): fixed brand colours, same in both themes
-    ['fill-brand-tan', { fill: '#D8AE82' }],
-    ['fill-brand-stone', { fill: '#DDD8D0' }]
+    ['tabular', { 'font-variant-numeric': 'tabular-nums' }]
   ],
   shortcuts: {
     'phone-col': 'mx-auto w-full max-w-[430px] min-h-dvh flex flex-col bg-paper text-ink font-sans text-body md:border-x md:border-paper-edge',
