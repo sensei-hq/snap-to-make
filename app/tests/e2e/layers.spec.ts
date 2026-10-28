@@ -48,6 +48,35 @@ test.describe('image → layers · studio (1280×800)', () => {
     await expect(inspector).toContainText('5 of 6');
   });
 
+  test('layers: no row numbers, stack under the list, no paper/wood switch; duplicate, merge down, split', async ({ page }) => {
+    await page.goto('/make/layers'); await page.waitForLoadState('networkidle');
+    const controls = page.getByRole('complementary', { name: 'Step controls' });
+    const list = controls.getByRole('navigation', { name: 'Layer stack, back to front' });
+    await expect(list.getByRole('button').first()).not.toContainText(/^\s*\d/);
+    await expect(controls.getByRole('img', { name: 'Exploded stack, back to front' })).toBeVisible();
+    await expect(page.getByRole('radio', { name: /Paper layers|Laser wood/ })).toHaveCount(0);
+    await list.getByRole('button', { name: /Hills/ }).click();
+    await expect(controls.getByRole('button', { name: 'Split' })).toBeDisabled();
+    await controls.getByRole('button', { name: 'Duplicate' }).click();
+    await expect(list).toContainText('Hills copy');
+    await list.getByRole('button', { name: /^Sky/ }).click();
+    await controls.getByRole('button', { name: 'Merge down' }).click();
+    await expect(list).toContainText('Sky + Sun');
+    await controls.getByRole('button', { name: 'Split' }).click();
+    await expect(list).not.toContainText('Sky + Sun');
+    await expect(list.getByRole('button', { name: /^Sun/ })).toBeVisible();
+  });
+
+  test('layers: the solid and hidden toggles change what the selected layer shows', async ({ page }) => {
+    await page.goto('/make/layers'); await page.waitForLoadState('networkidle');
+    const work = page.getByRole('main');
+    await expect(work.getByRole('img', { name: /Snow ridge: visible area solid, hidden area hatched/ })).toBeVisible();
+    await work.getByRole('checkbox', { name: 'Hidden behind layers above' }).uncheck();
+    await expect(work.getByRole('img', { name: /Snow ridge: visible area solid$/ })).toBeVisible();
+    await work.getByRole('checkbox', { name: 'Shows as solid' }).uncheck();
+    await expect(work.getByRole('img', { name: /Snow ridge: outline only/ })).toBeVisible();
+  });
+
   test('walks import → output', async ({ page }) => {
     await page.goto('/make/import'); await page.waitForLoadState('networkidle');
     const controls = page.getByRole('complementary', { name: 'Step controls' });

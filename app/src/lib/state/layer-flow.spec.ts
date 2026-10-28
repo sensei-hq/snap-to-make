@@ -57,6 +57,37 @@ describe('LayerFlowState · image → layers (docs/design/01 S1–S9)', () => {
     expect(g.regions.find((r) => r.id === 'sun')?.on).toBe(false);
   });
 
+  it('layers: duplicate puts a copy in front of the layer and selects it; numbers follow the stack', () => {
+    const f = new LayerFlowState();
+    const before = f.layers.length;
+    f.duplicate(2);
+    expect(f.layers).toHaveLength(before + 1);
+    expect(f.layers.map((l) => l.n)).toEqual(Array.from({ length: before + 1 }, (_, i) => i + 1));
+    expect(f.layers[2]).toMatchObject({ n: 3, name: 'Sun copy', shapes: ['sun'] });
+    expect(f.selected.name).toBe('Sun copy');
+  });
+
+  it('layers: merge down joins a layer with the one in front; split (by islands) restores the parts', () => {
+    const f = new LayerFlowState();
+    const [sky, sun] = f.layers;
+    expect(f.canMergeDown(f.layers.length)).toBe(false);
+    f.mergeDown(1);
+    expect(f.layers[0]).toMatchObject({ n: 1, name: 'Sky + Sun', shapes: ['sky', 'sun'], colour: sun.colour });
+    expect(f.selected.n).toBe(1);
+    expect(f.canSplit(1)).toBe(true);
+    expect(f.canSplit(2)).toBe(false);
+    f.split(1);
+    expect(f.layers.slice(0, 2).map((l) => [l.n, l.name, l.shapes])).toEqual([[1, sky.name, sky.shapes], [2, sun.name, sun.shapes]]);
+  });
+
+  it('layers: the selected layer can show its solid part, its hidden part, or both', () => {
+    const f = new LayerFlowState();
+    expect([f.showSolid, f.showHidden]).toEqual([true, true]);
+    f.toggleHiddenView();
+    f.toggleSolidView();
+    expect([f.showSolid, f.showHidden]).toEqual([false, false]);
+  });
+
   it('S4: keeps regions by default except the bought frame; toggling updates the kept share', () => {
     const f = new LayerFlowState();
     expect(f.regions.find((r) => r.id === 'frame')?.on).toBe(false);
@@ -67,7 +98,7 @@ describe('LayerFlowState · image → layers (docs/design/01 S1–S9)', () => {
     expect(f.kept.map((r) => r.id)).toContain('frame');
   });
 
-  it('S5a: switching paper ↔ wood changes the stack; depth follows the selected layer', () => {
+  it('S5a: the medium (paper ↔ wood) picks the stack; depth follows the selected layer', () => {
     const f = new LayerFlowState();
     expect(f.layers).toHaveLength(layerSets.paper.layers.length);
     f.selectLayer(3);
