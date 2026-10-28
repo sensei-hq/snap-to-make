@@ -1,8 +1,7 @@
 <script lang="ts">
 import { Button, Card, List, Pill, ProgressBar } from '@rokkit/ui';
-let { impl, objectName }: { impl: any; objectName: string } = $props();
+let { impl, objectName, assumptions = [], sheetUsePct = 0 }: { impl: any; objectName: string; assumptions?: string[]; sheetUsePct?: number } = $props();
 const items = $derived((impl?.pieces ?? []).map((p: any) => ({ label: p.name, value: p.id, size: `${p.wMm} × ${p.hMm} mm` })));
-const assumptions = ['Coaster = mug base + 13 mm', 'Clearance 1 mm · kerf 0.1 mm'];
 </script>
 <section aria-label="Build plan" class="px-4 py-4 flex flex-col gap-3.5">
   <div class="rounded-lg grid-bed bg-paper-soft border border-dashed border-paper-edge min-h-33" role="img" aria-label="Exploded build diagram">
@@ -16,7 +15,7 @@ const assumptions = ['Coaster = mug base + 13 mm', 'Clearance 1 mm · kerf 0.1 m
     </List>
     {#snippet footer()}
       <p class="flex justify-between"><span>Sheet fit</span><span class="readout">{impl?.sheets ?? 1} of 1 · 300 × 300</span></p>
-      <ProgressBar value={72} max={100} class="mt-2" />
+      <ProgressBar value={sheetUsePct} max={100} class="mt-2" />
     {/snippet}
   </Card>
   <p class="eyebrow">Assumptions</p>

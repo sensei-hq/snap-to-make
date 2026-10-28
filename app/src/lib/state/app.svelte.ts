@@ -1,6 +1,5 @@
 import { FlowState } from './flow.svelte';
 import { ConvertState } from './convert.svelte';
-import { CanvasState } from './canvas.svelte';
 import { WatchState } from './watch.svelte';
 import { BatchState } from './batch.svelte';
 import { CaptureState } from './capture.svelte';
@@ -12,7 +11,6 @@ export class AppState {
   session = new SessionState();
   flow = new FlowState();
   convert = new ConvertState();
-  canvas = new CanvasState();
   watch = new WatchState();
   batch = new BatchState();
   capture = new CaptureState();
@@ -40,6 +38,7 @@ export class AppState {
 
   /** The composer (phone dock or studio chat panel) speaks to the workshop conversation. */
   async ask(text: string) {
+    if (await this.flow.runCommand(text)) return;
     this.flow.conversation.ingestTranscript(text);
     await this.flow.analyse();
   }

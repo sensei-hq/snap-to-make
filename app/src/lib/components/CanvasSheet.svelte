@@ -1,15 +1,20 @@
 <script lang="ts">
 import { Button, Card, StatusList } from '@rokkit/ui';
 import KatachiMark from './KatachiMark.svelte';
-let { plan, onExportSvg, onDownloadGcode }: { plan: any; onExportSvg?: () => void; onDownloadGcode?: () => void } = $props();
-const checks = $derived((plan?.preflight ?? []).map((c: any) => ({ text: c.label, status: c.ok === false ? 'warn' : 'pass' })));
+import type { CanvasPiece } from '$lib/domain/canvas';
+let { pieces, preflight, estimateMinutes, deviceLabel = 'Ray 5 · birch_3mm · GRBL', message, lid, onAddLid, onDeclineLid, onExportSvg, onDownloadGcode }: {
+  pieces: CanvasPiece[]; preflight: { label: string; ok: boolean }[]; estimateMinutes: number; deviceLabel?: string;
+  message: string; lid: 'offered' | 'added' | 'declined';
+  onAddLid?: () => void; onDeclineLid?: () => void; onExportSvg?: () => void; onDownloadGcode?: () => void;
+} = $props();
+const checks = $derived(preflight.map((c) => ({ text: c.label, status: c.ok ? 'pass' : 'warn' })));
 const legend = [{ label: 'cut', swatch: 'bg-cut' }, { label: 'engrave', swatch: 'bg-engrave' }];
 </script>
 <section aria-label="Canvas" class="px-4 py-4 flex flex-col gap-3.5">
   <div class="relative rounded-lg grid-bed bg-paper-soft border border-paper-edge" role="img" aria-label="Nested sheet layout 300 by 300 millimetres">
     <svg viewBox="0 0 300 300" class="w-full block" fill="none" stroke-width="1.4">
       <rect x="6" y="6" width="288" height="288" stroke="var(--paper-edge)" stroke-width="1" />
-      {#each plan?.pieces ?? [] as p (p.id)}
+      {#each pieces as p (p.id)}
         {#if p.kind === 'circle'}<circle cx={p.xMm + p.wMm / 2} cy={p.yMm + p.hMm / 2} r={p.wMm / 2} stroke="var(--cut)" />{#if p.label}<text x={p.xMm + p.wMm / 2} y={p.yMm + p.hMm / 2 + 7} text-anchor="middle" font-size="22" fill="var(--engrave)" stroke="none">{p.label}</text>{/if}
         {:else}<rect x={p.xMm} y={p.yMm} width={p.wMm} height={p.hMm} stroke="var(--cut)" />{/if}
       {/each}
@@ -19,15 +24,15 @@ const legend = [{ label: 'cut', swatch: 'bg-cut' }, { label: 'engrave', swatch: 
     </ul>
     <span class="meta absolute right-2 bottom-2">300 × 300 mm</span>
   </div>
-  <div class="flex items-center gap-2.5 text-ui">
+  <div class="flex items-center gap-2.5 text-ui" aria-live="polite">
     <KatachiMark size={20} class="text-ink shrink-0" />
-    <span class="flex-1">{plan?.suggestion ?? ''}</span>
-    <Button style="outline" size="sm" label="Add lid" /><Button size="sm" style="ghost" label="No" />
+    <span class="flex-1">{message}</span>
+    {#if lid === 'offered'}<Button style="outline" size="sm" label="Add lid" onclick={() => onAddLid?.()} /><Button size="sm" style="ghost" label="No" onclick={() => onDeclineLid?.()} />{/if}
   </div>
   <Card>
-    {#snippet header()}<p class="flex justify-between items-baseline"><span class="eyebrow">Preflight</span><span class="readout text-ink">est. {plan?.estMin ?? 0} min</span></p>{/snippet}
+    {#snippet header()}<p class="flex justify-between items-baseline"><span class="eyebrow">Preflight</span><span class="readout text-ink">est. {estimateMinutes} min</span></p>{/snippet}
     <StatusList items={checks} />
-    {#snippet footer()}<p class="meta">{plan?.deviceLabel ?? ''}</p>{/snippet}
+    {#snippet footer()}<p class="meta">{deviceLabel}</p>{/snippet}
   </Card>
   <div class="flex gap-2.5">
     <Button style="outline" size="lg" class="flex-1" icon="i-solar:export-linear" label="Export SVG" onclick={() => onExportSvg?.()} />

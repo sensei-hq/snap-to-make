@@ -2,7 +2,7 @@
 import { Badge, Button, Card, Toggle } from '@rokkit/ui';
 import ChatThread from './ChatThread.svelte';
 import ArtTake from './illustrations/ArtTake.svelte';
-let { variants, selected, onPick, onReroll, onOriginal }: { variants: string[]; selected: number; onPick: (i: number) => void; onReroll?: () => void; onOriginal?: () => void } = $props();
+let { variants, selected, rerolls = 0, usesOriginal = false, onPick, onReroll, onOriginal, onUse }: { variants: string[]; selected: number; rerolls?: number; usesOriginal?: boolean; onPick: (i: number) => void; onReroll?: () => void; onOriginal?: () => void; onUse?: () => void } = $props();
 const takes = ['take-1', 'take-2', 'take-3'] as const;
 const take = (i: number) => takes[i % takes.length];
 const options = $derived(variants.map((v, i) => ({ label: `Variant ${i + 1}`, value: i, title: v })));
@@ -23,8 +23,8 @@ const options = $derived(variants.map((v, i) => ({ label: `Variant ${i + 1}`, va
     <span class="absolute left-3 bottom-3 meta px-2 py-1 rounded-full bg-paper">Take {selected + 1} · 60 mm on each coaster</span>
   </div>
   <div class="flex gap-2.5 items-center">
-    <Button style="outline" size="lg" icon="i-solar:refresh-linear" label="Re-roll" onclick={() => onReroll?.()} />
-    <Button size="lg" style="ghost" class="flex-1" label="Use original" onclick={() => onOriginal?.()} />
-    <Button size="lg" variant="primary" class="flex-1" label={`Use take ${selected + 1}`} />
+    <Button style="outline" size="lg" icon="i-solar:refresh-linear" label={rerolls ? `Re-roll · ${rerolls}` : 'Re-roll'} onclick={() => onReroll?.()} />
+    <Button size="lg" style="ghost" class="flex-1" label="Use original" aria-pressed={usesOriginal} onclick={() => onOriginal?.()} />
+    <Button size="lg" variant="primary" class="flex-1" label={usesOriginal ? 'Use my sketch' : `Use take ${selected + 1}`} onclick={() => onUse?.()} />
   </div>
 </section>
