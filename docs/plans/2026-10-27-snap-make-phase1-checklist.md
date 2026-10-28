@@ -110,9 +110,9 @@ Rule: an item closes only with evidence (test run, URL check, file). Update this
 - [ ] User verifies the hero on the live URL (HANDOFF)
 
 ## 14. Image → layers UI (Stage 14)
-- [ ] `LayerFlowState` + `content/layers.ts`; 7 steps + views/reference branches
-- [ ] Phone steps < md, three-column studio ≥ md; app-drawn fixtures only (no mock images)
-- [ ] Live layered sample once doc 04 #1–7 land (HANDOFF)
+- [x] `LayerFlowState` + `content/layers.ts`; 7 steps + views/reference branches
+- [x] Phone steps < md, art + controls grid ≥ md; app-drawn fixture (code-drawn 'Mountain sunset'), no mock images or their colour-grade data
+- [ ] Live layered sample once doc 04 #1–7 land (HANDOFF) — UI runs on the fixture until `/api/segment` + `/api/layers` return masks
 
 ## 15. Desktop editor + rail screens (Stage 15, stretch)
 - [ ] Editor state + toolbar, canvas, Properties/Layers/Job, chat action cards
