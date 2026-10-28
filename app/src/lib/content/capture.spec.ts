@@ -1,14 +1,12 @@
 import { describe, expect, it } from 'vitest';
-import { sourceModes } from './capture';
+import { captureModes, captureSources, sides } from './capture';
 
-describe('camera source modes (mock SourceModes)', () => {
-  it('offers Photo, Upload, 6 views and Reference in that order', () => {
-    expect(sourceModes.map((m) => m.label)).toEqual(['Photo', 'Upload', '6 views', 'Reference']);
+describe('capture copy', () => {
+  it('offers camera (camera icon) or upload (image icon); no reference option', () => {
+    expect(captureSources.map((s) => [s.value, s.icon])).toEqual([['camera', 'i-solar:camera-linear'], ['upload', 'i-solar:gallery-linear']]);
   });
-  it('routes Upload to Convert, 6 views and Reference into the layers flow', () => {
-    const by = Object.fromEntries(sourceModes.map((m) => [m.id, m]));
-    expect(by.upload.href).toBe('/snap/convert');
-    expect(by.views.href).toBe('/snap/layers/views');
-    expect(by.reference.href).toBe('/snap/layers/reference');
+  it('single shot by default, or six sides for a 3D object', () => {
+    expect(captureModes.map((m) => m.value)).toEqual(['single', 'multi']);
+    expect(sides.map((s) => s.id)).toEqual(['front', 'right', 'back', 'left', 'top', 'base']);
   });
 });

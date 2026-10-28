@@ -1,19 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { CaptureState } from './capture.svelte';
 import { ConversationState } from './conversation.svelte';
-
-describe('CaptureState (mock Snap API shell)', () => {
-  it('walks hint -> captured -> analyzed with mock photo', async () => {
-    const c = new CaptureState();
-    expect(c.step).toBe(1);
-    expect(c.hints.length).toBeGreaterThan(1);
-    await c.capture();
-    expect(c.captured).toBe(true);
-    expect(c.photoLabel).toContain('mock');
-    await c.analyze();
-    expect(c.analyzed).toBe(true);
-  });
-});
 
 describe('ConversationState listening shell', () => {
   it('start/stop listening sets partial transcript and timer label', () => {
