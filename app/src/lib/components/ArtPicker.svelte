@@ -1,6 +1,5 @@
 <script lang="ts">
-import { Badge, Button, Card, Toggle } from '@rokkit/ui';
-import ChatThread from './ChatThread.svelte';
+import { Badge, Button, Card, ChatMessage, Toggle } from '@rokkit/ui';
 import ArtTake from './illustrations/ArtTake.svelte';
 let { variants, selected, rerolls = 0, usesOriginal = false, onPick, onReroll, onOriginal, onUse }: { variants: string[]; selected: number; rerolls?: number; usesOriginal?: boolean; onPick: (i: number) => void; onReroll?: () => void; onOriginal?: () => void; onUse?: () => void } = $props();
 const takes = ['take-1', 'take-2', 'take-3'] as const;
@@ -8,7 +7,7 @@ const take = (i: number) => takes[i % takes.length];
 const options = $derived(variants.map((v, i) => ({ label: `Variant ${i + 1}`, value: i, title: v })));
 </script>
 <section aria-label="Art picker" class="px-4 py-4 flex flex-col gap-3.5">
-  <ChatThread messages={[{ role: 'katachi', text: 'Cleaned up your M — three takes, all single-line and laser friendly. Which one?' }]} />
+  <ChatMessage message={{ id: 'art', role: 'assistant', text: 'Cleaned up your M — three takes, all single-line and laser friendly. Which one?' }} />
   <div class="flex items-center gap-3">
     <Card class="w-16 h-16 grid place-items-center"><ArtTake variant="original" size={44} /></Card>
     <span class="flex-1"><strong class="font-medium">Your sketch</strong><br /><span class="meta">62 × 58 mm · pencil</span></span>

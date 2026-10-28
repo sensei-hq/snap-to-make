@@ -6,10 +6,9 @@ import { useApp } from '$lib/state/context';
 import ScreenHeader from '$lib/components/ScreenHeader.svelte';
 import StepTabs from '$lib/components/StepTabs.svelte';
 import AppNav from '$lib/components/AppNav.svelte';
-import AskBar from '$lib/components/AskBar.svelte';
 import NavRail from '$lib/components/shell/NavRail.svelte';
 import ChatPanel from '$lib/components/shell/ChatPanel.svelte';
-import AssistantBody from '$lib/components/shell/AssistantBody.svelte';
+import KatachiChat from '$lib/components/shell/KatachiChat.svelte';
 import { goto } from '$app/navigation';
 import { resolve } from '$app/paths';
 import { Button } from '@rokkit/ui';
@@ -52,7 +51,8 @@ const listen = { onMicDown: () => app.flow.startListen(), onMicUp: () => app.flo
   <!-- Phones: the assistant as a sheet over the work area, with the composer -->
   <div role="dialog" aria-modal="true" aria-label="Katachi chat" class="md:hidden fixed inset-x-0 bottom-0 top-14 z-20 flex flex-col bg-paper-soft border-t border-paper-edge rounded-t-lg shadow-lg">
     <header class="h-12 shrink-0 flex items-center gap-2 pl-4 pr-2 hair-b"><span class="eyebrow flex-1">Katachi</span><span class="meta">Muse · on</span><Button style="ghost" size="sm" icon="i-solar:close-circle-linear" aria-label="Close chat" onclick={() => app.toggleSheet()} /></header>
-    <AssistantBody messages={app.messages} suggestions={app.suggestions} onAction={(a) => { app.toggleSheet(); act(a); }} onSuggest={ask} />
-    <div class="px-4 pt-2 pb-[max(1rem,env(safe-area-inset-bottom))]"><AskBar onSubmit={ask} {...listen} onCamera={() => { location.href = '/capture'; }} /></div>
+    <div class="flex-1 min-h-0 flex flex-col pb-[env(safe-area-inset-bottom)]">
+      <KatachiChat messages={app.messages} suggestions={app.suggestions} onAsk={ask} onAction={(a) => { app.toggleSheet(); act(a); }} {...listen} />
+    </div>
   </div>
 {/if}
