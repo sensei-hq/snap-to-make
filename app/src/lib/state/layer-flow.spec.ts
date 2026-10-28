@@ -88,6 +88,27 @@ describe('LayerFlowState · image → layers (docs/design/01 S1–S9)', () => {
     expect([f.showSolid, f.showHidden]).toEqual([false, false]);
   });
 
+  it('output: one sheet at a time — feed, send, cutting, verify, next; cut again repeats the sheet', () => {
+    const f = new LayerFlowState();
+    const n = f.layers.length;
+    expect(f.job).toMatchObject({ sheet: 1, phase: 'feed', progress: 0 });
+    expect(f.feedText).toBe(`Feed ${f.layers[0].material}`);
+    f.beginCut();
+    expect(f.job.phase).toBe('cutting');
+    f.advanceCut(60); f.advanceCut(60);
+    expect(f.job).toMatchObject({ phase: 'verify', progress: 100 });
+    f.recut();
+    expect(f.job).toMatchObject({ sheet: 1, phase: 'feed', progress: 0 });
+    f.beginCut(); f.advanceCut(100); f.confirmCut();
+    expect(f.job).toMatchObject({ sheet: 2, phase: 'feed' });
+    expect(f.sheetStatus(1)).toBe('cut');
+    expect(f.sheetStatus(2)).toBe('current');
+    for (let i = 2; i <= n; i++) { f.beginCut(); f.advanceCut(100); f.confirmCut(); }
+    expect(f.job.phase).toBe('done');
+    f.setDevice('xtool');
+    expect(f.job).toMatchObject({ sheet: 1, phase: 'feed' });
+  });
+
   it('S4: keeps regions by default except the bought frame; toggling updates the kept share', () => {
     const f = new LayerFlowState();
     expect(f.regions.find((r) => r.id === 'frame')?.on).toBe(false);

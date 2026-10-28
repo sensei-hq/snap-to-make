@@ -77,6 +77,23 @@ test.describe('image → layers · studio (1280×800)', () => {
     await expect(work.getByRole('img', { name: /Snow ridge: outline only/ })).toBeVisible();
   });
 
+  test('output: cut one sheet at a time — feed, send, verify, next', async ({ page }) => {
+    await page.goto('/make/output'); await page.waitForLoadState('networkidle');
+    const job = page.getByRole('main').getByRole('region', { name: 'Cutting' });
+    await expect(job).toContainText('Sheet 1 of 6');
+    await expect(job).toContainText('Feed Apricot cardstock');
+    await job.getByRole('button', { name: 'Send sheet 1' }).click();
+    await expect(job.getByRole('progressbar')).toBeVisible();
+    await expect(job).toContainText('Did it cut cleanly?', { timeout: 10000 });
+    await job.getByRole('button', { name: /Looks good/ }).click();
+    await expect(job).toContainText('Sheet 2 of 6');
+    await expect(job).toContainText('Feed Butter cardstock');
+    await expect(page.getByRole('main').getByRole('region', { name: 'Sheets' })).toContainText(/01 · Sky\s*cut/);
+    await page.getByRole('complementary', { name: 'Katachi chat' }).getByRole('radio', { name: /Just the files/ }).check();
+    await expect(page.getByRole('main').getByRole('region', { name: 'Cutting' })).toHaveCount(0);
+    await expect(page.getByRole('main').getByRole('button', { name: /Download/ })).toBeVisible();
+  });
+
   test('walks import → output', async ({ page }) => {
     await page.goto('/make/import'); await page.waitForLoadState('networkidle');
     const controls = page.getByRole('complementary', { name: 'Step controls' });
@@ -92,7 +109,7 @@ test.describe('image → layers · studio (1280×800)', () => {
     await next(page, /Stack & cut/, /\/make\/output$/);
     await expect(page.getByRole('main').getByRole('heading', { name: /6 sheets/ })).toBeVisible();
     await page.getByRole('complementary', { name: 'Katachi chat' }).getByRole('radio', { name: /xTool S1 laser/ }).check();
-    await expect(page.getByRole('main').getByRole('button', { name: 'Start cut' })).toBeVisible();
+    await expect(page.getByRole('main').getByRole('button', { name: 'Cut sheet 1' })).toBeVisible();
   });
 
   test('3D object: six view cards, missing views wait for a photo, parts list beside the chat', async ({ page }) => {
