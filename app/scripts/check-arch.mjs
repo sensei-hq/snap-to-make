@@ -9,7 +9,7 @@ const rawColour = /#[0-9a-fA-F]{3,8}\b|\b(?:rgba?|hsla?|oklch)\(/;
 const inlineColourStyle = /style="[^"]*\b(?:color|background|border(?:-[a-z]+)?|outline|fill|stroke)\s*:/;
 const emojiIcon = /[\u{1F300}-\u{1FAFF}☀-➿]/u;
 
-const failures = { fetch: [], colour: [], style: [], emoji: [], state: [], link: [] };
+const failures = { fetch: [], colour: [], style: [], emoji: [], state: [], link: [], workerGlobal: [] };
 // Rokkit Button renders target="_self" by default; SvelteKit treats any target as external and reloads
 // the page (wiping AppState). Every Button link must pass target="".
 const buttonLink = /<Button\b[^\n]*\bhref=/;
@@ -36,13 +36,31 @@ function walk(dir) {
 }
 presentation.forEach(walk);
 
+// Cloudflare Workers forbid random values, timers and I/O in global scope: the whole Worker fails to start (error 1101).
+// Server modules may only do these inside a function. Top-level statements are the lines that start at column 0.
+const serverFiles = ['src/hooks.server.ts'];
+(function collect(dir) {
+  for (const n of readdirSync(dir)) {
+    const p = join(dir, n);
+    if (statSync(p).isDirectory()) collect(p);
+    else if (/\.ts$/.test(n) && !/\.spec\.ts$/.test(n) && (p.startsWith('src/lib/server') || n === '+server.ts')) serverFiles.push(p);
+  }
+})('src');
+const workerGlobal = /\b(randomUUID|getRandomValues|Math\.random|setTimeout|setInterval|fetch)\s*\(/;
+for (const p of serverFiles) {
+  readFileSync(p, 'utf8').split('\n').forEach((line, i) => {
+    if (/^(const|let|var|export (const|let))\b/.test(line) && !/=>|function/.test(line) && workerGlobal.test(line)) failures.workerGlobal.push(`${p}:${i + 1}`);
+  });
+}
+
 const messages = {
   fetch: 'fetch/server import in presentation',
   colour: 'raw colour literal outside src/lib/components/illustrations (use a named token)',
   style: 'inline colour style (use token utilities: bg-paper, text-ink-mute, border-paper-edge…)',
   emoji: 'emoji used as an icon (use a Solar icon class)',
   state: 'page constructs its own state (read the shared AppState via useApp())',
-  link: 'Rokkit Button link without target="" (its default target="_self" makes SvelteKit reload the page)'
+  link: 'Rokkit Button link without target="" (its default target="_self" makes SvelteKit reload the page)',
+  workerGlobal: 'random value, timer or fetch in a server module\'s global scope (Workers refuse to start: error 1101)'
 };
 let failed = false;
 for (const [k, list] of Object.entries(failures)) {
