@@ -62,4 +62,13 @@ describe('AppState (one per app, shared by every section)', () => {
     app.toggleChat();
     expect([app.chatOpen, app.propsOpen]).toEqual([true, false]);
   });
+
+  it('sets the theme density for the whole app (settings)', async () => {
+    const { vibe } = await import('@rokkit/states');
+    const app = new AppState();
+    app.setDensity('compact');
+    expect(vibe.density).toBe('compact');
+    app.setDensity('comfortable');
+    expect(vibe.density).toBe('comfortable');
+  });
 });

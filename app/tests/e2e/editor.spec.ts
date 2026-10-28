@@ -24,7 +24,7 @@ test.describe('desktop editor and studio tools (1280×800)', () => {
     await page.getByRole('radio', { name: 'Compact' }).click();
     await expect(page.locator('body')).toHaveAttribute('data-density', 'compact');
     await page.getByRole('navigation', { name: 'Studio sections' }).getByRole('link', { name: 'Materials' }).click();
-    await expect(page.getByRole('table', { name: 'Material presets' })).toContainText('Birch plywood');
+    await expect(page.getByRole('grid', { name: 'Material presets' })).toContainText('Birch plywood');
   });
 });
 
