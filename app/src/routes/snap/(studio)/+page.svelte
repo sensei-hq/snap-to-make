@@ -8,7 +8,7 @@ import ImplPicker from '$lib/components/ImplPicker.svelte';
 import PlanCard from '$lib/components/PlanCard.svelte';
 import SimulateView from '$lib/components/SimulateView.svelte';
 import AssemblyPlayer from '$lib/components/AssemblyPlayer.svelte';
-import TraceDrawer from '$lib/components/TraceDrawer.svelte';
+import { goto } from '$app/navigation';
 import ArtPicker from '$lib/components/ArtPicker.svelte';
 import PreviewStage from '$lib/components/PreviewStage.svelte';
 import { useApp } from '$lib/state/context';
@@ -27,7 +27,8 @@ $effect(() => app.setScreen(stageTitle, stageSub));
 <svelte:window ondragover={(e) => e.preventDefault()} ondrop={onWindowDrop} />
 <div class="stage">
   <WorkshopShell listening={flow.conversation.listening} partial={flow.conversation.partial} listenLabel={flow.conversation.listenLabel}
-    onMicDown={() => flow.startListen()} onMicUp={() => flow.stopListen()} />
+    onMicDown={() => flow.startListen()} onMicUp={() => flow.stopListen()}
+    onPick={(text) => { app.pickSuggestion(text); void goto(resolve('/snap/capture')); }} />
 
   {#if flow.measureLabel}<SceneCard scene={flow.scene} measureLabel="Mug base Ø 82 mm" onConfirm={() => flow.plan()} />{/if}
 
@@ -70,5 +71,4 @@ $effect(() => app.setScreen(stageTitle, stageSub));
       </section>
     </div>
   {/if}
-  <TraceDrawer entries={flow.trace.entries} label={flow.trace.label} onExport={() => download('trace.json', flow.trace.exportJson())} />
 </div>

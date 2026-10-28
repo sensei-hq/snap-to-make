@@ -1,4 +1,5 @@
 <script lang="ts">
+import { resolve } from '$app/paths';
 import { Pill } from '@rokkit/ui';
 import { ThemeSwitcherToggle } from '@rokkit/app';
 import KatachiMark from './KatachiMark.svelte';
@@ -10,6 +11,6 @@ let { title, subtitle = '', pill = '' }: { title: string; subtitle?: string; pil
     <h1 class="font-heading text-lede font-normal leading-tight truncate">{title}</h1>
     {#if subtitle}<p class="meta truncate">{subtitle}</p>{/if}
   </div>
-  {#if pill}<Pill value={pill} class="meta" />{/if}
+  {#if pill}<a href={resolve('/snap/hood')} title="Under the hood" class="no-underline hover:no-underline"><Pill value={pill} class="meta" /></a>{/if}
   <ThemeSwitcherToggle variant="single" />
 </header>

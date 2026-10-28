@@ -11,7 +11,9 @@ test('hero: type -> measure -> plan -> simulate -> trace', async ({ page }) => {
   await page.getByRole('button', { name: /build plan/i }).click();
   await expect(page.getByLabel('Build plan')).toBeVisible();
   await expect(page.getByText(/holder-base/)).toBeVisible();
-  await expect(page.getByLabel('Under the hood')).toContainText('muse-spark-1.3');
   await page.getByRole('button', { name: 'Play' }).click();
   await expect(page.getByLabel('Simulate')).toContainText(/engrave|cut/);
+  // The cost pill opens Under the hood with the session's calls.
+  await page.getByRole('link', { name: /models/ }).first().click();
+  await expect(page.getByLabel('Under the hood')).toContainText('muse-spark-1.3');
 });

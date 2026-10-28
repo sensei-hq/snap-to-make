@@ -35,6 +35,9 @@ export class AppState {
   toggleChat() { this.chatOpen = !this.chatOpen; }
   setScreen(title: string, subtitle = '') { this.screen = { title, subtitle }; }
 
+  /** A suggestion chip is said for you; the page then opens the camera. */
+  pickSuggestion(text: string) { this.flow.conversation.ingestTranscript(text); }
+
   /** The composer (phone dock or studio chat panel) speaks to the workshop conversation. */
   async ask(text: string) {
     this.flow.conversation.ingestTranscript(text);

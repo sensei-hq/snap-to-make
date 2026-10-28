@@ -1,9 +1,9 @@
 <script lang="ts">
-import { Pill } from '@rokkit/ui';
+import { Button } from '@rokkit/ui';
 import ChatThread from './ChatThread.svelte';
-let { listening = false, partial = '', listenLabel = '', onMicDown, onMicUp }: {
+let { listening = false, partial = '', listenLabel = '', onMicDown, onMicUp, onPick }: {
   listening?: boolean; partial?: string; listenLabel?: string;
-  onMicDown?: () => void; onMicUp?: () => void;
+  onMicDown?: () => void; onMicUp?: () => void; onPick?: (text: string) => void;
 } = $props();
 const chips = ['Coasters from my sketch', 'Box that fits this', 'Ornaments for 40 names'];
 const lines = $derived([
@@ -27,6 +27,6 @@ const lines = $derived([
     <p class="meta">{listening ? listenLabel : 'hold to talk'}</p>
   </div>
   <div class="flex flex-wrap gap-2">
-    {#each chips as c (c)}<Pill value={c} />{/each}
+    {#each chips as c (c)}<Button style="outline" size="sm" class="rounded-full" label={c} onclick={() => onPick?.(c)} />{/each}
   </div>
 </section>

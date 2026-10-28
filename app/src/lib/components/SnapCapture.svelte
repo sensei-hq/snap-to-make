@@ -2,6 +2,7 @@
 import { resolve } from '$app/paths';
 import { Button, StatusList } from '@rokkit/ui';
 import ViewfinderFeed from './illustrations/ViewfinderFeed.svelte';
+import { sourceModes } from '$lib/content/capture';
 let { step = 1, hints = [], captured = false, analyzed = false, photoLabel = '', busy = false, onCapture, onAnalyze, onRetake, onClose }: {
   step?: number; hints?: { ok: boolean; text: string }[]; captured?: boolean; analyzed?: boolean; photoLabel?: string; busy?: boolean;
   onCapture?: () => void; onAnalyze?: () => void; onRetake?: () => void; onClose?: () => void;
@@ -20,6 +21,13 @@ const tips = $derived(hints.map((h) => ({ text: h.text, status: h.ok ? 'pass' : 
     {#if tips.length}<StatusList items={tips} class="absolute left-4 top-4 rounded-lg bg-paper px-3 py-2" />{/if}
     {#if captured}<p class="absolute left-4 bottom-4 rounded-full bg-paper px-3 py-1.5 meta text-ink">{photoLabel}</p>{/if}
   </div>
+  <nav aria-label="Source" class="flex justify-center gap-1.5 px-4 pt-4">
+    {#each sourceModes as m (m.id)}
+      {#if m.id === 'photo'}<Button size="sm" variant="primary" icon={m.icon} label={m.label} aria-current="page" />
+      {:else if m.href}<Button size="sm" style="ghost" target="" href={m.href} icon={m.icon} label={m.label} />
+      {:else}<Button size="sm" style="ghost" icon={m.icon} label={m.label} disabled title={`${m.label} — coming with the layers flow`} />{/if}
+    {/each}
+  </nav>
   <div class="h-37 shrink-0 flex items-center justify-between px-8 pb-4">
     <Button style="outline" icon="i-solar:gallery-linear" aria-label="Upload a photo" />
     {#if !captured}
