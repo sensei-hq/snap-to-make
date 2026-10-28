@@ -2,8 +2,8 @@
 import { Button, Card, StatusList } from '@rokkit/ui';
 import KatachiMark from './KatachiMark.svelte';
 import type { CanvasPiece } from '$lib/domain/canvas';
-let { pieces, preflight, estimateMinutes, deviceLabel = 'Ray 5 · birch_3mm · GRBL', message, lid, onAddLid, onDeclineLid, onExportSvg, onDownloadGcode }: {
-  pieces: CanvasPiece[]; preflight: { label: string; ok: boolean }[]; estimateMinutes: number; deviceLabel?: string;
+let { pieces, preflight, estimateMinutes, deviceLabel = 'Ray 5 · birch_3mm · GRBL', message, lid, zoom = 100, showGrid = true, onAddLid, onDeclineLid, onExportSvg, onDownloadGcode }: {
+  pieces: CanvasPiece[]; preflight: { label: string; ok: boolean }[]; estimateMinutes: number; deviceLabel?: string; zoom?: number; showGrid?: boolean;
   message: string; lid: 'offered' | 'added' | 'declined';
   onAddLid?: () => void; onDeclineLid?: () => void; onExportSvg?: () => void; onDownloadGcode?: () => void;
 } = $props();
@@ -11,8 +11,8 @@ const checks = $derived(preflight.map((c) => ({ text: c.label, status: c.ok ? 'p
 const legend = [{ label: 'cut', swatch: 'bg-cut' }, { label: 'engrave', swatch: 'bg-engrave' }];
 </script>
 <section aria-label="Canvas" class="px-4 py-4 flex flex-col gap-3.5">
-  <div class="relative rounded-lg grid-bed bg-paper-soft border border-paper-edge" role="img" aria-label="Nested sheet layout 300 by 300 millimetres">
-    <svg viewBox="0 0 300 300" class="w-full block" fill="none" stroke-width="1.4">
+  <div class="relative rounded-lg bg-paper-soft border border-paper-edge overflow-auto {showGrid ? 'grid-bed' : ''}" role="img" aria-label="Nested sheet layout 300 by 300 millimetres">
+    <svg viewBox="0 0 300 300" class="block origin-top-left" style="width:{zoom}%" fill="none" stroke-width="1.4">
       <rect x="6" y="6" width="288" height="288" stroke="var(--paper-edge)" stroke-width="1" />
       {#each pieces as p (p.id)}
         {#if p.kind === 'circle'}<circle cx={p.xMm + p.wMm / 2} cy={p.yMm + p.hMm / 2} r={p.wMm / 2} stroke="var(--cut)" />{#if p.label}<text x={p.xMm + p.wMm / 2} y={p.yMm + p.hMm / 2 + 7} text-anchor="middle" font-size="22" fill="var(--engrave)" stroke="none">{p.label}</text>{/if}

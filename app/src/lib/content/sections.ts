@@ -12,6 +12,14 @@ export const sections: Section[] = [
   { id: 'batch', href: '/snap/batch', label: 'Batch', icon: 'i-solar:widget-4-linear' }
 ];
 
+/** Studio-only tools, shown in the rail below the divider (not in the phone tabs). */
+export interface Tool { id: 'materials' | 'annotations' | 'settings'; href: string; label: string; icon: string }
+export const tools: Tool[] = [
+  { id: 'materials', href: '/snap/materials', label: 'Materials', icon: 'i-solar:palette-linear' },
+  { id: 'annotations', href: '/snap/annotations', label: 'Annotations', icon: 'i-solar:notes-linear' },
+  { id: 'settings', href: '/snap/settings', label: 'Settings', icon: 'i-solar:settings-linear' }
+];
+
 /** The section a path belongs to: the longest matching prefix wins; everything else under /snap is the workshop flow. */
 export function sectionFor(pathname: string): SectionId {
   const prefix = (s: Section) => s.match ?? s.href;

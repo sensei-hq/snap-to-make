@@ -1,3 +1,4 @@
+import { vibe } from '@rokkit/states';
 import { FlowState } from './flow.svelte';
 import { ConvertState } from './convert.svelte';
 import { WatchState } from './watch.svelte';
@@ -5,6 +6,7 @@ import { BatchState } from './batch.svelte';
 import { CaptureState } from './capture.svelte';
 import { SessionState } from './session.svelte';
 import { LayerFlowState } from './layer-flow.svelte';
+import { EditorState } from './editor.svelte';
 
 // One per app, created by routes/snap/+layout.svelte and read by every page through useApp(),
 // so section state (and the session's cost trace) survives navigation.
@@ -16,7 +18,9 @@ export class AppState {
   batch = new BatchState();
   capture = new CaptureState();
   layers = new LayerFlowState();
+  editor = new EditorState();
   chatOpen = $state(true);
+  propsOpen = $state(false);
   screen = $state({ title: 'Workshop', subtitle: '' });
 
   get trace() { return this.flow.trace; }
@@ -32,7 +36,10 @@ export class AppState {
     ];
   }
 
-  toggleChat() { this.chatOpen = !this.chatOpen; }
+  /** The studio shows one right panel at a time: the Katachi chat or the editor's properties. */
+  toggleChat() { this.chatOpen = !this.chatOpen; if (this.chatOpen) this.propsOpen = false; }
+  setDensity(d: 'comfortable' | 'compact') { vibe.density = d; }
+  toggleProps() { this.propsOpen = !this.propsOpen; if (this.propsOpen) this.chatOpen = false; }
   setScreen(title: string, subtitle = '') { this.screen = { title, subtitle }; }
 
   /** A suggestion chip is said for you; the page then opens the camera. */

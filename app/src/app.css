@@ -24,3 +24,5 @@ body {
 ::selection { background: var(--accent-soft); }
 :where(a) { color: var(--accent); text-decoration: none; }
 :where(a:hover) { text-decoration: underline; }
+/* native form controls (range, checkbox, radio inside @rokkit/forms fields) take the ink action colour */
+:where(input[type='range'], input[type='checkbox'], input[type='radio']) { accent-color: var(--primary); }
