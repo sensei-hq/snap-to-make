@@ -35,15 +35,15 @@ describe('AppState (one per app, shared by every section)', () => {
     expect(app.flow.conversation.slots).toMatchObject({ qty: 4, thicknessMm: 3, material: 'birch' });
   });
 
-  it('builds the chat panel thread from the conversation: greeting, what you said, Katachi’s replies', () => {
+  it('keeps every bot interaction in one chat log (Rokkit ChatMessage shape), with optional actions', () => {
     const app = new AppState();
-    expect(app.messages).toEqual([{ role: 'katachi', text: 'Hi Dev — what are we making today?' }]);
+    expect(app.messages).toEqual([{ id: 'm0', role: 'assistant', text: 'Hi Dev — what are we making today?' }]);
     app.flow.conversation.ingestTranscript('make four coasters');
-    app.flow.conversation.say('Build plan ready.');
+    app.flow.conversation.say('Build plan ready.', [{ label: 'Open the plan', href: '/snap/plan' }]);
     expect(app.messages).toEqual([
-      { role: 'katachi', text: 'Hi Dev — what are we making today?' },
-      { role: 'user', text: 'make four coasters' },
-      { role: 'katachi', text: 'Build plan ready.' }
+      { id: 'm0', role: 'assistant', text: 'Hi Dev — what are we making today?' },
+      { id: 'm1', role: 'user', text: 'make four coasters' },
+      { id: 'm2', role: 'assistant', text: 'Build plan ready.', data: { actions: [{ label: 'Open the plan', href: '/snap/plan' }] } }
     ]);
   });
 
@@ -70,5 +70,12 @@ describe('AppState (one per app, shared by every section)', () => {
     expect(vibe.density).toBe('compact');
     app.setDensity('comfortable');
     expect(vibe.density).toBe('comfortable');
+  });
+
+  it('opens and closes the assistant sheet on phones', () => {
+    const app = new AppState();
+    expect(app.sheetOpen).toBe(false);
+    app.toggleSheet();
+    expect(app.sheetOpen).toBe(true);
   });
 });
