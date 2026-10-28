@@ -11,8 +11,8 @@ describe('AppState (one per app, shared by every section)', () => {
 
   it('keeps section state alive across navigation (same instances)', () => {
     const app = new AppState();
-    const { convert, canvas, watch, batch, capture } = app;
-    expect([app.convert, app.canvas, app.watch, app.batch, app.capture]).toEqual([convert, canvas, watch, batch, capture]);
+    const { convert, watch, batch, capture } = app;
+    expect([app.convert, app.watch, app.batch, app.capture]).toEqual([convert, watch, batch, capture]);
   });
 
   it('opens and closes the Katachi chat panel', () => {

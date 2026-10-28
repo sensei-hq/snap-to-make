@@ -23,7 +23,7 @@ async function hero(page: Page) {
   await expect(page).toHaveURL(/\/snap\/art$/);
   await page.getByRole('button', { name: /Use take/ }).click();
   await expect(page).toHaveURL(/\/snap\/preview$/);
-  await expect(page.getByLabel('Preview')).toContainText('Ø 95 mm');
+  await expect(page.getByRole('region', { name: 'Preview' })).toContainText('Ø 95 mm');
   await page.getByRole('button', { name: 'Make it' }).click();
   await expect(page).toHaveURL(/\/snap\/canvas$/);
   await expect(page.getByRole('img', { name: /Nested sheet layout/ })).toBeVisible();

@@ -18,7 +18,10 @@ describe('scene: measurements are editable and drive the design', () => {
     await f.analyse();
     expect(f.measurements.find((m) => m.id === 'mug')?.value).toBe(82);
     expect(f.coasterSet.coasterDiameterMm).toBe(95);
+    f.startEdit('mug');
+    expect(f.editing).toBe('mug');
     f.setMeasurement('mug', 90);
+    expect(f.editing).toBeNull();
     expect(f.coasterSet.coasterDiameterMm).toBe(103);
     f.setMeasurement('mug', -4);
     expect(f.measurements.find((m) => m.id === 'mug')?.value).toBe(90);

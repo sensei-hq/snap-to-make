@@ -1,6 +1,5 @@
 import { describe, it, expect } from 'vitest';
 import { CaptureState } from './capture.svelte';
-import { CanvasState } from './canvas.svelte';
 import { ConversationState } from './conversation.svelte';
 
 describe('CaptureState (mock Snap API shell)', () => {
@@ -13,18 +12,6 @@ describe('CaptureState (mock Snap API shell)', () => {
     expect(c.photoLabel).toContain('mock');
     await c.analyze();
     expect(c.analyzed).toBe(true);
-  });
-});
-
-describe('CanvasState (mock Canvas API shell)', () => {
-  it('loads a sheet plan with preflight checks and exports', async () => {
-    const c = new CanvasState();
-    await c.load();
-    expect(c.sheet.wMm).toBe(300);
-    expect(c.pieces.length).toBeGreaterThan(3);
-    expect(c.preflight.every(x => x.ok)).toBe(true);
-    expect(c.svg()).toContain('<svg');
-    expect(c.gcode()).toContain('G1');
   });
 });
 
