@@ -78,4 +78,30 @@ describe('AppState (one per app, shared by every section)', () => {
     app.toggleSheet();
     expect(app.sheetOpen).toBe(true);
   });
+
+  it('hands a page’s info view to the assistant (Chat | Info) and clears it when the page leaves', () => {
+    const app = new AppState();
+    expect(app.info).toBeNull();
+    const body = (() => {}) as never;
+    app.setInfo('Regions', body);
+    expect(app.info?.title).toBe('Regions');
+    expect(app.panelTab).toBe('info');
+    app.setPanelTab('chat');
+    expect(app.panelTab).toBe('chat');
+    app.clearInfo();
+    expect([app.info, app.panelTab]).toEqual([null, 'chat']);
+  });
+
+  it('guides each layers step once in the chat, with Previous / Next and the step’s suggestions', () => {
+    const app = new AppState();
+    app.guideStep('objects');
+    app.guideStep('objects');
+    const steps = app.messages.filter((m) => m.data?.actions?.some((a) => a.label.startsWith('Next')));
+    expect(steps).toHaveLength(1);
+    expect(steps[0].data?.actions).toEqual([
+      { label: 'Previous · Cutout', href: '/snap/layers/cutout' },
+      { label: 'Next · Layers', href: '/snap/layers/layers' }
+    ]);
+    expect(app.suggestions.length).toBeGreaterThan(0);
+  });
 });
