@@ -44,6 +44,13 @@ describe('LayerFlowState · image → layers (docs/design/01 S1–S9)', () => {
     expect(f.selected.n).toBe(2);
   });
 
+  it('D5: joinery for the six-view parts defaults to finger joints', () => {
+    const f = new LayerFlowState();
+    expect(f.joinery).toBe('finger');
+    f.setJoinery('tabs');
+    expect(f.joinery).toBe('tabs');
+  });
+
   it('S4: keeps regions by default except the bought frame; toggling updates the kept share', () => {
     const f = new LayerFlowState();
     expect(f.regions.find((r) => r.id === 'frame')?.on).toBe(false);
