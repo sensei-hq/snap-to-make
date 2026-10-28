@@ -1,6 +1,6 @@
 <script lang="ts">
 import { Button, Card, StatusList } from '@rokkit/ui';
-import BurnEMark from './BurnEMark.svelte';
+import KatachiMark from './KatachiMark.svelte';
 let { plan, onExportSvg, onDownloadGcode }: { plan: any; onExportSvg?: () => void; onDownloadGcode?: () => void } = $props();
 const checks = $derived((plan?.preflight ?? []).map((c: any) => ({ text: c.label, status: c.ok === false ? 'warn' : 'pass' })));
 const legend = [{ label: 'cut', swatch: 'bg-cut' }, { label: 'engrave', swatch: 'bg-engrave' }];
@@ -20,7 +20,7 @@ const legend = [{ label: 'cut', swatch: 'bg-cut' }, { label: 'engrave', swatch: 
     <span class="meta absolute right-2 bottom-2">300 × 300 mm</span>
   </div>
   <div class="flex items-center gap-2.5 text-ui">
-    <BurnEMark size={20} class="text-ink shrink-0" />
+    <KatachiMark size={20} class="text-ink shrink-0" />
     <span class="flex-1">{plan?.suggestion ?? ''}</span>
     <Button style="outline" size="sm" label="Add lid" /><Button size="sm" style="ghost" label="No" />
   </div>

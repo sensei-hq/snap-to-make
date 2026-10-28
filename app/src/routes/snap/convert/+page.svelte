@@ -2,7 +2,7 @@
 import { resolve } from '$app/paths';
 import { Button, Card } from '@rokkit/ui';
 import { InputField } from '@rokkit/forms';
-import BurnEMark from '$lib/components/BurnEMark.svelte';
+import KatachiMark from '$lib/components/KatachiMark.svelte';
 import DropStage from '$lib/components/DropStage.svelte';
 import AppNav from '$lib/components/AppNav.svelte';
 import ChatThread from '$lib/components/ChatThread.svelte';
@@ -50,7 +50,7 @@ function onWindowDrop(e: DragEvent) {
 <svelte:window ondragover={onWindowDragOver} ondrop={onWindowDrop} />
 <main class="bg-paper text-ink mx-auto max-w-6xl p-4 min-h-screen flex flex-col gap-4">
   <header class="flex items-center gap-3">
-    <BurnEMark size={32} class="text-ink" />
+    <KatachiMark size={32} class="text-ink" />
     <div><h1 class="section-title">Convert — from photo to build</h1><p class="meta">snap → dissect → agree → pieces</p></div>
   </header>
   <AppNav current="convert" />
@@ -67,7 +67,7 @@ function onWindowDrop(e: DragEvent) {
       <InputField name="group" type="radio" label="Fabrication" options={groups} value={groupOption} onchange={(g: any) => { flow.group = g.value as typeof flow.group; }} />
       {#if flow.group === 'shrink-plastic'}<p class="text-ui text-ink-mute">Shrink plastic is cut/drawn larger than the final piece: at the typical 0.40 shrink ratio a 40 mm charm starts at 100 mm. Calibrate with a 100 mm test tile for your film.</p>{/if}
       <Button variant="primary" size="lg" class="self-start" icon="i-solar:magic-stick-linear" loading={flow.status === 'thinking'} disabled={flow.status === 'thinking'} onclick={() => flow.propose()}
-        label={flow.status === 'thinking' ? 'Burn-E is dissecting…' : flow.variations.length ? 'Re-dissect with my comments' : 'Ask Burn-E to dissect'} />
+        label={flow.status === 'thinking' ? 'Katachi is dissecting…' : flow.variations.length ? 'Re-dissect with my comments' : 'Ask Katachi to dissect'} />
       {#if flow.objective}<section aria-label="Objective"><Card><h2 class="font-semibold">Objective: {flow.objective}</h2><p class="text-ui text-ink-mute">Class: {flow.conversionClass} · {flow.group}</p></Card></section>{/if}
       {#if flow.variations.length}<section aria-label="Variations" class="flex flex-col gap-2"><h2 class="font-semibold">Variations — agree one to build</h2>
         <div class="grid sm:grid-cols-3 gap-2">{#each flow.variations as v (v.title)}<Card onclick={() => flow.agree(v)}><strong>{v.title}</strong><p class="text-ui text-ink-mute">{v.change}</p></Card>{/each}</div></section>{/if}

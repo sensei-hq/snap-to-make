@@ -1,7 +1,7 @@
 # 09 — Demo, Deck, White Paper & Submission
 
 ## 9.1 Judging map (reported weights; confirm against the Official Rules)
-| Criterion | Weight* | How Burn-E scores |
+| Criterion | Weight* | How Katachi scores |
 |---|---|---|
 | Impact | 30% | Millions of idle desktop lasers/cutters; idea → object in minutes; paid tiers; Cricut reach |
 | Use of Meta AI tooling | 25% | **6 Meta models + Muse Code**, each in its strongest role; live "Under the hood" proof with per-call cost |
@@ -12,7 +12,7 @@
 ## 9.2 Demo video (≤ 3:00): shot list
 | Time | Shot | Voiceover / on-screen |
 |---|---|---|
-| 0:00–0:12 | Cold open: hands put a pencil sketch, a mug and a credit card on a birch bench. "Hey Burn-E, coasters for Maya." | Title: **Show it. Say it. Burn it.** |
+| 0:00–0:12 | Cold open: hands put a pencil sketch, a mug and a credit card on a birch bench. "Hey Katachi, coasters for Maya." | Title: **Show it. Say it. Burn it.** |
 | 0:12–0:40 | Screen: photo → masks burn in (blue, red, amber) → "Ø 82 mm ±2" | "SAM 3.1 outlines everything; Spark measures against the card." |
 | 0:40–1:05 | Voice: "four coasters, 3 mm birch, finger-joint holder" → Plan card with assumptions | "Muse Spark plans the parts; our code builds exact geometry." |
 | 1:05–1:30 | Art picker (3 variants) → Preview develops | "Muse Image cleans the sketch and shows the finished piece before any wood is cut." |
@@ -23,7 +23,7 @@
 | 2:50–3:00 | End card: logo, URL, "Built with Muse Code on the Meta Model API" | |
 
 ## 9.3 Pitch deck (10 slides, Workshop template)
-1. **Title:** Burn-E: Show it. Say it. Burn it. (hero photo: sketch → coasters)
+1. **Title:** Katachi: Show it. Say it. Burn it. (hero photo: sketch → coasters)
 2. **Problem:** millions of makers own cutters; design is the wall (3 pains: measure, trace, imagine)
 3. **Demo moment:** 4-frame strip (photo → masks → preview → object)
 4. **How it works:** EAR · EYE · BRAIN · HAND · IMAGINATION diagram with model chips

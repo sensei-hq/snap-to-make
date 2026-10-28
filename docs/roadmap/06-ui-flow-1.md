@@ -1,6 +1,6 @@
 # Stage 06 — UI flow I: voice → measure → Object → Impl picker · HANDOFF
 
-Prereqs: Stages 04+05. PRD: R-CV-1..6, R-SN-1..4, R-UN-5/6, R-DS-7, screens S1/S2/S3/S10 (`docs/prd/06-screens.md`), mock `docs/mockups/Burn-E.html`.
+Prereqs: Stages 04+05. PRD: R-CV-1..6, R-SN-1..4, R-UN-5/6, R-DS-7, screens S1/S2/S3/S10 (`docs/prd/06-screens.md`), mock `docs/mockups/Katachi.html`.
 
 ## Build (components props-only; all flow in state classes)
 

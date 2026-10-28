@@ -9,7 +9,7 @@ Prereqs: Stage 09. PRD: `docs/prd/09-demo-and-submission.md`, roadmap D6–D9.
 
 ## Eval + polish (D6)
 
-- Eval run: 10 `samples/` photos with caliper truth → accuracy table (claim only what it supports). Motion/theme pass vs `docs/mockups/Burn-E.html` (mask burn-in, morph, develop). First real burn on Ray 5; simulation-vs-burn order comparison recorded.
+- Eval run: 10 `samples/` photos with caliper truth → accuracy table (claim only what it supports). Motion/theme pass vs `docs/mockups/Katachi.html` (mask burn-in, morph, develop). First real burn on Ray 5; simulation-vs-burn order comparison recorded.
 
 ## Deploy
 

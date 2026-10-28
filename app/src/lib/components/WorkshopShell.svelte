@@ -7,7 +7,7 @@ let { listening = false, partial = '', listenLabel = '', onMicDown, onMicUp }: {
 } = $props();
 const chips = ['Coasters from my sketch', 'Box that fits this', 'Ornaments for 40 names'];
 const lines = $derived([
-  { role: 'burn-e', text: 'Hi Dev — what are we making today?' },
+  { role: 'katachi', text: 'Hi Dev — what are we making today?' },
   ...(listening || partial ? [{ role: 'user', text: partial || 'Listening…' }] : [])
 ]);
 </script>

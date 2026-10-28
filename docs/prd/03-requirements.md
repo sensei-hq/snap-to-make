@@ -23,13 +23,13 @@ IDs: `R-<module>-<n>`. Phase: **P1** (demo-critical) · **P1+** (stretch this we
 ## CV — Conversation & Voice
 | ID | Requirement | Phase |
 |---|---|---|
-| R-CV-1 | The app opens to the **sparse workshop screen** (J1 step 1, S1): Burn-E avatar or waveform, mic button, text input always visible. | P1 |
+| R-CV-1 | The app opens to the **sparse workshop screen** (J1 step 1, S1): Katachi avatar or waveform, mic button, text input always visible. | P1 |
 | R-CV-2 | **Push-to-talk** voice capture streams 16-bit PCM (24 kHz) to the server, which relays to Muse Voice Transcribe realtime (`PUSH_TO_TALK` mode) with `keywords` biasing (maker vocabulary: kerf, finger joint, birch, basswood, plywood, acrylic, engrave, Longer Ray, xTool, Cricut…). | P1 |
 | R-CV-3 | Partial transcripts render live; the final transcript is sent as a user turn to the conversation orchestrator (Spark 1.3). | P1 |
-| R-CV-4 | Burn-E's replies render as **styled captions**. Spoken output uses the browser's built-in speech synthesis (Web Speech API, on-device, not a cloud model), toggleable, default on for the demo. *(Meta has no TTS; see 10-risks.)* | P1 |
+| R-CV-4 | Katachi's replies render as **styled captions**. Spoken output uses the browser's built-in speech synthesis (Web Speech API, on-device, not a cloud model), toggleable, default on for the demo. *(Meta has no TTS; see 10-risks.)* | P1 |
 | R-CV-5 | The orchestrator tracks the conversation slots: **intent, device, material, thickness, dimensions/fit target, art** and invokes **UI toolkit actions** (show scene card, measure overlay, plan card, art picker, preview, canvas) via Spark tool calls. | P1 |
-| R-CV-6 | Burn-E has the **workshop buddy** personality: brief, opinionated, uses maker lingo, never blocks on missing info, proposes defaults. | P1 |
-| R-CV-7 | Hands-free "Hey Burn-E" wake word, ENDPOINTING mode. | P2 |
+| R-CV-6 | Katachi has the **workshop buddy** personality: brief, opinionated, uses maker lingo, never blocks on missing info, proposes defaults. | P1 |
+| R-CV-7 | Hands-free "Hey Katachi" wake word, ENDPOINTING mode. | P2 |
 
 **AC (P1):** speaking "make four coasters 3 mm birch" produces a correct transcript within ~1 s of release, and the orchestrator fills `{intent: coasters, qty: 4, material: birch, thickness: 3}`.
 
@@ -49,7 +49,7 @@ IDs: `R-<module>-<n>`. Phase: **P1** (demo-critical) · **P1+** (stretch this we
 | R-UN-3 | For each reference and fit-target, call **SAM 3.1** with a text prompt (from the Spark label) to get a pixel-exact mask; compute the scale (**px/mm**) from the reference mask's fitted rectangle (min-area rect), correcting for mild perspective with the card's aspect ratio. | P1 |
 | R-UN-4 | Fit-target dimensions (diameter for round, W×H for rectangular) are computed **in code from the SAM masks + scale**, not guessed by the LLM. Spark sanity-checks ("a mug base of 82 mm is plausible") and assigns a confidence. | P1 |
 | R-UN-5 | The **Measure overlay** shows glowing masks and dimension callouts; the user can tap any number to correct it. | P1 |
-| R-UN-6 | No reference detected → Burn-E asks for one or offers "assume standard mug (Ø 80 mm)". | P1 |
+| R-UN-6 | No reference detected → Katachi asks for one or offers "assume standard mug (Ø 80 mm)". | P1 |
 
 **AC:** with a card in frame, shot within ~20° of top-down, the measured mug base is within ±5% of a caliper reading (Day-1 spike), with a target of ±3%.
 
@@ -80,7 +80,7 @@ IDs: `R-<module>-<n>`. Phase: **P1** (demo-critical) · **P1+** (stretch this we
 | R-AR-1 | **Art cleanup:** the sketch crop (from the SAM bbox) is sent to `muse-image-1.0` edit with an instruction like *"Redraw as clean, bold, single-color black line art on pure white, laser-engraving friendly, keep the composition"*; it returns **3 variants** (`n=3`), and the user picks one. | P1 |
 | R-AR-2 | **Generate art from words** ("a mountain line drawing", "Maya in script lettering") with the same laser-friendly style constraints. | P1 |
 | R-AR-3 | **Photoreal preview:** Responses API with ordered, captioned references: [1] chosen art, [2] material swatch photo (birch/basswood/walnut/acrylic library), [3] optional scene photo from the user; the prompt describes parts, dimensions and engraving. One render, plus a re-roll option. | P1 |
-| R-AR-4 | **Share card** (before/after, project name, "Made with Burn-E") for social posts. | P1+ |
+| R-AR-4 | **Share card** (before/after, project name, "Made with Katachi") for social posts. | P1+ |
 | R-AR-5 | Multi-turn refinement ("make the engraving darker", "put it on a kitchen counter") using `previous_response_id`. | P1+ |
 | R-AR-6 | Disable `enable_shell` and `enable_web_search` for art cleanup (determinism, cost/latency); allow search for "in the style of [public-domain style]" prompts. | P1 |
 
@@ -89,7 +89,7 @@ IDs: `R-<module>-<n>`. Phase: **P1** (demo-critical) · **P1+** (stretch this we
 |---|---|---|
 | R-MK-1 | G-code (GRBL) emitted by the laser adapter (`src/lib/devices/laser.ts`) with the selected **device + material + thickness preset** (Longer Ray 5 10 W / 20 W presets as data). Engrave before cut. | P1 |
 | R-MK-2 | **SVG export** (cut = red hairline, engrave = black/blue fill) for Cricut, Glowforge, xTool and LightBurn. | P1 |
-| R-MK-3 | Pre-flight checks: parts within the work area, minimum feature size, cut paths closed, estimated burn time. Burn-E narrates problems ("your holder is taller than the 400 mm bed, so I split it"). | P1 |
+| R-MK-3 | Pre-flight checks: parts within the work area, minimum feature size, cut paths closed, estimated burn time. Katachi narrates problems ("your holder is taller than the 400 mm bed, so I split it"). | P1 |
 | R-MK-4 | Download `.burn` project + `.gc` files as a ZIP. | P1 |
 | R-MK-5 | Stream G-code to the machine via **Web Serial** (GRBL). | P2 |
 
@@ -125,7 +125,7 @@ IDs: `R-<module>-<n>`. Phase: **P1** (demo-critical) · **P1+** (stretch this we
 ## PL — Platform
 | ID | Requirement | Phase |
 |---|---|---|
-| R-PL-1 | **All Meta API calls go through the Burn-E server** (the API key never reaches the browser), including the Voice Transcribe WebSocket relay. | P1 |
+| R-PL-1 | **All Meta API calls go through the Katachi server** (the API key never reaches the browser), including the Voice Transcribe WebSocket relay. | P1 |
 | R-PL-2 | **Budget guard:** per-session and per-day spend caps (default $1/session, $10/day for the demo deployment), plus a global kill switch. | P1 |
 | R-PL-3 | **Privacy:** while on hackathon free credits, inputs may be used by Meta, so the demo uses our own media; show a notice "Don't upload personal photos" on the public demo. P2: Standard mode plus a privacy policy. | P1 |
 | R-PL-4 | Demo access via an **invite code** (judges get one); no full auth in P1. | P1 |

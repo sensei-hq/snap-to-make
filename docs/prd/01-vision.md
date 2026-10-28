@@ -12,17 +12,17 @@ Desktop laser cutters, CNC routers and vinyl cutters (Cricut, Silhouette) have b
 Result: most machines cut the same downloaded templates, and many sit idle.
 
 ## 1.2 Solution
-**Burn-E Snap → Make** is a voice-first workshop buddy that goes from *the real world* to *the cut file* to *the finished object*:
+**Katachi Snap → Make** is a voice-first workshop buddy that goes from *the real world* to *the cut file* to *the finished object*:
 
 1. **Show it**: snap a photo or short video of a sketch, the object it must fit, and a reference (a credit card or ruler).
 2. **Say it**: "Four coasters with this logo, sized for this mug, 3 mm birch, plus a finger-joint holder."
-3. **See it**: Burn-E measures, traces, designs the parts and renders a **photoreal preview** before any material is used.
-4. **Burn it**: one tap to G-code (GRBL) or SVG (Cricut/Glowforge/xTool); Burn-E **watches the burn** through the phone camera and warns about problems.
+3. **See it**: Katachi measures, traces, designs the parts and renders a **photoreal preview** before any material is used.
+4. **Burn it**: one tap to G-code (GRBL) or SVG (Cricut/Glowforge/xTool); Katachi **watches the burn** through the phone camera and warns about problems.
 
 ## 1.3 Why Meta's models (the core of the pitch)
 Each step needs a different kind of intelligence. Meta's Muse family covers all of them, and each model does what it's uniquely good at:
 
-| Human skill | Meta model | Role in Burn-E |
+| Human skill | Meta model | Role in Katachi |
 |---|---|---|
 | Listening in a noisy shop | **Muse Voice Transcribe** | Realtime speech with maker vocabulary biasing |
 | Seeing and reasoning about the scene | **Muse Spark 1.3** | Identifies objects, measures against a reference, plans the parts, writes the design spec as validated JSON |
@@ -44,7 +44,7 @@ Each step needs a different kind of intelligence. Meta's Muse family covers all 
 
 ## 1.5 Positioning
 - **Not** another vector editor. The canvas is where you *refine*, not where you start.
-- **Not** an AI image generator bolted onto a laser app (Glowforge "Magic Canvas" and xTool AImake generate art only). Burn-E **measures, traces, designs parts with joints, previews, outputs machine code and monitors the burn**: the whole loop.
+- **Not** an AI image generator bolted onto a laser app (Glowforge "Magic Canvas" and xTool AImake generate art only). Katachi **measures, traces, designs parts with joints, previews, outputs machine code and monitors the burn**: the whole loop.
 - **Device-agnostic:** GRBL G-code (most diode lasers) plus SVG export (Cricut, Glowforge, xTool, LightBurn import).
 
 ## 1.6 Business model (nominal individual pricing)

@@ -1,4 +1,4 @@
-# Burn-E — Snap → Make · Phase 1 Implementation Plan
+# Katachi — Snap → Make · Phase 1 Implementation Plan
 
 > Status: **Executing** (started 2026-10-27). Checklist: [2026-10-27-snap-make-phase1-checklist.md](2026-10-27-snap-make-phase1-checklist.md) — every item tracked to closure there.
 > Source of truth: `docs/prd/` (start `docs/prd/README.md`). Requirements cited as `R-<module>-<n>`.

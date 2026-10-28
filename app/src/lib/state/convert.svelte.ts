@@ -1,13 +1,13 @@
 import { buildBreakdown, objectFromPieces, type FabricationGroup, type BuildBreakdown } from '../domain/convert';
 import { designSpecToObject } from '../domain/geometry';
 export interface Variation { title: string; change: string }
-export interface ChatMessage { role: 'burn-e' | 'user'; text: string }
+export interface ChatMessage { role: 'katachi' | 'user'; text: string }
 export interface DissectPiece { name: string; kind: string; note: string }
 export interface Dissection { subject: string; conversionClass: string; piecesHint: string[]; pieces: DissectPiece[]; source: string }
 export class ConvertState {
   imageUrl = $state<string | undefined>(undefined);
   dissection = $state<Dissection | null>(null);
-  messages = $state<ChatMessage[]>([{ role: 'burn-e', text: 'Show me a photo (or describe your idea) and I will dissect it into buildable pieces.' }]);
+  messages = $state<ChatMessage[]>([{ role: 'katachi', text: 'Show me a photo (or describe your idea) and I will dissect it into buildable pieces.' }]);
   group = $state<FabricationGroup>('laser-cut');
   description = $state('');
   comment = $state('');
@@ -39,11 +39,11 @@ export class ConvertState {
   async propose(imageDataUrl?: string) {
     const key = this.proposalKey(imageDataUrl);
     if (!this.imageUrl && !imageDataUrl && !this.description.trim()) {
-      this.messages = [...this.messages, { role: 'burn-e', text: 'Drop a photo above (or use the camera), or describe what you want to achieve — then I will dissect it.' }];
+      this.messages = [...this.messages, { role: 'katachi', text: 'Drop a photo above (or use the camera), or describe what you want to achieve — then I will dissect it.' }];
       this.status = 'idle';
       return;
     }
-    if (key === this.lastProposalKey && this.variations.length > 0) return; // already dissected this exact input — don't repeat Burn-E
+    if (key === this.lastProposalKey && this.variations.length > 0) return; // already dissected this exact input — don't repeat Katachi
     this.lastProposalKey = key;
     this.status = 'thinking';
     if (this.comment) this.messages = [...this.messages, { role: 'user', text: this.comment }];
@@ -57,10 +57,10 @@ export class ConvertState {
   get chatTurns(): ChatMessage[] {
     const turns: ChatMessage[] = [...this.messages];
     if (this.dissection) {
-      turns.push({ role: 'burn-e', text: `Here's what I see: ${this.dissection.subject} — a ${this.conversionClass} build for ${this.group}. I can dissect it into: ${this.dissection.piecesHint.join(', ') || 'flat pieces with joins'}.` });
-      turns.push({ role: 'burn-e', text: `Objective: ${this.objective}. Here are ${this.variations.length} variations — pick one and I'll break it into pieces and assembly steps.` });
+      turns.push({ role: 'katachi', text: `Here's what I see: ${this.dissection.subject} — a ${this.conversionClass} build for ${this.group}. I can dissect it into: ${this.dissection.piecesHint.join(', ') || 'flat pieces with joins'}.` });
+      turns.push({ role: 'katachi', text: `Objective: ${this.objective}. Here are ${this.variations.length} variations — pick one and I'll break it into pieces and assembly steps.` });
     }
-    if (this.agreed) turns.push({ role: 'burn-e', text: `Agreed — ${this.agreed.title}. Here's the breakdown: every piece, what to buy, and how it comes together.` });
+    if (this.agreed) turns.push({ role: 'katachi', text: `Agreed — ${this.agreed.title}. Here's the breakdown: every piece, what to buy, and how it comes together.` });
     return turns;
   }
   agree(v: Variation) {

@@ -1,8 +1,8 @@
 # From Pixels to Parts: Orchestrating Meta's Muse Models for Physical Making
-*Burn-E — Snap → Make · White paper draft (numbers marked [EVAL] come from the 10-sample eval; [TRACE] from a live trace export)*
+*Katachi — Snap → Make · White paper draft (numbers marked [EVAL] come from the 10-sample eval; [TRACE] from a live trace export)*
 
 ## Abstract
-Desktop laser cutters are consumer products, but the design step — measuring the real world, tracing sketches, designing joined parts, previewing the result — remains expert work. Burn-E closes that loop with a voice-first workshop buddy: show a sketch and the object it must fit, say what you want, and receive a measured, cut-ready design, a photoreal preview, an on-screen fabrication simulation, and machine G-code. Six Meta models each do the job they are uniquely best at; deterministic code does everything that must be exact.
+Desktop laser cutters are consumer products, but the design step — measuring the real world, tracing sketches, designing joined parts, previewing the result — remains expert work. Katachi closes that loop with a voice-first workshop buddy: show a sketch and the object it must fit, say what you want, and receive a measured, cut-ready design, a photoreal preview, an on-screen fabrication simulation, and machine G-code. Six Meta models each do the job they are uniquely best at; deterministic code does everything that must be exact.
 
 ## 1. The design gap in consumer fabrication
 Millions own diode lasers, Cricut cutters and 3D printers; most cut downloaded templates. The wall is not the hardware: it is measuring (the mug the coaster must fit), tracing (the hand-drawn logo), joining (a holder that fits four 3 mm coasters), and imagining the result before spending material.

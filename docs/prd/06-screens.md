@@ -7,16 +7,16 @@ Shared chrome: `ScreenHeader` (title, subtitle, cost pill, light/dark toggle via
 ---
 
 ## S1 Workshop (home / conversation)
-- **Purpose:** the sparse, warm, voice-first start of J1 (step 1). Nothing on screen but Burn-E, the mic and the text input.
+- **Purpose:** the sparse, warm, voice-first start of J1 (step 1). Nothing on screen but Katachi, the mic and the text input.
 - **Route:** `/snap` (`src/routes/snap/+page.svelte`).
-- **Components:** `WorkshopShell` (Burn-E avatar, greeting, live transcript, mic button, suggestion chips), `AskBar`, `ScreenHeader`.
+- **Components:** `WorkshopShell` (Katachi avatar, greeting, live transcript, mic button, suggestion chips), `AskBar`, `ScreenHeader`.
 - **State:** `FlowState` (step, mic, transcript), `ConversationState` (slots: intent, qty, material, thickness, device, art).
 - **States:** idle · listening (ring pulses with level) · thinking (vermillion glow) · speaking (captions type on) · offline (Glimmer badge).
 - **Design notes:**
-  > Full-screen "Workshop" home for Burn-E, a laser-maker assistant. Dark charcoal background with a subtle birch-wood grain texture at 6% opacity. Centered: an animated circular ember avatar (amber glow) above a large round push-to-talk mic button with an animated level ring. Below it a caption area showing Burn-E's reply in warm off-white sans text and the user's live transcript in muted gray. A slim text input with placeholder "Or type: what are we making today?" is pinned at the bottom with 3 suggestion chips: "Coasters from my sketch", "Box that fits this", "Ornaments for 40 names". No menus or sidebars. Top-right: a tiny cost pill "$0.00 · Meta AI" and an "Under the hood" icon button. Rokkit buttons and chips, radius 10 px.
+  > Full-screen "Workshop" home for Katachi, a laser-maker assistant. Dark charcoal background with a subtle birch-wood grain texture at 6% opacity. Centered: an animated circular ember avatar (amber glow) above a large round push-to-talk mic button with an animated level ring. Below it a caption area showing Katachi's reply in warm off-white sans text and the user's live transcript in muted gray. A slim text input with placeholder "Or type: what are we making today?" is pinned at the bottom with 3 suggestion chips: "Coasters from my sketch", "Box that fits this", "Ornaments for 40 names". No menus or sidebars. Top-right: a tiny cost pill "$0.00 · Meta AI" and an "Under the hood" icon button. Rokkit buttons and chips, radius 10 px.
 
 ## S2 Scene card + Measure overlay
-- **Purpose:** show what Burn-E sees and measured (R-UN-1…6).
+- **Purpose:** show what Katachi sees and measured (R-UN-1…6).
 - **Route:** `/snap/capture` (capture), then the card appears in `/snap`.
 - **Components:** `SnapCapture` (camera/upload, capture tips), `SceneCard` (photo with object chips, mask overlay coloured by role: art = engrave blue, fit target = cut red, reference = amber; dimension callouts with leader line + mm value + ± + edit-on-tap; confidence dot).
 - **State:** `CaptureState` (shutter, upload, analyse), `FlowState`.
@@ -52,7 +52,7 @@ Shared chrome: `ScreenHeader` (title, subtitle, cost pill, light/dark toggle via
 - **State:** `CanvasState` (plan, preflight, G-code/SVG), `DesignState`, `PlaybackState`.
 - **Behavior:** the plan illustration morphs into canvas parts (motion); panels appear only when needed (properties on the first selection, piece list on the second part, toolbar on the first engrave edit).
 - **Design notes:**
-  > Parts already laid out on a 300×300 mm sheet (4 coasters with blue engraved M logos, holder parts with red cut outlines and finger joints). A small circular Burn-E ember avatar with a mic docked bottom-left, a slim suggestion strip at the bottom ("Next: want a lid?" with Yes/No), and a right-aligned "Make" bar with preflight checks (✓ fits bed, ✓ paths closed, est. 14 min) and buttons "Download G-code", "Export SVG". Simulate shows the laser head tracing the same sheet with a progress scrubber; no device needed.
+  > Parts already laid out on a 300×300 mm sheet (4 coasters with blue engraved M logos, holder parts with red cut outlines and finger joints). A small circular Katachi ember avatar with a mic docked bottom-left, a slim suggestion strip at the bottom ("Next: want a lid?" with Yes/No), and a right-aligned "Make" bar with preflight checks (✓ fits bed, ✓ paths closed, est. 14 min) and buttons "Download G-code", "Export SVG". Simulate shows the laser head tracing the same sheet with a progress scrubber; no device needed.
 
 ## S7 Burn Watch
 - **Purpose:** R-BW-1/2.

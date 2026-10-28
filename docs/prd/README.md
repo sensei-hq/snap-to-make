@@ -1,7 +1,7 @@
-# Burn-E · Snap → Make — Product Requirements
+# Katachi · Snap → Make — Product Requirements
 
 > **Show it. Say it. Burn it.**
-> Point your phone at a sketch and an object and say what you want. Burn-E turns it into a measured, cut-ready design, a photoreal preview and laser G-code, then watches the burn.
+> Point your phone at a sketch and an object and say what you want. Katachi turns it into a measured, cut-ready design, a photoreal preview and laser G-code, then watches the burn.
 
 Codename **meta-snap**. Built for the **Meta Global AI Developer Hackathon** (Oct 26 – Nov 4, 2026). Indie track, theme *Build for Your World* (with a nod to *Push the Frontier: manufacturing*).
 
@@ -28,12 +28,12 @@ This PRD is the **single source of truth** for the hackathon build. It is writte
 ## Phase tags used throughout
 - **P1**: must ship for the demo (Nov 4). Demo-critical.
 - **P1+**: stretch for the hackathon week, cut in the order given in the roadmap.
-- **P2**: post-hackathon (Burn-E v1 product).
+- **P2**: post-hackathon (Katachi v1 product).
 - **P3**: long-term vision.
 
 ## Product principles
 Every screen and requirement serves these:
-1. **Voice-first workshop buddy.** Burn-E is a shop mate you talk to: brief, opinionated, proposes defaults, never blocks on missing info (R-CV-6). Text input is always visible as the fallback.
+1. **Voice-first workshop buddy.** Katachi is a shop mate you talk to: brief, opinionated, proposes defaults, never blocks on missing info (R-CV-6). Text input is always visible as the fallback.
 2. **UI appears around the conversation.** Cards (scene, measure, plan, art, preview) are summoned by the conversation through Spark's UI toolkit tools ([04 §4.2](04-model-orchestration.md)); the user never hunts through menus.
 3. **The workspace is earned.** The app opens sparse ([S1](06-screens.md)); the canvas, panels and toolbars appear only when the conversation needs them ([S6](06-screens.md)).
 

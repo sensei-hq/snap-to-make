@@ -1,9 +1,9 @@
-# Burn-E — Snap → Make
+# Katachi — Snap → Make
 
 > **Show it. Say it. Burn it.**
-> Point your phone at a sketch and an object and say what you want. Burn-E turns it into a measured, cut-ready design, a photoreal preview and laser G-code, then watches the burn.
+> Point your phone at a sketch and an object and say what you want. Katachi turns it into a measured, cut-ready design, a photoreal preview and laser G-code, then watches the burn.
 
-Burn-E is a voice-first workshop buddy for people who own a desktop laser cutter, vinyl cutter, or (later) a 3D printer but are blocked by the design step. Instead of spending an evening in a vector editor measuring mugs and tracing sketches by hand, you snap a photo, say what you want, and Burn-E measures the real world, traces the art, designs the parts with joints, shows you a preview and a full on-screen simulation of the cut — then outputs machine-ready files.
+Katachi is a voice-first workshop buddy for people who own a desktop laser cutter, vinyl cutter, or (later) a 3D printer but are blocked by the design step. Instead of spending an evening in a vector editor measuring mugs and tracing sketches by hand, you snap a photo, say what you want, and Katachi measures the real world, traces the art, designs the parts with joints, shows you a preview and a full on-screen simulation of the cut — then outputs machine-ready files.
 
 Built for the **Meta Global AI Developer Hackathon** (Oct 26 – Nov 4, 2026), Indie track, theme *Build for Your World*. This repo contains only work built during the event (see [What was built during the hackathon](#what-was-built-during-the-hackathon)). Product requirements are the single source of truth in [`docs/prd/`](docs/prd/README.md); the implementation plan and tracked checklist live in [`docs/plans/`](docs/plans/2026-10-27-snap-make-phase1-plan.md) with per-stage specs in [`docs/roadmap/`](docs/roadmap/README.md).
 
@@ -32,7 +32,7 @@ Each Meta model does the job it is uniquely best at, and plain code does what mu
 | Measure | SAM 3.1 + code | Pixel-exact masks; scale (px/mm) from the reference; dimensions computed in code, never guessed |
 | Plan | Muse Spark 1.3 → deterministic geometry | Intent becomes a `DesignSpec`, then a device-agnostic **Object** (parts, dimensions, art, assembly logic) |
 | Imagine | Muse Image | Cleans your sketch into laser-friendly line art (3 variants) and renders a photoreal preview |
-| Make | Device adapter (code) | You pick the target — Laser, Cricut, 3D printer — and Burn-E generates the **Impl**: pieces, joints, layout, toolpaths, files |
+| Make | Device adapter (code) | You pick the target — Laser, Cricut, 3D printer — and Katachi generates the **Impl**: pieces, joints, layout, toolpaths, files |
 | Simulate | Simulator adapter (code) | Watch the fabrication play back on a virtual bed and the flat pieces assemble — no device needed |
 | Watch | Spark + SAM 3.1 (video) | Burn Watch analyses a recorded clip and flags flare-ups, smoke, or a shifted workpiece |
 | Batch | Muse Wonder | Background production plans for batches (e.g. 40 personalised ornaments) |
@@ -77,7 +77,7 @@ snap-to-make/
 │   ├── policies/<schema>/<table>.sql    # RLS lives here, not in table DDL
 │   ├── import/staging/*.csv             # seed data → staging tables → import procedures → loader.sql
 │   └── design.yaml                      # `dbd deploy -d $DATABASE_URL -e dev --scope snap` deploys + seeds
-├── supabase/            # Local Supabase cluster config (burn-e-snap) + bootstrap migration mirror
+├── supabase/            # Local Supabase cluster config (katachi-snap) + bootstrap migration mirror
 ├── docs/
 │   ├── prd/             # Product requirements (source of truth), journeys, model orchestration, screens
 │   ├── roadmap/         # Stage specs 00–10 for unattended implementation until handoff gates

@@ -13,7 +13,7 @@ Rule: an item closes only with evidence (test run, URL check, file). Update this
 > Seeding = dbd file import (CSV → staging → `import_*` procedures → loader), NOT `supabase/seed.sql`. RLS in `database/policies/snap/*.sql`, one file per table.
 - [x] dbd DDL: `database/ddl/table/snap/*.ddl` (7 tables, schema `snap`)
 - [x] Migration: `supabase/migrations/20261027000100_snap_schema.sql`
-- [x] Local cluster config: `supabase/config.toml` (project `burn-e-snap`, API 54321, DB 54322)
+- [x] Local cluster config: `supabase/config.toml` (project `katachi-snap`, API 54321, DB 54322)
 - [x] Storage buckets in migration: `snap-photos`, `snap-art`, `snap-previews`, `snap-clips` (private, 24h TTL via `expires_at` on `snap.media`)
 - [x] Roadmap stage specs: `docs/roadmap/README.md` + stages 00–10 (unattended until HANDOFF gates)
 - [x] Seeding corrected to file import: `snap_invites`/`snap_sessions` staging+CSV+procedures+loader; `supabase/seed.sql` is a no-op pointer

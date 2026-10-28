@@ -5,4 +5,4 @@
 - Gates: 110 unit tests, 12/12 e2e, arch/lint/check 0 errors, coverage 91.4%, `deploy:dry` ok; `rokkit doctor` all PASS (chart WARN only, no charts); `dbd doctor` + `dbd inspect` clean.
 - Next command: `cd app && bun run test:e2e` before each `bun run deploy`.
 - Open: Vimeo kickoff + Agents 101 transcripts are privacy-locked (403); user to export captions or run yt-dlp with browser cookies into `docs/transcripts/`. Caliper truth samples, Ray 5 burn film, final submission assembly.
-- Known broken: none. Old Worker `burn-e-snap` deleted 2026-10-27 (its workers.dev URL now 404s).
+- Known broken: none. Old Worker from the previous brand deleted 2026-10-27 (its workers.dev URL now 404s).

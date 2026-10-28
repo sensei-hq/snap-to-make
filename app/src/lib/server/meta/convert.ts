@@ -37,7 +37,7 @@ export async function proposeConversion(env: Record<string, string | undefined>,
     try {
       const c = client ?? new MetaClient(env.META_API_KEY);
       const text = `Starting point: ${input.description || 'the attached photo'}. User comment: ${input.comment || 'none'}. Preferred fabrication group: ${group}. Propose the objective, 3 variations honouring the comment, and dissect into named pieces: for composite-3d extract each face plus joins and base; for layered extract each layer; for pattern-shape one pattern. Each piece needs a kind and a note on how it is extracted/built.`;
-      const r = await c.sparkVision('You are Burn-E, a workshop buddy who converts inspiration photos into buildable cut projects. Respect the user comment as the change request.', text, input.imageDataUrl, ConvertProposalSchema as unknown as Record<string, unknown>, 'ConvertProposal');
+      const r = await c.sparkVision('You are Katachi, a workshop buddy who converts inspiration photos into buildable cut projects. Respect the user comment as the change request.', text, input.imageDataUrl, ConvertProposalSchema as unknown as Record<string, unknown>, 'ConvertProposal');
       const pieces: DissectPiece[] = Array.isArray(r.data.pieces) && r.data.pieces.length ? r.data.pieces : (FALLBACK_PIECES[r.data.conversionClass] ?? FALLBACK_PIECES['composite-3d']);
       return { subject: r.data.subject, group: r.data.group ?? group, conversionClass: r.data.conversionClass, objective: r.data.objective, variations: r.data.variations, pieces, piecesHint: pieces.map(p => p.name), source: 'live' as const, costUsd: r.costUsd };
     } catch (e) { console.error('convert live failed, using fallback:', e instanceof Error ? e.message : String(e)); }

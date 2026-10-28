@@ -1,4 +1,4 @@
--- Burn-E Snap → Make · P1 schema (mirrors database/ddl/table/snap/*.ddl)
+-- Katachi Snap → Make · P1 schema (mirrors database/ddl/table/snap/*.ddl)
 -- No auth in P1: RLS enabled with no policies => only service_role (server) can access.
 create extension if not exists "uuid-ossp" with schema extensions;
 create schema if not exists snap;

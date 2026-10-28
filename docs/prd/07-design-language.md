@@ -1,6 +1,6 @@
 # 07 — Design Language ("Zen-Sumi")
 
-One visual system for **the app, the pitch deck, the white paper and the demo video**, so everything reads as one product. The source of truth is the design mock (`mockups/svelte/src/lib/design/burn-e.uno.js`, local only); the app implements it with Rokkit tokens and components.
+One visual system for **the app, the pitch deck, the white paper and the demo video**, so everything reads as one product. The source of truth is the design mock (`mockups/svelte/src/lib/design/katachi.uno.js`, local only); the app implements it with Rokkit tokens and components.
 
 ## 7.1 Mood
 Washi paper, sumi ink and one rationed vermillion accent (朱 *shu*). Calm, crafted, confident, never "sci-fi AI". Hairlines over shadows, generous negative space. On a fabrication drawing the two operation colours are **vermillion = cut, ink = engrave**.
@@ -18,7 +18,7 @@ Palettes (`kami` paper, `sumi` ink, `shu` vermillion, `hisui`, `kohaku`, `beni`,
 | muted | `ink-mute` | `oklch(0.380 0.012 50)` | `oklch(0.780 0.008 85)` | Secondary text |
 | faint | `ink-soft` | `oklch(0.580 0.010 50)` | `oklch(0.600 0.010 85)` | Meta, mono labels |
 | ghost | `ink-faint` | `oklch(0.750 0.008 50)` | `oklch(0.420 0.012 85)` | Placeholders |
-| accent | `accent`, `cut` | `oklch(0.580 0.150 35)` | `oklch(0.700 0.150 35)` | The one accent: Burn-E mark, cut lines, links |
+| accent | `accent`, `cut` | `oklch(0.580 0.150 35)` | `oklch(0.700 0.150 35)` | The one accent: Katachi mark, cut lines, links |
 | action | `primary` / `on-primary` | ink fill | ink fill (inverted) | Primary buttons, mic |
 | ok | `success` | `oklch(0.620 0.080 160)` | `oklch(0.720 0.090 160)` | Preflight ✓, live dot |
 | warn | `warning` / `warning-ink` | `oklch(0.720 0.120 75)` | `oklch(0.780 0.120 75)` | Reference masks, warnings |
@@ -37,14 +37,14 @@ The camera screen is always dark (it pins `data-mode="dark"` and uses the `camer
 - Radius 4 / 6 / 10 px (`shape.radius` in `rokkit.config.js`); cards are surface + 1 px hairline, no shadow.
 - Textures from tokens only: `grid-bed` graph paper for the sheet and virtual bed, `swatch-birch` grain for material chips and art takes.
 - **Signature motion:** SAM masks "burn in" as vermillion outlines; the plan illustration morphs into canvas parts; the preview develops from blur to sharp. Motion is disabled under `prefers-reduced-motion`.
-- Iconography: Solar linear icons via Rokkit (`icons.solar`), plus the Burn-E aperture mark (`BurnEMark.svelte`).
+- Iconography: Solar linear icons via Rokkit (`icons.solar`), plus the Katachi aperture mark (`KatachiMark.svelte`).
 
 ## 7.5 Illustration style
 - Hairline **line illustrations** (ink on washi paper) for parts diagrams and architecture; cut layers in vermillion, engrave layers in ink.
 - The architecture diagram uses the "EAR · EYE · BRAIN · HAND · IMAGINATION" metaphor with model chips; reuse it in the app's About panel, deck slide 5 and white paper figure 1.
 
 ## 7.6 Voice & copy
-- Burn-E speaks like a friendly shop mate: short, specific, opinionated. "Birch is a great pick: nice grain for engraving."
+- Katachi speaks like a friendly shop mate: short, specific, opinionated. "Birch is a great pick: nice grain for engraving."
 - Product copy: verbs first ("Show it. Say it. Burn it."). Avoid "AI-powered" fluff; name the model that did the work.
 - Always honest: "AI preview", "Advisory only", "measured ±2 mm".
 

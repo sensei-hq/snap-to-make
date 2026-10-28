@@ -36,7 +36,7 @@ describe('ConvertState guided dissection', () => {
     await c.setImage('photo.jpg', 'data:image/jpeg;base64,xx');
     expect(c.imageUrl).toContain('data:image');
     expect(c.dissection?.subject).toBeTruthy();
-    expect(c.chatTurns.some(m => m.role === 'burn-e' && /see/i.test(m.text))).toBe(true);
+    expect(c.chatTurns.some(m => m.role === 'katachi' && /see/i.test(m.text))).toBe(true);
     c.comment = 'add a cat';
     await c.propose('data:image/jpeg;base64,xx');
     expect(c.chatTurns.some(m => /variation/i.test(m.text))).toBe(true);

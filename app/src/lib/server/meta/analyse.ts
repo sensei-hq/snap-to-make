@@ -7,7 +7,7 @@ export async function analyseScene(env: Record<string, string | undefined>, clie
   if (env.META_API_KEY) {
     try {
       const c = client ?? new MetaClient(env.META_API_KEY);
-      const r = await c.sparkJson('You are Burn-E, a workshop buddy. Analyse the workshop scene described by the user: identify the art sketch, the fit target object, and the size reference.', 'A hand-drawn M logo sketch, a mug, and a credit card on a work bench, shot from above.', SceneAnalysisJsonSchema as unknown as Record<string, unknown>, 'SceneAnalysis');
+      const r = await c.sparkJson('You are Katachi, a workshop buddy. Analyse the workshop scene described by the user: identify the art sketch, the fit target object, and the size reference.', 'A hand-drawn M logo sketch, a mug, and a credit card on a work bench, shot from above.', SceneAnalysisJsonSchema as unknown as Record<string, unknown>, 'SceneAnalysis');
       const parsed = SceneAnalysisSchema.safeParse(r.data);
       if (parsed.success) return { scene: parsed.data, measure, source: 'live', trace: [{ model: 'muse-spark-1.3', purpose: 'analyze_scene', latencyMs: r.latencyMs, costUsd: r.costUsd }] };
     } catch (e) { console.error('live scene failed, using fixture:', e instanceof Error ? e.message : String(e)); }

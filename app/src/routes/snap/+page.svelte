@@ -46,7 +46,7 @@ const stageSub = $derived(flow.design.impl ? 'build plan · 6 parts' : flow.meas
   <section aria-label="Convert a photo" class="mx-5 mt-4">
     <Card href={resolve('/snap/convert')}>
       <h2 class="font-semibold">Have a photo of something you want to make?</h2>
-      <p class="text-ui text-ink-mute">Drop it in Convert — Burn-E dissects it into layers or joined faces, suggests variations, and breaks it into pieces with assembly steps.</p>
+      <p class="text-ui text-ink-mute">Drop it in Convert — Katachi dissects it into layers or joined faces, suggests variations, and breaks it into pieces with assembly steps.</p>
       {#snippet footer()}<span class="text-ui text-accent">Convert a photo →</span>{/snippet}
     </Card>
   </section>

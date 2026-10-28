@@ -8,7 +8,11 @@ node_modules
 # Local-only design mockups and sample assets (not published)
 mockups/
 docs/mockups/
-docs/sample/
+samples/*.avif
+samples/*.jpg
+samples/*.jpeg
+samples/*.webp
+samples/*.local.json
 docs/transcripts/
 
 # Supabase CLI local state

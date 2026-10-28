@@ -2,7 +2,7 @@
 import { Button } from '@rokkit/ui';
 import { InputCheckbox, InputField } from '@rokkit/forms';
 import { ThemeSwitcherToggle } from '@rokkit/app';
-import BurnEMark from '$lib/components/BurnEMark.svelte';
+import KatachiMark from '$lib/components/KatachiMark.svelte';
 import { SessionState } from '$lib/state/session.svelte';
 const session = new SessionState();
 const consents = [
@@ -15,10 +15,10 @@ async function enter() { if (await session.enterFromForm()) location.href = '/sn
 <div class="phone-col relative">
   <ThemeSwitcherToggle variant="single" class="absolute top-2 right-2" />
   <div class="flex-1 flex flex-col px-6 pt-14">
-    <p class="flex items-center gap-2.5"><BurnEMark size={28} class="text-ink" /><span class="font-heading text-title">Burn-E</span></p>
+    <p class="flex items-center gap-2.5"><KatachiMark size={28} class="text-ink" /><span class="font-heading text-title">Katachi</span></p>
     <p class="eyebrow mt-10">Snap → Make · demo</p>
     <h1 class="font-heading text-display font-normal tracking-display mt-3">Show it. Say it.<br />Burn it.</h1>
-    <p class="mt-3.5 text-ink-mute">Point your phone at a sketch and the thing it must fit. Burn-E measures, designs and writes the cut file.</p>
+    <p class="mt-3.5 text-ink-mute">Point your phone at a sketch and the thing it must fit. Katachi measures, designs and writes the cut file.</p>
     <div class="mt-8 flex flex-col gap-5">
       <InputField name="invite" type="text" label="Invite code" placeholder="MAKER-2026" autocomplete="off" bind:value={session.code} />
       <div class="flex flex-col divide-y divide-paper-edge">

@@ -23,5 +23,5 @@
 4. Are the judging weights and prize split confirmed?
 5. Is the Batch API documented, and is there a discount (useful for Wonder jobs)?
 6. Can the Voice Transcribe realtime socket accept browser connections with short-lived tokens (would remove the relay)?
-7. Product name: keep **Burn-E** or brand the hackathon entry **"Snap → Make"**?
+7. Product name: keep **Katachi** or brand the hackathon entry **"Snap → Make"**?
 8. Do we ship a **phone-first** capture page (QR handoff from the laptop) in P1 or P1+?

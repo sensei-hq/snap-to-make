@@ -20,7 +20,7 @@ const pieces = $derived<any[]>(dissection ? (dissection.pieces?.length ? dissect
         <span class="flex flex-col items-center gap-1 text-center {imageUrl ? 'py-2' : 'py-12'} {dragging ? 'text-accent' : ''}">
           <span class="i-solar:upload-linear text-title text-accent" aria-hidden="true"></span>
           {#if imageUrl}<span class="text-ui text-ink-mute">Drop a new image here, or click, to replace · {imageName}</span>
-          {:else}<strong class="font-medium">Drop your image here or click to upload</strong><span class="text-ui text-ink-mute">A finished piece, a sketch, anything — Burn-E will dissect it</span>{/if}
+          {:else}<strong class="font-medium">Drop your image here or click to upload</strong><span class="text-ui text-ink-mute">A finished piece, a sketch, anything — Katachi will dissect it</span>{/if}
         </span>
       {/snippet}
     </UploadTarget>

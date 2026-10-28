@@ -113,7 +113,7 @@ User "make it" → open_canvas → laser adapter G-code → UT trace: 5 models, 
 | SAM returns empty | Spark bbox crop + Otsu threshold; ask "tap the object" (point prompt, P1+) |
 | Measurement confidence < 0.6 | Ask the user to confirm the number with a pre-filled editable value |
 | Muse Image 400 `content_policy_violation` | Explain and skip; trace the original sketch directly |
-| 429 / 503 | Exponential backoff (max 3); show "Burn-E is thinking…" |
+| 429 / 503 | Exponential backoff (max 3); show "Katachi is thinking…" |
 | Budget cap hit | Friendly stop; everything already generated stays usable |
 
 ## 4.5 Cost model (per hero-journey session, Standard prices)

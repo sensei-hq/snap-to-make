@@ -24,7 +24,7 @@ export const laserAdapter: DeviceAdapter = {
   emit(plan) {
     const engrave = plan.pieces.filter(p => p.ops.includes('engrave-surface')).map(p => `; ENGRAVE ${p.id}\nG0 X0 Y0\nM3 S400\nG1 X${p.wMm} Y${p.hMm} F800\nM5`).join('\n');
     const cut = plan.pieces.map(p => `; CUT ${p.id} joint=${p.joint}\nG0 X0 Y0\nM3 S800\nG1 X${p.wMm} Y0 F400\nG1 X${p.wMm} Y${p.hMm}\nG1 X0 Y${p.hMm}\nG1 X0 Y0\nM5`).join('\n');
-    const gcode = `; Burn-E laser (Longer Ray 5)\nG21 ; mm\nG90\n${engrave}\n${cut}\nM2\n`;
+    const gcode = `; Katachi laser (Longer Ray 5)\nG21 ; mm\nG90\n${engrave}\n${cut}\nM2\n`;
     const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${plan.sheetMm.wMm}mm" height="${plan.sheetMm.hMm}mm">${plan.pieces.map(p => `<rect width="${p.wMm}" height="${p.hMm}" fill="none" stroke="red" stroke-width="0.1"/>`).join('')}</svg>`;
     const burn = JSON.stringify({ version: '1.3', name: plan.name ?? 'design', deviceId: plan.deviceId, adapterId: plan.adapterId, pieces: plan.pieces }, null, 2);
     return [{ filename: 'design.gcode', mime: 'text/plain', content: gcode }, { filename: 'design.svg', mime: 'image/svg+xml', content: svg }, { filename: 'design.burn', mime: 'application/json', content: burn }];

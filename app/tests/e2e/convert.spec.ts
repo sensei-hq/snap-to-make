@@ -4,7 +4,7 @@ test('convert: describe -> variations -> agree -> breakdown', async ({ page }) =
   await page.goto('/snap/convert'); await page.waitForLoadState('networkidle');
   await page.getByPlaceholder('A layered autumn wreath').fill('A coffin lantern for Halloween');
   await page.getByPlaceholder("It's a lantern").fill('make it smaller, add a cat');
-  await page.getByRole('button', { name: /ask burn-e to dissect/i }).click();
+  await page.getByRole('button', { name: /ask katachi to dissect/i }).click();
   await expect(page.getByLabel('Variations')).toBeVisible();
   await page.getByLabel('Variations').getByRole('button').first().click();
   await expect(page.getByLabel('Build breakdown')).toContainText('Assembly');

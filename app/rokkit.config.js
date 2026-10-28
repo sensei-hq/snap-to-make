@@ -1,5 +1,5 @@
-// Burn-E · Rokkit named-token config. Source of truth: the design mock
-// (mockups/svelte/src/lib/design/burn-e.uno.js, Zen-Sumi: washi paper, sumi ink, one vermillion accent).
+// Katachi · Rokkit named-token config. Source of truth: the design mock
+// (mockups/svelte/src/lib/design/katachi.uno.js, Zen-Sumi: washi paper, sumi ink, one vermillion accent).
 // Mock role → Rokkit token: bg→paper · surface→paper-soft · sunken→paper-mute · line→paper-edge ·
 // fg→ink · muted→ink-mute · faint→ink-soft · ghost→ink-faint · action→primary · ok→success · warn→warning.
 // Guarded by src/lib/design/tokens.spec.ts.

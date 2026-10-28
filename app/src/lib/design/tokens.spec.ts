@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import config from '../../../rokkit.config.js';
 import { sumiPalette } from './sumi-palette.js';
 
-// The design mock (mockups/svelte/src/lib/design/burn-e.uno.js) is the source of truth.
+// The design mock (mockups/svelte/src/lib/design/katachi.uno.js) is the source of truth.
 // Its roles map onto Rokkit named tokens: bg→paper, surface→paper-soft, sunken→paper-mute,
 // line→paper-edge, fg→ink, muted→ink-mute, faint→ink-soft, ghost→ink-faint, action→primary.
 const MOCK = {
@@ -70,3 +70,4 @@ describe('rokkit.config tokens match the design mock', () => {
     expect(t.mono).toMatch(/^'JetBrains Mono'/);
   });
 });
+
