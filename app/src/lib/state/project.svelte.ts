@@ -15,6 +15,10 @@ export interface ProjectRecord {
   image: string;
   /** LayerFlowState.snapshot() */
   choices: Record<string, unknown>;
+  /** finished = assembled and saved from the Assemble step (older records have none: in progress) */
+  status?: 'draft' | 'finished';
+  /** a bundled example, not the user's own work */
+  example?: boolean;
 }
 
 /** The slice of the Web Storage API the store needs (localStorage in the browser, memory in tests and SSR). */
@@ -50,14 +54,17 @@ export class ProjectStore {
   }
   current(): string | null { return this.storage.getItem(CURRENT); }
   setCurrent(id: string | null) { if (id) this.storage.setItem(CURRENT, id); else this.storage.removeItem(CURRENT); }
+  /** small per-browser settings (the default device) */
+  getSetting(key: string): string | null { try { return this.storage.getItem(key); } catch { return null; } }
+  setSetting(key: string, value: string) { try { this.storage.setItem(key, value); } catch { /* storage unavailable: keep it for this session */ } }
 }
 
 const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 const two = (n: number) => String(n).padStart(2, '0');
 
 /** A project is named by its first step: an upload after its file, a camera shot by when it was taken. */
-export function projectName({ fileName, at }: { fileName?: string; at: Date }): string {
+export function projectName({ fileName, at, prefix = 'Photo' }: { fileName?: string; at: Date; prefix?: string }): string {
   const base = fileName?.replace(/\.[a-z0-9]+$/i, '').replace(/[-_]+/g, ' ').trim();
   if (base) return base[0].toUpperCase() + base.slice(1);
-  return `Photo · ${at.getDate()} ${MONTHS[at.getMonth()]}, ${two(at.getHours())}:${two(at.getMinutes())}`;
+  return `${prefix} · ${at.getDate()} ${MONTHS[at.getMonth()]}, ${two(at.getHours())}:${two(at.getMinutes())}`;
 }

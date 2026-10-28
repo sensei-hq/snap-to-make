@@ -2,6 +2,7 @@
 // The app's own example subject for the layers flow: a layered "Mountain sunset" in a round hoop,
 // drawn in code (no photo). Layer colours come from the fixture (they depict the art, so they are raw).
 import type { Layer, LayerShape, RegionId, Tone } from '$lib/content/layers';
+import { shapes } from './mountain';
 type Mode = 'original' | 'cutout' | 'full' | 'regions' | 'layer' | 'stack';
 // layer mode: `solid` fills the part of the selected layer you see, `hidden` hatches the part covered by the layers in front.
 let { layers, mode = 'full', selected = 0, regions = [], label = 'Layered mountain sunset in a round hoop', solid = true, hidden = true }: {
@@ -10,14 +11,6 @@ let { layers, mode = 'full', selected = 0, regions = [], label = 'Layered mounta
 } = $props();
 
 const uid = `ls${Math.random().toString(36).slice(2, 8)}`;
-const peaks = 'M15 205 L70 125 L105 162 L150 85 L195 150 L230 110 L290 192 L290 300 L15 300 Z';
-const snow = 'M131 112 L150 85 L170 116 L160 108 L150 119 L140 108 Z M214 126 L230 110 L249 137 L239 131 L230 139 L222 131 Z';
-const hills = 'M10 232 Q80 192 150 216 T292 206 L292 300 L10 300 Z';
-const pines = [24, 46, 68, 92, 118, 186, 210, 236, 262, 280].map((x, i) => {
-  const h = 34 + ((i * 17) % 22);
-  return `M${x - 11} 286 L${x} ${286 - h} L${x + 11} 286 Z`;
-}).join(' ');
-const shapes: Record<LayerShape, string> = { sky: 'M0 0 H300 V300 H0 Z', sun: 'M171 115 a24 24 0 1 0 48 0 a24 24 0 1 0 -48 0', far: peaks, ridge: snow, hills, pines };
 const regionShapes: Record<RegionId, LayerShape[]> = { frame: [], sky: ['sky'], sun: ['sun'], mountains: ['far', 'ridge'], trees: ['hills', 'pines'] };
 const toneVar: Record<Tone, string> = { muted: 'var(--ink-soft)', warn: 'var(--warning)', accent: 'var(--accent)', ok: 'var(--success)', ink: 'var(--ink)' };
 const sel = $derived(layers.find((l) => l.n === selected));

@@ -28,10 +28,10 @@ describe('AppState (one per app, shared by every section)', () => {
     expect(app.screen).toEqual({ title: 'Burn Watch', subtitle: 'recorded clip · 0:58' });
   });
 
-  it('routes a composer message into the conversation and the analysis', async () => {
+  it('outside the craft flow (work area), a composer message goes to the conversation and the analysis', async () => {
     globalThis.fetch = (async () => ({ json: async () => ({ trace: [], measure: null }) })) as unknown as typeof fetch;
     const app = new AppState();
-    await app.ask('make four coasters 3 mm birch');
+    expect(await app.ask('make four coasters 3 mm birch', '/canvas')).toBeNull();
     expect(app.flow.conversation.slots).toMatchObject({ qty: 4, thicknessMm: 3, material: 'birch' });
   });
 

@@ -10,7 +10,7 @@ export class ConversationState {
   private timer: ReturnType<typeof setInterval> | null = null;
   startListening() {
     this.listening = true; this.listenSec = 0;
-    this.partial = 'I want to make coasters for my friend Maya…';
+    this.partial = 'I want to make a layered mountain picture for Maya…';
     this.timer = setInterval(() => { this.listenSec += 1; }, 1000);
   }
   stopListening() {

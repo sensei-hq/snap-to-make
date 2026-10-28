@@ -139,8 +139,17 @@ export class LayerFlowState {
     this.job = this.job.sheet >= this.layers.length ? { ...this.job, phase: 'done' } : { sheet: this.job.sheet + 1, phase: 'feed', progress: 0 };
   }
 
+  // refinements said in the chat on a step, kept with the craft (applied by Spark in the integrated build)
+  notes = $state<{ step: string; layer?: string; text: string }[]>([]);
+  addNote(n: { step: string; layer?: string; text: string }) { this.notes = [...this.notes, n]; }
+  // assemble · which instruction is open and which are ticked off
+  assembleAt = $state(0);
+  assembled = $state<number[]>([]);
+  openAssembleStep(i: number) { this.assembleAt = i; }
+  toggleAssembled(i: number) { this.assembled = this.assembled.includes(i) ? this.assembled.filter((x) => x !== i) : [...this.assembled, i]; }
+
   // project save / reopen: every choice above, as plain data
-  private static readonly SAVED = ['kind', 'brief', 'makeAs', 'cutoutView', 'keep', 'segmentView', 'refineTool', 'set', 'stack', 'sel', 'gapChoice', 'applyAll', 'gapRule', 'overrides', 'done', 'joinery', 'skipped', 'device', 'showSolid', 'showHidden', 'job'] as const;
+  private static readonly SAVED = ['notes', 'assembleAt', 'assembled', 'kind', 'brief', 'makeAs', 'cutoutView', 'keep', 'segmentView', 'refineTool', 'set', 'stack', 'sel', 'gapChoice', 'applyAll', 'gapRule', 'overrides', 'done', 'joinery', 'skipped', 'device', 'showSolid', 'showHidden', 'job'] as const;
   /** a fresh flow's choices (New starts from these) */
   static defaults() { return new LayerFlowState().snapshot(); }
   snapshot(): Record<string, unknown> {

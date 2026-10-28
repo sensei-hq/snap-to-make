@@ -9,7 +9,7 @@ const rawColour = /#[0-9a-fA-F]{3,8}\b|\b(?:rgba?|hsla?|oklch)\(/;
 const inlineColourStyle = /style="[^"]*\b(?:color|background|border(?:-[a-z]+)?|outline|fill|stroke)\s*:/;
 const emojiIcon = /[\u{1F300}-\u{1FAFF}☀-➿]/u;
 
-const failures = { fetch: [], colour: [], style: [], emoji: [], state: [], link: [], workerGlobal: [] };
+const failures = { fetch: [], colour: [], style: [], emoji: [], state: [], link: [], workerGlobal: [], agents: [] };
 // Rokkit Button renders target="_self" by default; SvelteKit treats any target as external and reloads
 // the page (wiping AppState). Every Button link must pass target="".
 const buttonLink = /<Button\b[^\n]*\bhref=/;
@@ -24,6 +24,8 @@ function walk(dir) {
     const t = readFileSync(p, 'utf8');
     if (/fetch\(|\$lib\/server/.test(t)) failures.fetch.push(p);
     if (p.startsWith('src/routes') && p !== stateOwner && newState.test(t)) failures.state.push(p);
+    // Models and agents are reached only through AppState methods (MuseAgents lives in lib/state).
+    if (/\.muse\.|state\/muse|FileReader|getContext\('2d'\)\.drawImage/.test(t) && !p.includes('SketchPad')) failures.agents.push(p);
     if (!n.endsWith('.svelte') || p.startsWith(illustrations)) continue;
     t.split('\n').forEach((line, i) => {
       const at = `${p}:${i + 1}`;
@@ -60,7 +62,8 @@ const messages = {
   emoji: 'emoji used as an icon (use a Solar icon class)',
   state: 'page constructs its own state (read the shared AppState via useApp())',
   link: 'Rokkit Button link without target="" (its default target="_self" makes SvelteKit reload the page)',
-  workerGlobal: 'random value, timer or fetch in a server module\'s global scope (Workers refuse to start: error 1101)'
+  workerGlobal: 'random value, timer or fetch in a server module\'s global scope (Workers refuse to start: error 1101)',
+  agents: 'presentation reaches a model/agent or does media I/O itself (call an AppState method; MuseAgents and file reading live in lib/state)'
 };
 let failed = false;
 for (const [k, list] of Object.entries(failures)) {

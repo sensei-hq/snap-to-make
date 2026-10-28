@@ -2,9 +2,10 @@ import { describe, expect, it } from 'vitest';
 import { sections } from './sections';
 
 describe('app sections (phone icon nav and studio rail share one list)', () => {
-  it('lists the sections in flow order with stable ids and hrefs', () => {
-    expect(sections.map((s) => s.id)).toEqual(['workshop', 'capture', 'layers', 'canvas', 'watch', 'batch']);
-    expect(sections.map((s) => s.href)).toEqual(['/workshop', '/capture', '/make', '/canvas', '/watch', '/batch']);
+  it('lists where you are (Home, Crafts, the current craft…), not tools; Batch is studio-only', () => {
+    expect(sections.map((s) => s.id)).toEqual(['workshop', 'crafts', 'craft', 'canvas', 'watch', 'batch']);
+    expect(sections.map((s) => s.href)).toEqual(['/workshop', '/crafts', '/capture', '/canvas', '/watch', '/batch']);
+    expect(sections.filter((s) => s.phone !== false).map((s) => s.id)).toEqual(['workshop', 'crafts', 'craft', 'canvas', 'watch']);
   });
 
   it('gives every section a label and a Solar icon for the rail', () => {
@@ -19,10 +20,11 @@ describe('sectionFor (which tab / rail item is current)', () => {
   it('matches the longest section prefix, so stage routes keep their section', async () => {
     const { sectionFor } = await import('./sections');
     expect(sectionFor('/workshop')).toBe('workshop');
-    expect(sectionFor('/scene')).toBe('workshop');
+    expect(sectionFor('/crafts')).toBe('crafts');
     expect(sectionFor('/watch')).toBe('watch');
-    expect(sectionFor('/make/layers')).toBe('layers');
-    expect(sectionFor('/make/views')).toBe('layers');
+    expect(sectionFor('/capture')).toBe('craft');
+    expect(sectionFor('/make/layers')).toBe('craft');
+    expect(sectionFor('/make/assemble')).toBe('craft');
     expect(sectionFor('/hood')).toBe('workshop');
   });
 });

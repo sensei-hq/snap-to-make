@@ -1,14 +1,21 @@
-// The app's sections, in flow order. Copy only: the phone icon nav and the studio rail both render this list.
-export type SectionId = 'workshop' | 'capture' | 'layers' | 'canvas' | 'watch' | 'batch';
-export interface Section { id: SectionId; href: string; label: string; icon: string; /** path prefix that belongs to this section (defaults to href) */ match?: string }
+// The app's sections (docs/design/07 G9): where you are, not which tool. Copy only: the phone icon nav and the
+// studio rail both render this list. "Craft" resumes the open craft at its step; its routes are the whole journey.
+export type SectionId = 'workshop' | 'crafts' | 'craft' | 'canvas' | 'watch' | 'batch';
+export interface Section {
+  id: SectionId; href: string; label: string; icon: string;
+  /** path prefixes that belong to this section (defaults to href) */
+  match?: string[];
+  /** false: studio rail only (the phone nav keeps five items) */
+  phone?: boolean;
+}
 
 export const sections: Section[] = [
-  { id: 'workshop', href: '/workshop', label: 'Workshop', icon: 'i-solar:microphone-3-linear' },
-  { id: 'capture', href: '/capture', label: 'Snap', icon: 'i-solar:camera-linear' },
-  { id: 'layers', href: '/make', label: 'Image to layers', icon: 'i-solar:layers-linear', match: '/make' },
-  { id: 'canvas', href: '/canvas', label: 'Canvas', icon: 'i-solar:ruler-linear' },
+  { id: 'workshop', href: '/workshop', label: 'Home', icon: 'i-solar:home-2-linear' },
+  { id: 'crafts', href: '/crafts', label: 'Crafts', icon: 'i-solar:album-linear' },
+  { id: 'craft', href: '/capture', label: 'Current craft', icon: 'i-solar:layers-linear', match: ['/capture', '/make'] },
+  { id: 'canvas', href: '/canvas', label: 'Work area', icon: 'i-solar:pen-2-linear' },
   { id: 'watch', href: '/watch', label: 'Burn Watch', icon: 'i-solar:eye-linear' },
-  { id: 'batch', href: '/batch', label: 'Batch', icon: 'i-solar:widget-4-linear' }
+  { id: 'batch', href: '/batch', label: 'Batch', icon: 'i-solar:widget-4-linear', phone: false }
 ];
 
 /** Studio-only tools, shown in the rail below the divider (not in the phone icon nav). */
@@ -19,10 +26,13 @@ export const tools: Tool[] = [
   { id: 'settings', href: '/settings', label: 'Settings', icon: 'i-solar:settings-linear' }
 ];
 
-/** The section a path belongs to: the longest matching prefix wins; everything else is the workshop flow. */
+/** The section a path belongs to: the longest matching prefix wins; everything else is Home. */
 export function sectionFor(pathname: string): SectionId {
-  const prefix = (s: Section) => s.match ?? s.href;
-  const hit = [...sections].sort((a, b) => prefix(b).length - prefix(a).length)
-    .find((s) => pathname === prefix(s) || pathname.startsWith(`${prefix(s)}/`));
-  return hit?.id ?? 'workshop';
+  let best: { id: SectionId; len: number } = { id: 'workshop', len: 0 };
+  for (const s of sections) {
+    for (const prefix of s.match ?? [s.href]) {
+      if ((pathname === prefix || pathname.startsWith(`${prefix}/`)) && prefix.length > best.len) best = { id: s.id, len: prefix.length };
+    }
+  }
+  return best.id;
 }

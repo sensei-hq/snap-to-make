@@ -11,15 +11,17 @@ test.describe('image → layers · studio (1280×800)', () => {
   test.use({ viewport: { width: 1280, height: 800 } });
   test.beforeEach(({ page }) => seedProject(page));
 
-  test('six step tabs; cutout lights Segment, reference lights Import', async ({ page }) => {
+  test('five journey tabs; cutout and reference light Shape, gaps lights Layers', async ({ page }) => {
     await page.goto('/make/cutout'); await page.waitForLoadState('networkidle');
-    const tabs = page.getByRole('navigation', { name: 'Image to layers steps' });
-    await expect(tabs.getByRole('link')).toHaveText([/Import/, /Segment/, /Layers/, /Gaps/, /6 views/, /Output/]);
-    await expect(tabs.getByRole('link', { name: /Segment/ })).toHaveAttribute('aria-current', 'step');
+    const tabs = page.getByRole('navigation', { name: 'Craft steps' });
+    await expect(tabs.getByRole('link')).toHaveText([/Capture/, /Shape/, /Layers/, /Sheets/, /Assemble/]);
+    await expect(tabs.getByRole('link', { name: /Shape/ })).toHaveAttribute('aria-current', 'step');
     await tabs.getByRole('link', { name: /Layers/ }).click();
     await expect(page).toHaveURL(/\/make\/layers$/);
+    await page.goto('/make/gaps'); await page.waitForLoadState('networkidle');
+    await expect(tabs.getByRole('link', { name: /Layers/ })).toHaveAttribute('aria-current', 'step');
     await page.goto('/make/reference'); await page.waitForLoadState('networkidle');
-    await expect(tabs.getByRole('link', { name: /Import/ })).toHaveAttribute('aria-current', 'step');
+    await expect(tabs.getByRole('link', { name: /Shape/ })).toHaveAttribute('aria-current', 'step');
     await expect(page.getByRole('navigation', { name: 'Studio sections' })).toBeVisible();
   });
 
@@ -150,13 +152,13 @@ test.describe('image → layers · phone (390×844)', () => {
 
   test('step strip, back, inline controls and Katachi note; the icon nav opens the chat', async ({ page }) => {
     await page.goto('/make/import'); await page.waitForLoadState('networkidle');
-    const strip = page.getByRole('navigation', { name: 'Image to layers steps' });
-    await expect(strip).toContainText('01 / 06 · Import');
-    await expect(strip).toContainText('next · cutout');
+    const strip = page.getByRole('navigation', { name: 'Craft steps' });
+    await expect(strip).toContainText('02 / 05 · Shape · what it is');
+    await expect(strip).toContainText('next · layers');
     await expect(page.getByRole('main').getByRole('radio', { name: /Flat · layered art/ })).toBeVisible();
     await next(page, 'Find the outline', /\/make\/cutout$/);
     await next(page, 'Find the objects', /\/make\/segment$/);
-    await expect(strip).toContainText('03 / 06 · Segment');
+    await expect(strip).toContainText('02 / 05 · Shape · parts');
     const main = page.getByRole('main');
     await expect(main.getByRole('note', { name: 'Katachi' })).toContainText('I found 5 regions');
     await main.getByRole('region', { name: 'Regions', exact: true }).getByRole('switch', { name: 'Sky' }).click();
@@ -164,7 +166,7 @@ test.describe('image → layers · phone (390×844)', () => {
     await page.getByRole('link', { name: 'Back' }).click();
     await expect(page).toHaveURL(/\/make\/cutout$/);
     const nav = page.getByRole('navigation', { name: 'Snap sections' });
-    await expect(nav.getByRole('link', { name: 'Image to layers' })).toHaveAttribute('aria-current', 'page');
+    await expect(nav.getByRole('link', { name: 'Current craft' })).toHaveAttribute('aria-current', 'page');
     await nav.getByRole('button', { name: 'Open Katachi chat' }).click();
     await expect(page.getByRole('dialog', { name: 'Katachi chat' })).toContainText('Background removed');
   });

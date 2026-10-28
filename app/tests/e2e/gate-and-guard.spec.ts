@@ -31,7 +31,7 @@ test('the gate says which part is wrong; a valid code opens the workshop', async
   await page.getByRole('textbox', { name: /Invite code/ }).fill(inviteCode());
   await enter.click();
   await expect(page).toHaveURL(/\/workshop$/);
-  await expect(page.getByRole('heading', { name: /workshop/i })).toBeVisible();
+  await expect(page.getByRole('heading', { name: /what are we making today/i })).toBeVisible();
 });
 
 test.describe('desktop', () => {

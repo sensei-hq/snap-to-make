@@ -26,17 +26,18 @@ test.describe('three parts: nav · work area · assistant (1280×800)', () => {
     await expect(assistant.locator('[data-chat-shell]')).toHaveCount(1);
     await expect(assistant.locator('[data-chat-message][data-role="assistant"] [data-chat-body]').first()).toContainText('what are we making today');
     const composer = assistant.locator('[data-chat-composer]');
-    await expect(composer.getByRole('group', { name: 'Suggestions' }).getByRole('button', { name: 'Coasters from my sketch' })).toBeVisible();
+    await expect(composer.getByRole('group', { name: 'Suggestions' }).getByRole('button', { name: 'A layered mountain picture' })).toBeVisible();
     await expect(composer.getByRole('button', { name: 'Send' })).toBeVisible();
   });
-  test('measuring posts the reply in the assistant', async ({ page }) => {
-    await page.route('**/api/scene', (r) => r.fulfill({ json: { measure: { status: 'measured', targets: [{ valueMm: 82 }] }, trace: [] } }));
+  test('on Home, what you type starts a craft: Katachi replies in the assistant and Capture opens set up for it', async ({ page }) => {
     await page.goto('/workshop'); await page.waitForLoadState('networkidle');
-    await page.getByPlaceholder('make four coasters 3 mm birch').fill('make four coasters 3 mm birch');
-    await page.getByRole('button', { name: /snap & measure/i }).click();
+    await page.getByRole('textbox', { name: 'Say it or type it' }).fill('a birdhouse like the one in the garden');
+    await page.getByRole('textbox', { name: 'Say it or type it' }).press('Enter');
+    await expect(page).toHaveURL(/\/capture$/);
     const assistant = page.getByRole('complementary', { name: 'Katachi chat' });
-    await expect(assistant).toContainText('make four coasters 3 mm birch');
-    await expect(assistant).toContainText(/measured/i);
+    await expect(assistant).toContainText('a birdhouse like the one in the garden');
+    await expect(assistant).toContainText('Shoot all six sides');
+    await expect(page.getByRole('radio', { name: '6 sides' })).toHaveAttribute('aria-checked', 'true');
   });
 });
 

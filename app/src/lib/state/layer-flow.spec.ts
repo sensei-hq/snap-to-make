@@ -3,8 +3,8 @@ import { LayerFlowState } from './layer-flow.svelte';
 import { kinds, layerSets, steps } from '../content/layers';
 
 describe('LayerFlowState · image → layers (docs/design/01 S1–S9)', () => {
-  it('walks six steps; the kind picker routes flat art to the cutout, 3D to six views, reference to changes', () => {
-    expect(steps.map((s) => s.id)).toEqual(['import', 'cutout', 'segment', 'layers', 'gaps', 'output']);
+  it('walks seven routes (assemble last); the kind picker routes flat art to the cutout, 3D to six views, reference to changes', () => {
+    expect(steps.map((s) => s.id)).toEqual(['import', 'cutout', 'segment', 'layers', 'gaps', 'output', 'assemble']);
     expect(Object.fromEntries(kinds.map((k) => [k.id, k.next]))).toEqual({ flat: '/make/cutout', '3d': '/make/views', ref: '/make/reference' });
     const f = new LayerFlowState();
     expect(f.kind).toBe('flat');

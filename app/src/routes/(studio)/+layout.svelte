@@ -1,12 +1,13 @@
 <script lang="ts">
 import { page } from '$app/state';
 import { sections, sectionFor, tools } from '$lib/content/sections';
-import { desktopStepFor, desktopSteps, phoneStep } from '$lib/content/layers';
+import { journey, journeyPath, journeyStepFor } from '$lib/content/journey';
 import { useApp } from '$lib/state/context';
 import ScreenHeader from '$lib/components/ScreenHeader.svelte';
 import StepTabs from '$lib/components/StepTabs.svelte';
 import AppNav from '$lib/components/AppNav.svelte';
 import NavRail from '$lib/components/shell/NavRail.svelte';
+import AgentActivity from '$lib/components/AgentActivity.svelte';
 import ChatPanel from '$lib/components/shell/ChatPanel.svelte';
 import KatachiChat from '$lib/components/shell/KatachiChat.svelte';
 import { goto } from '$app/navigation';
@@ -18,13 +19,25 @@ let { children } = $props();
 const app = useApp();
 const path = $derived(page.url.pathname);
 const current = $derived(tools.find((t) => path === t.href)?.id ?? sectionFor(path));
-const step = $derived(desktopStepFor(path));
-// Phone back chevron: the previous step; the branch screens (six views, reference) go back to the source.
-const back = $derived(phoneStep(path)?.back ?? (/^\/make\/(views|reference)$/.test(path) ? '/make/import' : null));
-const ask = (text: string) => void app.ask(text);
+// The craft journey's five steps: studio tabs in the top bar (phones get the strip in the page).
+const step = $derived(journeyStepFor(path));
+const kind = $derived(app.layers.kind);
+const tabs = $derived(journey.map((j) => ({ id: j.id, label: j.label, path: journeyPath(j, kind) })));
+const reachable = (id: string) => {
+  const j = journey.find((x) => x.id === id);
+  if (!j) return false;
+  if (j.id === 'capture') return true;
+  const route = journeyPath(j, kind).replace('/make/', '');
+  return app.canVisit(route as never);
+};
+// Phone back chevron: the previous route in the journey (Capture goes back Home).
+const routes = $derived(journey.flatMap((j) => j.routes.filter((r) => r !== (kind === '3d' ? '/make/layers' : '/make/views') && r !== '/make/reference' && !(kind === '3d' && r === '/make/gaps'))));
+const back = $derived(step ? (path === '/make/reference' ? '/capture' : routes[routes.indexOf(path) - 1] ?? '/workshop') : null);
+// Nav: "Current craft" resumes the open craft where it was left.
+const nav = $derived(sections.map((s) => (s.id === 'craft' && app.project && app.project.reached >= 0 ? { ...s, href: app.resumePath } : s)));
+const ask = (text: string) => void app.ask(text, path).then((to) => { if (to) void goto(resolve(to as '/workshop')); });
 const act = (a: ChatAction) => {
   if (a.href) return void goto(resolve(a.href as '/workshop'));
-  if (a.id === 'capture.measure') void app.flow.analyse().then(() => goto(resolve('/scene')));
   if (a.id?.startsWith('variation:')) app.chooseVariation(Number(a.id.split(':')[1]));
 };
 // Autosave: any change to the project or its flow choices is written to the saved project.
@@ -34,15 +47,16 @@ const listen = { onMicDown: () => app.flow.startListen(), onMicUp: () => app.flo
 <!-- Studio (≥ md, incl. tablet landscape): icon rail · top bar + page · Katachi column (mockups/desktop).
      Phone (< md): top bar, page, icon nav docked at the bottom; Katachi opens as a sheet (mockups/mobile). -->
 <div data-studio-frame class="min-h-dvh flex bg-paper text-ink font-sans text-body md:h-dvh md:overflow-hidden">
-  <div class="lt-md:hidden flex"><NavRail {sections} {tools} {current} chatOpen={app.chatOpen} onToggleChat={() => app.toggleChat()} /></div>
+  <div class="lt-md:hidden flex"><NavRail sections={nav} {tools} {current} chatOpen={app.chatOpen} onToggleChat={() => app.toggleChat()} /></div>
   <div class="flex-1 min-w-0 flex flex-col md:min-h-0">
     <div class="lt-md:sticky lt-md:top-0 z-10">
       <ScreenHeader title={app.screen.title} subtitle={app.screen.subtitle} pill={app.costPill} {back}>
-        {#snippet center()}{#if step}<StepTabs steps={desktopSteps} current={step} open={(id) => app.canVisit(id)} />{/if}{/snippet}
+        {#snippet center()}{#if step}<StepTabs steps={tabs} current={step.id} open={reachable} />{/if}{/snippet}
       </ScreenHeader>
     </div>
+    {#if step}<AgentActivity items={app.activity(step.id)} />{/if}
     <main class="flex-1 md:min-h-0 md:overflow-auto">{@render children()}</main>
-    <div class="md:hidden sticky bottom-0 z-10"><AppNav {sections} current={current as never} chatOpen={app.sheetOpen} onOpenChat={() => app.toggleSheet()} /></div>
+    <div class="md:hidden sticky bottom-0 z-10"><AppNav sections={nav.filter((s) => s.phone !== false)} current={current as never} chatOpen={app.sheetOpen} onOpenChat={() => app.toggleSheet()} /></div>
   </div>
   {#if app.chatOpen}
     <div class="lt-md:hidden flex"><ChatPanel messages={app.messages} info={app.info} suggestions={app.suggestions} onAction={act} onAsk={ask} {...listen} onClose={() => app.toggleChat()} /></div>

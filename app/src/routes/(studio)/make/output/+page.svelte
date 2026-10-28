@@ -29,12 +29,12 @@ $effect(() => {
   <div class="flex flex-col gap-3">
     <InputField type="radio" name="device" label="Send to" options={devices} value={f.currentDevice} onchange={(d: any) => f.setDevice(d.id)} />
     <Card><dl class="divide-y divide-paper-edge -my-1">{#each rows as [k, v] (k)}<div class="flex justify-between gap-3 min-h-11 items-center"><dt>{k}</dt><dd class="readout text-ink text-right">{v}</dd></div>{/each}</dl></Card>
-    <p class="eyebrow mt-1">Assembly</p>
-    <ol class="list-decimal pl-5 text-ui text-ink-mute flex flex-col gap-1">{#each copy.output.assembly as a (a)}<li>{a}</li>{/each}</ol>
+    <p class="text-ui text-ink-mute mt-1">When the sheets are cut, Assemble walks you through putting them together.</p>
   </div>
 {/snippet}
 {#snippet actions()}
   <span class="flex-1 grid md:flex-none"><Button style="outline" size="lg" icon="i-solar:download-linear" label={ctx.wide ? 'Download .zip' : copy.output.export} /></span>
+  <span class="flex-[1.3] grid md:flex-none"><Button target="" href="/make/assemble" variant={f.job.phase === 'done' || !cutting ? 'primary' : 'default'} style={f.job.phase === 'done' || !cutting ? 'default' : 'outline'} size="lg" iconRight="i-solar:arrow-right-linear" label="Assemble" /></span>
 {/snippet}
 <svelte:head><title>Katachi · Output</title></svelte:head>
 <StepScreen {actions} context={ctx.inline} note={guide.output.text}>

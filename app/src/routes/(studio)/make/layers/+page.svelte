@@ -46,7 +46,7 @@ const selLabel = $derived(`Layer ${f.selected.n}, ${f.selected.name}: ${[f.showS
   </div>
 {/snippet}
 {#snippet aside()}
-  <span class="eyebrow">{copy.layers.order}</span>
+  <span class="eyebrow">Stacked layers · {copy.layers.order}</span>
   <div class="flex flex-wrap gap-1 -mt-1.5" role="toolbar" aria-label="Layer tools">
     <span class="contents">
       <Button size="sm" style="ghost" icon="i-solar:copy-linear" label="Duplicate" onclick={() => f.duplicate(f.selected.n)} />
@@ -71,7 +71,7 @@ const selLabel = $derived(`Layer ${f.selected.n}, ${f.selected.name}: ${[f.showS
   <div class="lt-md:hidden aspect-square rounded-lg border border-paper-edge bg-paper p-2"><LayeredScene layers={f.layers} mode="stack" label="Exploded stack, back to front" /></div>
 {/snippet}
 {#snippet actions()}
-  <span class="flex-1 grid md:hidden"><Button style="outline" size="lg" label="Recolour" /></span>
+  <span class="flex-1 grid md:flex-none"><Button target="" href="/canvas" style="outline" size="lg" icon="i-solar:pen-2-linear" label="Edit in work area" /></span>
   <span class="flex-[1.3] grid md:hidden"><Button variant="primary" size="lg" label={copy.layers.next} onclick={go} /></span>
   <span class="lt-md:hidden"><Button variant="primary" size="lg" iconRight="i-solar:arrow-right-linear" label="Review all gaps" onclick={go} /></span>
 {/snippet}

@@ -6,10 +6,10 @@ describe('ConversationState listening shell', () => {
     const c = new ConversationState();
     c.startListening();
     expect(c.listening).toBe(true);
-    expect(c.partial).toContain('coasters');
+    expect(c.partial).toContain('layered mountain picture');
     c.stopListening();
     expect(c.listening).toBe(false);
-    expect(c.transcript).toContain('coasters');
+    expect(c.transcript).toContain('layered mountain picture');
   });
 });
 

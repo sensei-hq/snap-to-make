@@ -1,11 +1,12 @@
 // Capture copy: one wizard for camera and upload, single shot or six sides of a 3D object.
-export type CaptureSource = 'camera' | 'upload';
+export type CaptureSource = 'camera' | 'upload' | 'sketch';
 export type CaptureMode = 'single' | 'multi';
 export type SideId = 'front' | 'right' | 'back' | 'left' | 'top' | 'base';
 
 export const captureSources: { label: string; value: CaptureSource; icon: string }[] = [
   { label: 'Camera', value: 'camera', icon: 'i-solar:camera-linear' },
-  { label: 'Upload', value: 'upload', icon: 'i-solar:gallery-linear' }
+  { label: 'Upload', value: 'upload', icon: 'i-solar:gallery-linear' },
+  { label: 'Sketch', value: 'sketch', icon: 'i-solar:pen-new-square-linear' }
 ];
 export const captureModes: { label: string; value: CaptureMode }[] = [
   { label: 'Single shot', value: 'single' },

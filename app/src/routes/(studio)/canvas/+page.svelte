@@ -9,7 +9,7 @@ import { useApp } from '$lib/state/context';
 const app = useApp();
 const flow = app.flow;
 const ed = app.editor;
-$effect(() => app.setScreen('Coasters for Maya', `canvas · sheet 1 of ${flow.design.impl?.sheets ?? 1}`));
+$effect(() => app.setScreen('Work area', `manual edits · demo sheet`));
 onMount(() => { if (!flow.design.impl) void flow.plan(); });
 function save(name: string, content: string) { if (!content) return; const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([content])); a.download = name; a.click(); }
 </script>

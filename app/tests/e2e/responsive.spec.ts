@@ -28,17 +28,22 @@ test.describe('studio layout at 1024 px and up (tablet landscape, desktop)', () 
 
   test('state survives navigation between sections', async ({ page }) => {
     await page.route('**/api/scene', (route) => route.fulfill({ json: { measure: null, trace: [{ model: 'muse-spark-1.3', purpose: 'analyze_scene', latencyMs: 10, costUsd: 0.02 }] } }));
-    await page.goto('/workshop'); await page.waitForLoadState('networkidle');
-    await page.getByRole('button', { name: /snap & measure/i }).click();
-    await expect(page.getByText('$0.02 · 1 models').first()).toBeVisible();
+    await page.goto('/canvas'); await page.waitForLoadState('networkidle');
+    const assistant = page.getByRole('complementary', { name: 'Katachi chat' });
+    await assistant.getByRole('textbox').fill('what is on my bench');
+    await assistant.getByRole('button', { name: 'Send' }).click();
+    const pill = page.getByRole('link', { name: /\$0\.0[1-9] · 1 models/ });
+    await expect(pill).toBeVisible();
+    await page.waitForLoadState('networkidle');
+    const cost = await pill.innerText();
     await page.getByRole('navigation', { name: 'Studio sections' }).getByRole('link', { name: 'Burn Watch' }).click();
     await expect(page.getByRole('heading', { name: 'Burn Watch' })).toBeVisible();
-    await page.getByRole('navigation', { name: 'Studio sections' }).getByRole('link', { name: 'Workshop' }).click();
-    await expect(page.getByText('$0.02 · 1 models').first()).toBeVisible();
+    await page.getByRole('navigation', { name: 'Studio sections' }).getByRole('link', { name: 'Home', exact: true }).click();
+    await expect(page.getByRole('link', { name: cost })).toBeVisible();
   });
 
   test('every page has a Katachi title', async ({ page }) => {
-    for (const [path, title] of [['/workshop', 'Katachi · Workshop'], ['/watch', 'Katachi · Burn Watch']]) {
+    for (const [path, title] of [['/workshop', 'Katachi · Home'], ['/crafts', 'Katachi · Crafts'], ['/watch', 'Katachi · Burn Watch']]) {
       await page.goto(path);
       await expect(page).toHaveTitle(title);
     }

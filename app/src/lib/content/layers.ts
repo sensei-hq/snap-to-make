@@ -62,31 +62,10 @@ export const steps = [
   { id: 'segment', label: 'Segment', path: '/make/segment' },
   { id: 'layers', label: 'Layers', path: '/make/layers' },
   { id: 'gaps', label: 'Gaps', path: '/make/gaps' },
-  { id: 'output', label: 'Output', path: '/make/output' }
+  { id: 'output', label: 'Output', path: '/make/output' },
+  { id: 'assemble', label: 'Assemble', path: '/make/assemble' }
 ] as const;
 export type StepId = (typeof steps)[number]['id'];
-
-/** Studio (≥ md) step tabs, mockups/desktop D1–D6: one tab can own several routes (cutout is part of Segment). */
-export const desktopSteps = [
-  { id: 'import', label: 'Import', path: '/make/import', routes: ['import', 'reference'] },
-  { id: 'segment', label: 'Segment', path: '/make/segment', routes: ['cutout', 'segment'] },
-  { id: 'layers', label: 'Layers', path: '/make/layers', routes: ['layers'] },
-  { id: 'gaps', label: 'Gaps', path: '/make/gaps', routes: ['gaps'] },
-  { id: 'views', label: '6 views', path: '/make/views', routes: ['views'] },
-  { id: 'output', label: 'Output', path: '/make/output', routes: ['output'] }
-] as const;
-export type DesktopStepId = (typeof desktopSteps)[number]['id'];
-const routeOf = (path: string) => path.match(/^\/make\/([a-z]+)$/)?.[1] ?? '';
-export function desktopStepFor(path: string): DesktopStepId | '' {
-  const r = routeOf(path);
-  return desktopSteps.find((s) => (s.routes as readonly string[]).includes(r))?.id ?? '';
-}
-/** Phone step strip, mockups/mobile 01–07 ("04 / 06 · Layers · next · gaps"; no Material step — the medium is picked at Import); the branch screens (views, reference) have none. */
-export function phoneStep(path: string): { n: number; total: number; label: string; next: string | null; back: string | null } | null {
-  const i = steps.findIndex((s) => s.id === routeOf(path));
-  if (i < 0) return null;
-  return { n: i + 1, total: steps.length, label: steps[i].label, next: steps[i + 1]?.id ?? null, back: steps[i - 1]?.path ?? null };
-}
 
 export type Kind = 'flat' | '3d' | 'ref';
 export const kinds: { id: Kind; label: string; hint: string; next: string }[] = [
@@ -137,10 +116,10 @@ export const changes = [
 ];
 
 export type DeviceId = 'cricut' | 'xtool' | 'glowforge' | 'file';
-export const devices: { id: DeviceId; label: string; adapter: string; status: string; format: string; settings: string; time: string; cta: string }[] = [
-  { id: 'cricut', label: 'Cricut Maker 3', adapter: 'blade · cricut-svg · design-space', status: 'paired', format: 'SVG · one mat per layer', settings: 'Medium cardstock · 2 passes', time: '≈ 22 min', cta: 'Send' },
-  { id: 'xtool', label: 'xTool S1 laser', adapter: 'laser · svg-colour-ops · lan-http', status: 'online', format: 'SVG · cut + score', settings: '10 W · 8% power · 300 mm/s', time: '≈ 12 min', cta: 'Cut' },
-  { id: 'glowforge', label: 'Glowforge Pro', adapter: 'laser · svg · cloud', status: 'offline', format: 'SVG · Proofgrade', settings: 'Uncertified cardstock', time: '≈ 16 min', cta: 'Queue' },
+export const devices: { id: DeviceId; label: string; adapter: string; status: string; format: string; settings: string; time: string; cta: string; bed?: string; kind?: string }[] = [
+  { id: 'cricut', label: 'Cricut Maker 3', adapter: 'blade · cricut-svg · design-space', status: 'paired', bed: '12 × 12 in mat', kind: 'Blade cutter', format: 'SVG · one mat per layer', settings: 'Medium cardstock · 2 passes', time: '≈ 22 min', cta: 'Send' },
+  { id: 'xtool', label: 'xTool S1 laser', adapter: 'laser · svg-colour-ops · lan-http', status: 'online', bed: '300 × 300 mm', kind: 'Diode laser', format: 'SVG · cut + score', settings: '10 W · 8% power · 300 mm/s', time: '≈ 12 min', cta: 'Cut' },
+  { id: 'glowforge', label: 'Glowforge Pro', adapter: 'laser · svg · cloud', status: 'offline', bed: '495 × 279 mm', kind: 'CO₂ laser', format: 'SVG · Proofgrade', settings: 'Uncertified cardstock', time: '≈ 16 min', cta: 'Queue' },
   { id: 'file', label: 'Just the files', adapter: 'export · download', status: '', format: 'SVG · DXF · PDF', settings: '—', time: '—', cta: 'Export files' }
 ];
 
@@ -151,7 +130,8 @@ export const guide: Record<StepId, { text: string; chips: string[] }> = {
   segment: { text: 'I found 5 regions. Which should become parts? The hoop looks bought, so I left it out — toggle any region, or click the image to add one.', chips: ['Keep the hoop', 'Raise the sun on a spacer', 'Split the mountains'] },
   layers: { text: 'Six colour groups, back to front. Pick a layer to see what shows and what hides behind the ones in front.', chips: ['Merge sun and sky', 'Split the hills'] },
   gaps: { text: 'Most back layers are hidden behind the ones in front. I’d keep the sky and the front two solid as the structure and open the rest.', chips: ['Do that', 'Imagine the hidden parts'] },
-  output: { text: 'Sheets are ready, each with 3 registration holes so the stack lines up on pins. Pick a device to send to.', chips: ['Just the files', 'How long will it take?'] }
+  output: { text: 'Sheets are ready, each with 3 registration holes so the stack lines up on pins. Pick a device to send to.', chips: ['Just the files', 'How long will it take?'] },
+  assemble: { text: 'Here’s how it goes together, one step at a time. Tick each step off, then save the craft so you can find it again.', chips: ['What glue should I use?', 'Make the steps shorter'] }
 };
 
 export const copy = {
@@ -184,7 +164,7 @@ export const copy = {
     rows: [['Registration', '3 pin holes per sheet'], ['Stack', 'Ø 300 · back → front']] as [string, string][],
     assembly: ['Glue sheet 01 to a backing board.', 'Foam dots (1.5 mm) on each sheet, back to front.', 'Seat the sun on a double spacer.']
   },
-  views: { title: 'Birdhouse', sub: '3D object · 6 views', shutter: 'Take this view', done: 'All 6 views captured', allIn: 'All sides in. I can unfold it into flat parts now.' },
+  views: { title: 'Birdhouse', sub: 'parts & joins · 6 sides', shutter: 'Take this view', done: 'All 6 views captured', allIn: 'All sides in. I can unfold it into flat parts now.' },
   reference: {
     title: 'Mountain sunset · remix', sub: 'reference + changes',
     ask: 'Swap the sun for a crescent moon, add a small cabin on the hills, and make it 30 cm.',

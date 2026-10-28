@@ -19,5 +19,6 @@ let { title, subtitle = '', pill = '', back = null, center }: { title: string; s
   </div>
   <div class="lt-md:hidden flex-1 flex justify-center">{#if center}{@render center()}{/if}</div>
   {#if pill}<a href={resolve('/hood')} title="Under the hood" class="no-underline hover:no-underline"><Pill value={pill} class="meta" /></a>{/if}
+  <a href={resolve('/settings')} aria-label="Settings" title="Settings" class="md:hidden grid place-items-center w-9 h-9 text-ink-soft hover:text-ink hover:no-underline"><span class="i-solar:settings-linear text-lede" aria-hidden="true"></span></a>
   <span class="md:hidden"><ThemeSwitcherToggle variant="single" /></span>
 </header>

@@ -2,16 +2,21 @@ import { vibe } from '@rokkit/states';
 import { FlowState } from './flow.svelte';
 import type { ChatAction } from './conversation.svelte';
 import type { Snippet } from 'svelte';
-import { guide, steps, type StepId } from '../content/layers';
+import { guide, steps, type DeviceId, type StepId } from '../content/layers';
+import { journey, journeyIndexOf, journeyStepFor, starts, type Start, type StartId } from '../content/journey';
+import { assemblySteps } from '../domain/assembly';
+import { agentJobs, jobsOnVisit } from '../content/agents';
+import { MuseAgents } from './muse.svelte';
 
 type FlowPage = StepId | 'views' | 'reference';
 const flowPath = (id: FlowPage) => `/make/${id}`;
 const browserStore = () => new ProjectStore(typeof globalThis.localStorage?.getItem === 'function' ? globalThis.localStorage : undefined);
 
-const WORKSHOP_CHIPS = ['Coasters from my sketch', 'Box that fits this', 'Ornaments for 40 names'];
+const WORKSHOP_CHIPS = ['A layered mountain picture', 'A birdhouse from six photos', 'Remix it with a moon'];
+const DEVICE_KEY = 'katachi.device';
 import { WatchState } from './watch.svelte';
 import { BatchState } from './batch.svelte';
-import { CaptureState } from './capture.svelte';
+import { CaptureState, thumbnail } from './capture.svelte';
 import { SessionState } from './session.svelte';
 import { LayerFlowState } from './layer-flow.svelte';
 import { ProjectStore, projectName, type ProjectRecord } from './project.svelte';
@@ -27,6 +32,8 @@ export class AppState {
   capture = $state(new CaptureState());
   layers = new LayerFlowState();
   editor = new EditorState();
+  /** every Meta model / agent job of the craft journey runs through here (placeholders until wired) */
+  muse = new MuseAgents();
   chatOpen = $state(true);
   propsOpen = $state(false);
   screen = $state({ title: 'Workshop', subtitle: '' });
@@ -36,6 +43,8 @@ export class AppState {
   projects = $state<ProjectRecord[]>([]);
   constructor(private store: ProjectStore = browserStore()) {
     this.projects = store.list();
+    const d = store.getSetting(DEVICE_KEY) as DeviceId | null;
+    if (d) this.defaultDevice = d;
     const id = store.current();
     const saved = id ? store.load(id) : null;
     if (saved) this.apply(saved);
@@ -50,19 +59,47 @@ export class AppState {
     const now = Date.now();
     this.capture = new CaptureState();
     this.layers.restore(LayerFlowState.defaults());
-    this.project = { id: crypto.randomUUID(), name: '', createdAt: now, updatedAt: now, reached: -1, kind: 'flat', path: '/capture', image: '', choices: {} };
+    this.layers.setDevice(this.defaultDevice);
+    this.project = { id: crypto.randomUUID(), name: '', createdAt: now, updatedAt: now, reached: -1, kind: 'flat', path: '/capture', image: '', choices: {}, status: 'draft' };
+  }
+  /** Home · a new craft from a starting point (or from what was said or typed): Capture opens set up for it. */
+  startCraft(from: StartId | string, { heard = false } = {}): string {
+    const picked = starts.find((s) => s.id === from);
+    if (!heard && !picked) this.flow.conversation.ingestTranscript(from);
+    this.newProject();
+    const start: Start = picked ?? this.muse.classifyIntent(from, this.project!.id);
+    this.project = { ...this.project!, kind: start.kind };
+    this.layers.setKind(start.kind);
+    this.capture.setMode(start.mode);
+    this.capture.setSource(start.source);
+    this.flow.conversation.say(start.say);
+    return '/capture';
   }
   /** The first step: what was captured names the project and opens the flow (six sides go to the six-view step). */
-  startFromCapture({ fileName, images, mode, at }: { fileName?: string; images: string[]; mode: 'single' | 'multi'; at?: Date }) {
+  startFromCapture({ fileName, images, mode, at, prefix }: { fileName?: string; images: string[]; mode: 'single' | 'multi'; at?: Date; prefix?: string }) {
     if (!this.project) this.newProject();
     const p = this.project!;
-    const kind = mode === 'multi' ? '3d' : 'flat';
+    const kind = mode === 'multi' ? '3d' : p.kind === 'ref' ? 'ref' : 'flat';
     this.layers.setKind(kind);
     // eslint-disable-next-line svelte/prefer-svelte-reactivity -- a one-off timestamp for the name, not reactive state
     const when = at ?? new Date();
-    this.project = { ...p, name: p.name || projectName({ fileName, at: when }), kind, image: images[0] ?? p.image,
-      reached: Math.max(p.reached, 0), path: flowPath(mode === 'multi' ? 'views' : 'import') };
+    this.project = { ...p, name: p.name || projectName({ fileName, at: when, prefix }), kind, image: images[0] ?? p.image,
+      reached: Math.max(p.reached, 0), path: flowPath(mode === 'multi' ? 'views' : kind === 'ref' ? 'reference' : 'import') };
     this.save();
+    void this.muse.describeCapture(p.id, kind);
+    if (this.capture.media.some((m) => m.source === 'sketch')) void this.muse.cleanSketch(p.id);
+  }
+  /** Home · release the mic: what was heard starts a craft (returns where to go), or nothing was heard. */
+  listenToStart(): string | null {
+    this.flow.conversation.stopListening();
+    const heard = this.flow.conversation.transcript.trim();
+    return heard ? this.startCraft(heard, { heard: true }) : null;
+  }
+  /** Capture's Continue: the captured media start the craft (a small thumbnail is kept for the gallery). */
+  async startFromCaptureMedia(fileName?: string) {
+    const first = this.capture.media[0]?.url;
+    const sketched = this.capture.media[0]?.source === 'sketch';
+    this.startFromCapture({ fileName, images: first ? [await thumbnail(first)] : [], mode: this.capture.mode, prefix: sketched ? 'Sketch' : 'Photo' });
   }
   /** A step is open once the one before it has been reached; the branch screens once anything is captured. */
   canVisit(id: FlowPage) {
@@ -77,7 +114,31 @@ export class AppState {
     if (!this.project || !this.canVisit(id)) return;
     const i = steps.findIndex((s) => s.id === id);
     this.project = { ...this.project, reached: Math.max(this.project.reached, i), path: flowPath(id) };
+    this.runJobsFor(id);
   }
+  /** The model / agent jobs a step needs, run once per craft when it is first opened. */
+  private runJobsFor(id: FlowPage) {
+    const craft = this.project?.id;
+    if (!craft || this.project?.example) return;
+    for (const job of jobsOnVisit[id] ?? []) {
+      if (this.muse.has(craft, job)) continue;
+      if (job === 'shape.cutout') void this.muse.cutout(craft);
+      else if (job === 'shape.segment') void this.muse.segment(craft);
+      else if (job === 'layers.plan') void this.muse.planLayers(craft, this.layers.makeAs);
+      else if (job === 'layers.imagineGaps') void this.muse.imagineGaps(craft);
+      else if (job === 'layers.unfold') void this.muse.unfold(craft);
+      else if (job === 'sheets.vectorise') void this.muse.vectorise(craft, this.layers.layers.length);
+      else if (job === 'assemble.instructions') void this.muse.writeInstructions(craft, this.assembly.length);
+    }
+  }
+  /** What the models and agents did for the open craft (optionally one journey step), for the activity strip. */
+  activity(step?: string) {
+    return this.muse.forCraft(this.project?.id)
+      .map((t) => ({ key: t.key, model: agentJobs[t.job].model, step: agentJobs[t.job].step, status: t.status, summary: t.summary }))
+      .filter((t) => !step || t.step === step);
+  }
+  /** Assemble · Muse Image pictures the finished piece (placeholder). */
+  renderFinished() { if (this.project) void this.muse.renderFinished(this.project.id); }
   /** Autosave: called whenever the project or its choices change (a draft with nothing captured is not saved). */
   save() {
     const p = this.project;
@@ -107,6 +168,44 @@ export class AppState {
     this.flow.conversation.say(`Going with ${v.title}.`);
   }
   open(id: string) { const p = this.store.load(id); if (p) { this.apply(p); this.store.setCurrent(id); } }
+  /** Crafts · delete one (the gallery confirms first). */
+  removeCraft(id: string) {
+    this.store.remove(id);
+    this.projects = this.store.list();
+    if (this.project?.id === id) this.project = null;
+  }
+  /** Crafts · the bundled example, so an empty gallery still shows what a finished craft looks like. */
+  openExample() {
+    const existing = this.projects.find((p) => p.example);
+    if (existing) { this.open(existing.id); return; }
+    this.newProject();
+    const at = steps.findIndex((s) => s.id === 'assemble');
+    this.project = { ...this.project!, name: 'Mountain sunset · example', example: true, reached: at, path: flowPath('assemble'), status: 'finished' };
+    this.save();
+  }
+  /** Where a craft is: its journey step (0–4) and label, or finished. */
+  progressOf(p: ProjectRecord) {
+    const i = p.reached < 0 ? 0 : journeyIndexOf(p.path);
+    const finished = p.status === 'finished';
+    return { index: i, total: journey.length, finished, label: finished ? 'Finished' : `Step ${i + 1} of ${journey.length} · ${journey[i].label}` };
+  }
+  /** Assemble · the instructions for the open craft. */
+  get assembly() { return assemblySteps({ kind: this.layers.kind, layers: this.layers.layers, set: this.layers.data, joinery: this.layers.joinery }); }
+  /** Assemble · Save craft: finished, with its layers, instructions and chat notes. */
+  finishCraft() {
+    if (!this.project) return;
+    this.project = { ...this.project, status: 'finished', reached: Math.max(this.project.reached, steps.findIndex((s) => s.id === 'assemble')), path: flowPath('assemble') };
+    this.save();
+    this.flow.conversation.say(`Saved “${this.project.name}” to your crafts — layers, ${this.assembly.length} assembly steps and ${this.layers.notes.length} notes.`, [{ label: 'Open crafts', href: '/crafts' }]);
+  }
+
+  // Settings · the machine Sheets sends to by default (remembered in this browser)
+  defaultDevice = $state<DeviceId>('cricut');
+  setDefaultDevice(d: DeviceId) {
+    this.defaultDevice = d;
+    this.store.setSetting(DEVICE_KEY, d);
+    if (this.project && this.project.status !== 'finished') this.layers.setDevice(d);
+  }
 
   get trace() { return this.flow.trace; }
   get costPill() { return this.trace.label; }
@@ -150,10 +249,29 @@ export class AppState {
   toggleProps() { this.propsOpen = !this.propsOpen; if (this.propsOpen) this.chatOpen = false; }
   setScreen(title: string, subtitle = '') { this.screen = { title, subtitle }; }
 
-  /** The composer (phone dock or studio chat panel) speaks to the workshop conversation. */
-  async ask(text: string) {
-    if (await this.flow.runCommand(text)) return;
-    this.flow.conversation.ingestTranscript(text);
+  /**
+   * The composer (phone dock or studio chat panel). On Home or Crafts, what you say starts a craft (returns where to go);
+   * on a craft step it is a refinement note for that step (and the selected layer), saved with the craft.
+   */
+  async ask(text: string, path = '/workshop'): Promise<string | null> {
+    const t = text.trim();
+    if (!t) return null;
+    if (path === '/workshop' || path === '/crafts') return this.startCraft(t);
+    const step = journeyStepFor(path);
+    if (step && this.project) { this.refine(t, path); return null; }
+    if (await this.flow.runCommand(t)) return null;
+    this.flow.conversation.ingestTranscript(t);
     await this.flow.analyse();
+    return null;
+  }
+  /** A chat refinement on a craft step: noted against the step and, on Layers, the selected layer. */
+  refine(text: string, path: string) {
+    const step = journeyStepFor(path)?.label ?? 'Craft';
+    const layer = /^\/make\/(layers|gaps)$/.test(path) ? `Layer ${this.layers.selected.n} · ${this.layers.selected.name}` : undefined;
+    this.flow.conversation.ingestTranscript(text);
+    const note = { step, ...(layer ? { layer } : {}), text };
+    this.layers.addNote(note);
+    if (this.project) void this.muse.applyRefinement(this.project.id, note);
+    this.flow.conversation.say(`Noted for ${layer ?? step}. It’s saved with the craft and listed when you assemble.`);
   }
 }

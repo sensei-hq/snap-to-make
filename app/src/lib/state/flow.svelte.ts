@@ -86,7 +86,7 @@ export class FlowState {
     for (const t of r.trace ?? []) this.trace.add(t);
     if (r.measure?.status === 'measured') {
       this.setMeasurement('mug', Math.round(r.measure.targets[0].valueMm));
-      this.conversation.say(`Measured the mug base: ${this.measureLabel}. Check the scene — fix a number if it looks off.`, [{ label: 'Check the scene', href: '/scene' }]);
+      this.conversation.say(`Measured the mug base: ${this.measureLabel}. Check the scene — fix a number if it looks off.`);
     }
     this.status = 'measured';
   }
