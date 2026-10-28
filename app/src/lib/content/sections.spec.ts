@@ -4,7 +4,7 @@ import { sections } from './sections';
 describe('app sections (phone icon nav and studio rail share one list)', () => {
   it('lists the sections in flow order with stable ids and hrefs', () => {
     expect(sections.map((s) => s.id)).toEqual(['workshop', 'capture', 'layers', 'canvas', 'watch', 'batch']);
-    expect(sections.map((s) => s.href)).toEqual(['/workshop', '/capture', '/make/import', '/canvas', '/watch', '/batch']);
+    expect(sections.map((s) => s.href)).toEqual(['/workshop', '/capture', '/make', '/canvas', '/watch', '/batch']);
   });
 
   it('gives every section a label and a Solar icon for the rail', () => {
