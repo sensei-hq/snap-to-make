@@ -71,3 +71,15 @@ describe('rokkit.config tokens match the design mock', () => {
   });
 });
 
+describe('Katachi brand tokens', () => {
+  it('declares the mark layer colours from katachi.svg as named tokens (fixed in both modes)', () => {
+    expect(overrides['brand-tan']).toBe('#D8AE82');
+    expect(overrides['brand-stone']).toBe('#DDD8D0');
+  });
+
+  it('keeps colour out of uno.config.js (presetRokkit owns every colour)', async () => {
+    const { readFileSync } = await import('node:fs');
+    const uno = readFileSync(`${process.cwd()}/uno.config.js`, 'utf8');
+    expect(uno).not.toMatch(/#[0-9a-fA-F]{3,8}\b/);
+  });
+});
