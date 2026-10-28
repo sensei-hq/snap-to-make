@@ -14,3 +14,15 @@ describe('app sections (phone tabs and studio rail share one list)', () => {
     }
   });
 });
+
+describe('sectionFor (which tab / rail item is current)', () => {
+  it('matches the longest section prefix, so stage routes keep their section', async () => {
+    const { sectionFor } = await import('./sections');
+    expect(sectionFor('/snap')).toBe('workshop');
+    expect(sectionFor('/snap/scene')).toBe('workshop');
+    expect(sectionFor('/snap/watch')).toBe('watch');
+    expect(sectionFor('/snap/layers/layers')).toBe('layers');
+    expect(sectionFor('/snap/layers/views')).toBe('layers');
+    expect(sectionFor('/snap/hood')).toBe('workshop');
+  });
+});

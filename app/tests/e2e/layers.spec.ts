@@ -9,10 +9,10 @@ async function walk(page: Page) {
   await expect(page).toHaveURL(/\/snap\/layers\/cutout$/);
   await page.getByRole('button', { name: 'Find the objects' }).click();
   await expect(page).toHaveURL(/\/snap\/layers\/objects$/);
-  await expect(page.getByLabel('Regions')).toContainText(/kept/);
+  await expect(page.getByRole('region', { name: 'Regions', exact: true })).toContainText(/kept/);
   await page.getByRole('button', { name: /Split into layers/ }).click();
   await expect(page).toHaveURL(/\/snap\/layers\/layers$/);
-  await expect(page.getByLabel('Layer stack')).toContainText('Sky');
+  await expect(page.getByRole('region', { name: 'Layer stack', exact: true })).toContainText('Sky');
   await page.getByRole('button', { name: /Fill the gaps/ }).click();
   await expect(page).toHaveURL(/\/snap\/layers\/gaps$/);
   await page.getByRole('radio', { name: /Leave it open/ }).check();
@@ -36,6 +36,6 @@ test.describe('image → layers · studio', () => {
     await page.goto('/snap/capture'); await page.waitForLoadState('networkidle');
     await page.getByRole('navigation', { name: 'Source' }).getByRole('link', { name: '6 views' }).click();
     await expect(page).toHaveURL(/\/snap\/layers\/views$/);
-    await expect(page.getByLabel('Views')).toContainText('Left');
+    await expect(page.getByRole('region', { name: 'Views', exact: true })).toContainText('Left');
   });
 });
