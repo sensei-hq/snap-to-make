@@ -1,4 +1,6 @@
-import { changes, devices, gapChoices, kinds, layerSets, regions, views, type DeviceId, type GapChoice, type GapRule, type Joinery, type Kind, type LayerSetId, type MakeAs, type RefineTool, type RegionId, type SegmentView, type ViewId } from '../content/layers';
+import { changes, type Layer, devices, gapChoices, kinds, layerSets, regions, views, type DeviceId, type GapChoice, type GapRule, type Joinery, type Kind, type LayerSetId, type MakeAs, type RefineTool, type RegionId, type SegmentView, type ViewId } from '../content/layers';
+
+const fresh = (s: LayerSetId): Layer[] => layerSets[s].layers.map((l) => ({ ...l, shapes: [...l.shapes] }));
 
 // Every choice in the image → layers flow (phone steps and studio). Pages read fields and call methods;
 // components only get values. Stages mirror docs/design/01-image-pipeline.md (S1–S9).
@@ -30,12 +32,46 @@ export class LayerFlowState {
   // S5a · colour-graded layers
   set = $state<LayerSetId>('paper');
   sel = $state(4);
+  /** the editable stack, back → front (starts from the medium's colour groups) */
+  stack = $state<Layer[]>(fresh('paper'));
   get data() { return layerSets[this.set]; }
-  get layers() { return this.data.layers; }
+  get layers() { return this.stack; }
   get structural() { return this.data.structural; }
   get selected() { return this.layers[Math.min(this.sel, this.layers.length) - 1]; }
   get depthMm() { return (this.selected.n * this.data.mmPerLayer).toFixed(1); }
-  setSet(s: LayerSetId) { this.set = s; this.sel = 4; this.overrides = {}; }
+  setSet(s: LayerSetId) { this.set = s; this.stack = fresh(s); this.sel = 4; this.overrides = {}; }
+  // the stack's own edits: duplicate, merge down, split (by islands; split by tone needs the real masks)
+  private replace(from: number, count: number, put: Layer[], select: number) {
+    const next = [...this.stack];
+    next.splice(from, count, ...put);
+    this.stack = next.map((l, i) => ({ ...l, n: i + 1 }));
+    this.sel = select; this.overrides = {};
+  }
+  duplicate(n: number) {
+    const { parts: _p, ...l } = this.stack[n - 1];
+    void _p;
+    this.replace(n, 0, [{ ...l, name: `${l.name} copy` }], n + 1);
+  }
+  canMergeDown(n: number) { return n >= 1 && n < this.stack.length; }
+  mergeDown(n: number) {
+    if (!this.canMergeDown(n)) return;
+    const [a, b] = this.stack.slice(n - 1, n + 1);
+    const round = (x: number) => Math.round(x * 10) / 10;
+    this.replace(n - 1, 2, [{ n, name: `${a.name} + ${b.name}`, shapes: [...a.shapes, ...b.shapes], colour: b.colour, material: b.material,
+      visiblePct: round(a.visiblePct + b.visiblePct), hiddenPct: round(Math.min(a.hiddenPct, b.hiddenPct)), parts: [...(a.parts ?? [a]), ...(b.parts ?? [b])] }], n);
+  }
+  canSplit(n: number) { const l = this.stack[n - 1]; return Boolean(l) && ((l.parts?.length ?? 0) > 1 || l.shapes.length > 1); }
+  split(n: number) {
+    if (!this.canSplit(n)) return;
+    const l = this.stack[n - 1];
+    const pieces = l.parts ?? l.shapes.map((shape, i) => ({ ...l, name: `${l.name} · ${i + 1}`, shapes: [shape], parts: undefined }));
+    this.replace(n - 1, 1, pieces, n);
+  }
+  // what the selected layer shows: the part you see (solid) and the part hidden behind the layers above (hatched)
+  showSolid = $state(true);
+  showHidden = $state(true);
+  toggleSolidView() { this.showSolid = !this.showSolid; }
+  toggleHiddenView() { this.showHidden = !this.showHidden; }
   selectLayer(n: number) { this.sel = n; }
   nextLayer() { this.sel = (this.selected.n % this.layers.length) + 1; }
 
@@ -81,7 +117,7 @@ export class LayerFlowState {
   setDevice(d: DeviceId) { this.device = d; }
 
   // project save / reopen: every choice above, as plain data
-  private static readonly SAVED = ['kind', 'makeAs', 'cutoutView', 'keep', 'segmentView', 'refineTool', 'set', 'sel', 'gapChoice', 'applyAll', 'gapRule', 'overrides', 'done', 'joinery', 'skipped', 'device'] as const;
+  private static readonly SAVED = ['kind', 'makeAs', 'cutoutView', 'keep', 'segmentView', 'refineTool', 'set', 'stack', 'sel', 'gapChoice', 'applyAll', 'gapRule', 'overrides', 'done', 'joinery', 'skipped', 'device', 'showSolid', 'showHidden'] as const;
   /** a fresh flow's choices (New starts from these) */
   static defaults() { return new LayerFlowState().snapshot(); }
   snapshot(): Record<string, unknown> {

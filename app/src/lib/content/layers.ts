@@ -5,7 +5,8 @@
 
 export type LayerSetId = 'paper' | 'wood';
 export type LayerShape = 'sky' | 'sun' | 'far' | 'ridge' | 'hills' | 'pines';
-export interface Layer { n: number; name: string; shape: LayerShape; colour: string; visiblePct: number; hiddenPct: number; material: string; flag?: string }
+/** One cut layer: one or more shapes (islands) in one colour and material. A merged layer keeps its parts so Split can restore them. */
+export interface Layer { n: number; name: string; shapes: LayerShape[]; colour: string; visiblePct: number; hiddenPct: number; material: string; flag?: string; parts?: Layer[] }
 export interface LayerSet {
   label: string; project: string; headline: string; device: string; spacer: string; mmPerLayer: number;
   /** layers that carry the stack under the "smart" gap rule (doc 01 · S6) */
@@ -14,7 +15,7 @@ export interface LayerSet {
 }
 
 type Row = [name: string, shape: LayerShape, colour: string, visiblePct: number, hiddenPct: number, material: string, flag?: string];
-const build = (rows: Row[]): Layer[] => rows.map(([name, shape, colour, visiblePct, hiddenPct, material, flag], i) => ({ n: i + 1, name, shape, colour, visiblePct, hiddenPct, material, flag }));
+const build = (rows: Row[]): Layer[] => rows.map(([name, shape, colour, visiblePct, hiddenPct, material, flag], i) => ({ n: i + 1, name, shapes: [shape], colour, visiblePct, hiddenPct, material, ...(flag ? { flag } : {}) }));
 
 export const layerSets: Record<LayerSetId, LayerSet> = {
   paper: {

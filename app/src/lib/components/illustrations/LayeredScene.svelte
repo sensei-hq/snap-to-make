@@ -3,9 +3,10 @@
 // drawn in code (no photo). Layer colours come from the fixture (they depict the art, so they are raw).
 import type { Layer, LayerShape, RegionId, Tone } from '$lib/content/layers';
 type Mode = 'original' | 'cutout' | 'full' | 'regions' | 'layer' | 'stack';
-let { layers, mode = 'full', selected = 0, regions = [], label = 'Layered mountain sunset in a round hoop' }: {
+// layer mode: `solid` fills the part of the selected layer you see, `hidden` hatches the part covered by the layers in front.
+let { layers, mode = 'full', selected = 0, regions = [], label = 'Layered mountain sunset in a round hoop', solid = true, hidden = true }: {
   layers: Layer[]; mode?: Mode; selected?: number;
-  regions?: { id: RegionId; on: boolean; tone: Tone }[]; label?: string;
+  regions?: { id: RegionId; on: boolean; tone: Tone }[]; label?: string; solid?: boolean; hidden?: boolean;
 } = $props();
 
 const uid = `ls${Math.random().toString(36).slice(2, 8)}`;
@@ -35,15 +36,20 @@ const sel = $derived(layers.find((l) => l.n === selected));
   {#if mode === 'stack'}
     {#each layers as l (l.n)}
       <g transform="translate({20 + (l.n - 1) * 18} {-30 + (layers.length - l.n) * 14}) scale(0.62)">
-        <g clip-path="url(#{uid}-disc)"><path d={shapes[l.shape]} fill={l.colour} /></g>
+        <g clip-path="url(#{uid}-disc)">{#each l.shapes as s (s)}<path d={shapes[s]} fill={l.colour} />{/each}</g>
         <circle cx="150" cy="150" r="132" fill="none" stroke="var(--paper-edge)" stroke-width="2" />
       </g>
     {/each}
   {:else}
     <g clip-path="url(#{uid}-disc)">
       {#each layers as l (l.n)}
-        <path d={shapes[l.shape]} fill={l.colour}
-          opacity={mode === 'regions' ? 0.35 : mode === 'layer' && l.n !== selected ? 0.18 : 1} />
+        {#each l.shapes as s (s)}
+          {#if mode === 'layer' && l.n === selected && !solid}
+            <path d={shapes[s]} fill="none" stroke={l.colour} stroke-width="2" />
+          {:else}
+            <path d={shapes[s]} fill={l.colour} opacity={mode === 'regions' ? 0.35 : mode === 'layer' && l.n !== selected ? 0.18 : 1} />
+          {/if}
+        {/each}
       {/each}
       {#if mode === 'regions'}
         {#each regions as r (r.id)}
@@ -52,8 +58,8 @@ const sel = $derived(layers.find((l) => l.n === selected));
           {/each}
         {/each}
       {/if}
-      {#if mode === 'layer' && sel}
-        {#each layers.filter((l) => l.n > selected) as front (front.n)}<path d={shapes[front.shape]} fill="url(#{uid}-hatch)" />{/each}
+      {#if mode === 'layer' && sel && hidden}
+        {#each layers.filter((l) => l.n > selected) as front (front.n)}{#each front.shapes as s (s)}<path d={shapes[s]} fill="url(#{uid}-hatch)" />{/each}{/each}
       {/if}
     </g>
     {#if mode === 'original' || mode === 'full'}<circle cx="150" cy="150" r="136" fill="none" stroke="#6E5236" stroke-width="8" />{/if}
