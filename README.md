@@ -11,7 +11,7 @@ Built for the **Meta Global AI Developer Hackathon** (Oct 26 – Nov 4, 2026), I
 
 | | |
 |---|---|
-| Live demo | https://snap-to-make.sensei-hq.com/snap (invite `DEMO-JUDGES`) |
+| Live demo | https://snap-to-make.sensei-hq.com (invite code shared privately) |
 | Hackathon | [Meta Global AI Developer Hackathon](https://dev.meta.ai/events/global-hackathon) · [event page on Cerebral Valley](https://cerebralvalley.ai/e/meta-ai-developer-hackathon) · [submission](https://cerebralvalley.ai/e/meta-ai-developer-hackathon/hackathon/submit) |
 | Meta Model API | [Product page](https://developer.meta.com/ai/products/meta-model-api/) · [Build with Muse Spark](https://developer.meta.com/ai/resources/blog/build-with-muse-spark/) · [dev.meta.ai](https://dev.meta.ai/) · base URL `https://api.meta.ai/v1` |
 | Product docs | [PRD](docs/prd/README.md) · [Plan](docs/plans/2026-10-27-snap-make-phase1-plan.md) · [Roadmap](docs/roadmap/README.md) · [Submission package](docs/submission/README.md) |
@@ -41,17 +41,17 @@ The design flow is **Object → Impl**: one measured design, many fabrication ta
 
 ## Try it
 
-**Live demo:** https://snap-to-make.sensei-hq.com/snap — invite `DEMO-JUDGES` (+ 18+ tick) at `/snap/welcome`. Live Muse Spark scene analysis is enabled on the server.
+**Live demo:** https://snap-to-make.sensei-hq.com — enter your invite code (shared privately) and the three ticks at the gate. Live Muse Spark scene analysis is enabled on the server.
 
 ```bash
 cd app
 bun install
-bun run dev        # http://127.0.0.1:5174/snap
+bun run dev        # http://127.0.0.1:5174 (set SNAP_INVITE_CODES in app/.env)
 ```
 
-- Gate: http://127.0.0.1:5174/snap/welcome — invite `DEMO-JUDGES`, tick 18+, enter.
-- Workshop: http://127.0.0.1:5174/snap — type or say “make four coasters 3 mm birch”, snap a photo, build the plan, switch the device, hit Play in Simulate.
-- Burn Watch: `/snap/watch` · Wonder batch: `/snap/batch`.
+- Gate: http://127.0.0.1:5174/ — a code from `SNAP_INVITE_CODES`, the three ticks, enter. Every page and `/api/*` needs the signed session it sets.
+- Workshop: http://127.0.0.1:5174/workshop — **New project** (capture → the make flow → cuts, saved as you go) or **Open**; or type or say “make four coasters 3 mm birch”, snap a photo, build the plan, switch the device, hit Play in Simulate.
+- Image to layers: `/make` (resumes the current project) · Burn Watch: `/watch` · Wonder batch: `/batch`.
 
 Meta calls need a server-side key: copy `app/.env.example` to `app/.env` and set `META_API_KEY`. Without it, the server serves clearly-labelled demo fixtures so the whole flow still runs offline. The key never reaches the browser.
 
@@ -61,8 +61,8 @@ Meta calls need a server-side key: copy `app/.env.example` to `app/.env` and set
 snap-to-make/
 ├── app/                 # The Snap → Make PWA (SvelteKit 2 + Svelte 5 + Rokkit). Start here.
 │   └── src/
-│       ├── routes/      # /snap/welcome (gate) · /snap/(studio): workshop → scene → plan → art → preview → canvas,
-│       │                # layers/{source…cut, views, reference}, convert, watch, batch, hood, materials, annotations, settings
+│       ├── routes/      # / (gate) · (studio): workshop (New / Open) → capture → make/{import, cutout, segment, layers,
+│       │                # gaps, output, views, reference} · scene → plan → art → preview → canvas · watch, batch, hood, …
 │       │                # + server routes (/api/scene|design|art|preview|watch|batch|gate) owning the API key
 │       ├── lib/domain/  # Pure, tested core: zod schemas (SceneAnalysis/DesignSpec), measurement math,
 │       │                # ObjectSpec + templates, deterministic geometry, nesting
