@@ -57,7 +57,7 @@ function onWindowDrop(e: DragEvent) {
       {#if showCamera}<video bind:this={videoEl} autoplay playsinline class="rounded-lg w-full"></video><Button variant="primary" icon="i-solar:camera-linear" label="Take snap" onclick={snap} />{/if}
     </div>
     <div class="flex flex-col gap-4">
-      <ChatThread messages={flow.chatTurns} />
+      <ChatThread messages={flow.chatTurns} label="Guided chat" />
       <InputField name="description" type="textarea" label="Or describe what you want to achieve" placeholder="A layered autumn wreath for the front door" bind:value={flow.description} />
       <InputField name="comment" type="textarea" label="Comments — what is it, what should change?" placeholder="It's a lantern — make it smaller, add a cat silhouette" bind:value={flow.comment} />
       <InputField name="group" type="radio" label="Fabrication" options={groups} value={groupOption} onchange={(g: any) => { flow.group = g.value as typeof flow.group; }} />

@@ -1,4 +1,6 @@
 // State only: slots + transcript. Presentation renders from this; no fetching here in P1 shell.
+export interface ChatAction { label: string; href?: string; id?: string }
+export interface LogEntry { role: 'user' | 'assistant'; text: string; actions?: ChatAction[] }
 export interface Slots { intent?: string; qty?: number; material?: string; thicknessMm?: number; deviceId?: string; art?: string }
 const NUMWORDS: Record<string, number> = { one: 1, two: 2, three: 3, four: 4, five: 5, six: 6, seven: 7, eight: 8, nine: 9, ten: 10 };
 export class ConversationState {
@@ -19,9 +21,11 @@ export class ConversationState {
   get listenLabel() { return `release to send · 0:${String(this.listenSec).padStart(2, '0')}`; }
   slots = $state<Slots>({});
   transcript = $state('');
-  captions = $state<string[]>([]);
+  /** Every bot interaction: what you said and what Katachi replied, with optional actions. */
+  log = $state<LogEntry[]>([]);
   ingestTranscript(text: string) {
     this.transcript = text;
+    if (text.trim()) this.log = [...this.log, { role: 'user', text }];
     const t = text.toLowerCase();
     const qtyMatch = t.match(/\b(\d+|one|two|three|four|five|six|seven|eight|nine|ten)\b/);
     const thickMatch = t.match(/(\d+(?:\.\d+)?)\s*mm/);
@@ -33,5 +37,5 @@ export class ConversationState {
       ...(material ? { material } : {}),
       ...(intent ? { intent: intent === 'coaster' ? 'coasters' : intent } : {}) };
   }
-  say(text: string) { this.captions = [...this.captions, text]; }
+  say(text: string, actions?: ChatAction[]) { this.log = [...this.log, { role: 'assistant', text, ...(actions ? { actions } : {}) }]; }
 }

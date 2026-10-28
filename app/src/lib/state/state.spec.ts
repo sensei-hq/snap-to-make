@@ -59,7 +59,7 @@ describe('SessionState + Playback tick + Trace export', () => {
     p.tick(10); expect(p.playing).toBe(false);
     const t = new TraceState(); t.add({ model: 'muse-spark-1.3', purpose: 'plan', latencyMs: 1, costUsd: 0.01 });
     expect(JSON.parse(t.exportJson()).entries).toHaveLength(1);
-    const c = new ConversationState(); c.say('hello'); expect(c.captions).toContain('hello');
+    const c = new ConversationState(); c.say('hello'); expect(c.log.at(-1)).toEqual({ role: 'assistant', text: 'hello' });
     c.ingestTranscript('ornament for six in walnut'); expect(c.slots.qty).toBe(6);
   });
 });

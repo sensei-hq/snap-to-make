@@ -1,18 +1,12 @@
 <script lang="ts">
 import { Button } from '@rokkit/ui';
-import ChatThread from './ChatThread.svelte';
 let { listening = false, partial = '', listenLabel = '', onMicDown, onMicUp, onPick }: {
   listening?: boolean; partial?: string; listenLabel?: string;
   onMicDown?: () => void; onMicUp?: () => void; onPick?: (text: string) => void;
 } = $props();
 const chips = ['Coasters from my sketch', 'Box that fits this', 'Ornaments for 40 names'];
-const lines = $derived([
-  { role: 'katachi', text: 'Hi Dev — what are we making today?' },
-  ...(listening || partial ? [{ role: 'user', text: partial || 'Listening…' }] : [])
-]);
 </script>
-<section aria-label="Workshop intro" class="flex flex-col px-5 pt-6 pb-4 gap-8" aria-live="polite">
-  <ChatThread messages={lines} />
+<section aria-label="Workshop intro" class="flex flex-col px-5 pt-10 pb-4 gap-8" aria-live="polite">
   <div class="flex flex-col items-center gap-4">
     <!-- Push-to-talk disc: a bespoke control (like the camera shutter), drawn from named tokens -->
     <div class="w-46 h-46 grid place-items-center rounded-full {listening ? 'bg-paper-mute' : ''}">
@@ -25,6 +19,7 @@ const lines = $derived([
       </div>
     </div>
     <p class="meta">{listening ? listenLabel : 'hold to talk'}</p>
+    {#if listening && partial}<p class="text-lede text-ink-mute text-center max-w-[32ch]">{partial}</p>{/if}
   </div>
   <div class="flex flex-wrap gap-2">
     {#each chips as c (c)}<Button style="outline" size="sm" class="rounded-full" label={c} onclick={() => onPick?.(c)} />{/each}

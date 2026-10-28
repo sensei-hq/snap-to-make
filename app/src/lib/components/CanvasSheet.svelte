@@ -1,6 +1,6 @@
 <script lang="ts">
 import { Button, Card, StatusList } from '@rokkit/ui';
-import KatachiMark from './KatachiMark.svelte';
+import BotAvatar from './BotAvatar.svelte';
 import type { CanvasPiece } from '$lib/domain/canvas';
 let { pieces, preflight, estimateMinutes, deviceLabel = 'Ray 5 · birch_3mm · GRBL', message, lid, zoom = 100, showGrid = true, onAddLid, onDeclineLid, onExportSvg, onDownloadGcode }: {
   pieces: CanvasPiece[]; preflight: { label: string; ok: boolean }[]; estimateMinutes: number; deviceLabel?: string; zoom?: number; showGrid?: boolean;
@@ -25,7 +25,7 @@ const legend = [{ label: 'cut', swatch: 'bg-cut' }, { label: 'engrave', swatch: 
     <span class="meta absolute right-2 bottom-2">300 × 300 mm</span>
   </div>
   <div class="flex items-center gap-2.5 text-ui" aria-live="polite">
-    <KatachiMark size={20} class="text-ink shrink-0" />
+    <BotAvatar size="sm" />
     <span class="flex-1">{message}</span>
     {#if lid === 'offered'}<Button style="outline" size="sm" label="Add lid" onclick={() => onAddLid?.()} /><Button size="sm" style="ghost" label="No" onclick={() => onDeclineLid?.()} />{/if}
   </div>

@@ -5,7 +5,7 @@
 	let { size = 22, class: cls = '' }: { size?: number; class?: string } = $props();
 </script>
 
-<svg viewBox="26 26 204 204" width={size} height={size} fill="none" class={cls} aria-hidden="true">
+<svg viewBox="26 26 204 204" width={size} height={size} fill="none" class={cls} aria-hidden="true" data-brand-mark>
 	<path d="M168 134L220 169.532L168 206L116 169.532L168 134Z" class="fill-brand-stone" />
 	<path d="M36 66.1304L96.3804 31V224.217L36 190.185V66.1304Z" fill="currentColor" />
 	<path d="M168 92L220 127.039L168 163L116 127.039L168 92Z" class="fill-brand-tan" />

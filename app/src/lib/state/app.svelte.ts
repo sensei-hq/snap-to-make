@@ -1,5 +1,6 @@
 import { vibe } from '@rokkit/states';
 import { FlowState } from './flow.svelte';
+import type { ChatAction } from './conversation.svelte';
 import { ConvertState } from './convert.svelte';
 import { WatchState } from './watch.svelte';
 import { BatchState } from './batch.svelte';
@@ -26,15 +27,15 @@ export class AppState {
   get trace() { return this.flow.trace; }
   get costPill() { return this.trace.label; }
 
-  /** The Katachi chat thread (studio panel): greeting, what you said, Katachi's replies. */
-  get messages() {
-    const c = this.flow.conversation;
-    return [
-      { role: 'katachi', text: 'Hi Dev — what are we making today?' },
-      ...(c.transcript ? [{ role: 'user', text: c.transcript }] : []),
-      ...c.captions.map((text) => ({ role: 'katachi', text }))
-    ];
+  /** The Katachi assistant thread in Rokkit ChatMessage shape: greeting, then every entry of the conversation log. */
+  get messages(): { id: string; role: 'user' | 'assistant'; text: string; data?: { actions: ChatAction[] } }[] {
+    const log = [{ role: 'assistant' as const, text: 'Hi Dev — what are we making today?' }, ...this.flow.conversation.log];
+    return log.map((e, i) => ({ id: `m${i}`, role: e.role, text: e.text, ...('actions' in e && e.actions ? { data: { actions: e.actions } } : {}) }));
   }
+
+  /** Phones show the assistant as a sheet over the work area. */
+  sheetOpen = $state(false);
+  toggleSheet() { this.sheetOpen = !this.sheetOpen; }
 
   /** The studio shows one right panel at a time: the Katachi chat or the editor's properties. */
   toggleChat() { this.chatOpen = !this.chatOpen; if (this.chatOpen) this.propsOpen = false; }
