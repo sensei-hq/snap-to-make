@@ -50,9 +50,9 @@ describe('DesignState Object -> Impl re-plan', () => {
   });
 });
 describe('SessionState + Playback tick + Trace export', () => {
-  it('gates until accepted; playback ticks only when playing; trace exports', () => {
+  it('gates until the server lets you in; playback ticks only when playing; trace exports', async () => {
     const s = new SessionState(); expect(s.gated).toBe(false);
-    s.accept('sess-1', 'DEMO-JUDGES'); expect(s.gated).toBe(true); expect(s.attested18).toBe(true);
+    globalThis.fetch = (async () => ({ ok: true, json: async () => ({ ok: true }) })) as never; expect(await s.enter('ANY', true)).toBe(true); expect(s.gated).toBe(true);
     const p = new PlaybackState({ ops: [{ op: 'cut-through', pieceId: 'a', label: 'cut a', startSec: 0, durationSec: 6 }], totalSec: 6 });
     p.tick(3); expect(p.positionSec).toBe(0);
     p.play(); p.tick(3); expect(p.positionSec).toBe(3);
