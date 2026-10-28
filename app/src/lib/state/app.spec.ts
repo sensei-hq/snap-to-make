@@ -53,4 +53,13 @@ describe('AppState (one per app, shared by every section)', () => {
     expect(app.flow.conversation.transcript).toBe('Coasters from my sketch');
     expect(app.flow.conversation.slots.intent).toBe('coasters');
   });
+
+  it('shows one right panel at a time in the studio: properties or the Katachi chat', () => {
+    const app = new AppState();
+    expect([app.chatOpen, app.propsOpen]).toEqual([true, false]);
+    app.toggleProps();
+    expect([app.chatOpen, app.propsOpen]).toEqual([false, true]);
+    app.toggleChat();
+    expect([app.chatOpen, app.propsOpen]).toEqual([true, false]);
+  });
 });

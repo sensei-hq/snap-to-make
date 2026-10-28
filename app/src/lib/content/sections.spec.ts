@@ -26,3 +26,10 @@ describe('sectionFor (which tab / rail item is current)', () => {
     expect(sectionFor('/snap/hood')).toBe('workshop');
   });
 });
+
+describe('studio tools (rail only)', () => {
+  it('lists materials, annotations and settings below the divider', async () => {
+    const { tools } = await import('./sections');
+    expect(tools.map((t) => [t.id, t.href])).toEqual([['materials', '/snap/materials'], ['annotations', '/snap/annotations'], ['settings', '/snap/settings']]);
+  });
+});
