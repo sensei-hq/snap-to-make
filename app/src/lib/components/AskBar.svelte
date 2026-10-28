@@ -1,12 +1,21 @@
 <script lang="ts">
 import { Button, ChatComposer } from '@rokkit/ui';
-let { placeholder = 'Ask Katachi — cut, engrave, change…', micLabel = 'Voice input', onSubmit, onMicDown, onMicUp, onCamera }: {
+// The Katachi composer: Rokkit ChatComposer with send (and voice / camera) in its toolbar.
+let { placeholder = 'Ask Katachi…', micLabel = 'Voice input', onSubmit, onMicDown, onMicUp, onCamera }: {
   placeholder?: string; micLabel?: string;
   onSubmit?: (v: string) => void; onMicDown?: () => void; onMicUp?: () => void; onCamera?: () => void;
 } = $props();
+let value = $state('');
+const send = (text: string) => { if (!text.trim()) return; onSubmit?.(text.trim()); value = ''; };
 </script>
-<div class="shrink-0 flex items-end gap-2.5 px-4 pt-3 pb-6 bg-paper-soft hair-t" role="group" aria-label="Ask Katachi">
-  <div class="flex-1 min-w-0"><ChatComposer {placeholder} onsubmit={(t) => onSubmit?.(t)} /></div>
-  {#if onCamera}<Button style="outline" icon="i-solar:camera-linear" aria-label="Open camera" onclick={() => onCamera?.()} />{/if}
-  <Button variant="primary" icon="i-solar:microphone-3-linear" aria-label={micLabel} onpointerdown={() => onMicDown?.()} onpointerup={() => onMicUp?.()} />
+<div class="katachi-composer shrink-0" role="group" aria-label="Ask Katachi">
+  <ChatComposer bind:value {placeholder} onsubmit={send}>
+    {#snippet toolbar()}
+      <span class="flex items-center gap-1">
+        {#if onCamera}<Button style="ghost" size="sm" icon="i-solar:camera-linear" aria-label="Open camera" onclick={() => onCamera?.()} />{/if}
+        {#if onMicDown}<Button style="ghost" size="sm" icon="i-solar:microphone-3-linear" aria-label={micLabel} onpointerdown={() => onMicDown?.()} onpointerup={() => onMicUp?.()} />{/if}
+        <Button variant="primary" size="sm" icon="i-solar:arrow-up-linear" aria-label="Send" disabled={!value.trim()} onclick={() => send(value)} />
+      </span>
+    {/snippet}
+  </ChatComposer>
 </div>

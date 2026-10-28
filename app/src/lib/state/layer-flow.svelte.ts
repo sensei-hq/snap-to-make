@@ -1,4 +1,4 @@
-import { changes, devices, gapChoices, kinds, layerSets, regions, views, type DeviceId, type GapChoice, type GapRule, type Kind, type LayerSetId, type RegionId, type ViewId } from '../content/layers';
+import { changes, devices, gapChoices, kinds, layerSets, regions, sources, views, type DeviceId, type GapChoice, type GapRule, type Joinery, type Kind, type LayerSetId, type MakeAs, type RefineTool, type RegionId, type SegmentView, type SourceId, type ViewId } from '../content/layers';
 
 // Every choice in the image → layers flow (phone steps and studio). Pages read fields and call methods;
 // components only get values. Stages mirror docs/design/01-image-pipeline.md (S1–S9).
@@ -7,6 +7,11 @@ export class LayerFlowState {
   kind = $state<Kind>('flat');
   get currentKind() { return kinds.find((k) => k.id === this.kind) ?? kinds[0]; }
   setKind(k: Kind) { this.kind = k; }
+  // D1 · where the image comes from (sets the kind) and what to make it as (paper or wood picks the set)
+  source = $state<SourceId>('upload');
+  makeAs = $state<MakeAs>('auto');
+  setSource(id: SourceId) { this.source = id; this.kind = sources.find((s) => s.id === id)?.kind ?? 'flat'; }
+  setMakeAs(m: MakeAs) { this.makeAs = m; if (m === 'paper' || m === 'wood') this.setSet(m); }
 
   // S3 · cutout
   cutoutView = $state<'original' | 'cutout'>('cutout');
@@ -18,6 +23,11 @@ export class LayerFlowState {
   get kept() { return this.regions.filter((r) => r.on); }
   get keptPct() { return Math.round(this.kept.reduce((a, r) => a + r.pct, 0)); }
   toggleRegion(id: RegionId) { this.keep[id] = !this.keep[id]; }
+  // D2 · what the segment canvas shows and how a click refines it
+  segmentView = $state<SegmentView>('masks');
+  refineTool = $state<RefineTool>('pick');
+  setSegmentView(v: SegmentView) { this.segmentView = v; }
+  setRefineTool(t: RefineTool) { this.refineTool = t; }
 
   // S5a · colour-graded layers
   set = $state<LayerSetId>('paper');
@@ -29,6 +39,7 @@ export class LayerFlowState {
   get depthMm() { return (this.selected.n * this.data.mmPerLayer).toFixed(1); }
   setSet(s: LayerSetId) { this.set = s; this.sel = 4; this.overrides = {}; }
   selectLayer(n: number) { this.sel = n; }
+  nextLayer() { this.sel = (this.selected.n % this.layers.length) + 1; }
 
   // S6 · gaps for one layer (phone)
   gapChoice = $state<GapChoice>('extend');
@@ -56,6 +67,8 @@ export class LayerFlowState {
   get nextView() { return views.find((v) => !this.done.includes(v.id)); }
   get sidesKnown() { return this.done.includes('left') || this.done.includes('right'); }
   shoot() { if (this.nextView) this.done = [...this.done, this.nextView.id]; }
+  joinery = $state<Joinery>('finger');
+  setJoinery(j: Joinery) { this.joinery = j; }
   toggleView(id: ViewId) { this.done = this.done.includes(id) ? this.done.filter((d) => d !== id) : [...this.done, id]; }
 
   // reference + changes

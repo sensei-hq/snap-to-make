@@ -1,22 +1,33 @@
 <script lang="ts">
 import { goto } from '$app/navigation';
 import { resolve } from '$app/paths';
-import { onDestroy } from 'svelte';
-import LayersWork from '$lib/components/LayersWork.svelte';
+import { Button, StatusList, Toggle } from '@rokkit/ui';
+import StepScreen from '$lib/components/StepScreen.svelte';
 import LayeredScene from '$lib/components/illustrations/LayeredScene.svelte';
+import { copy, guide } from '$lib/content/layers';
 import { useApp } from '$lib/state/context';
+// 02 · Cutout (phone); in the studio it is the first half of Segment
 const app = useApp();
 const f = app.layers;
-onDestroy(() => app.clearInfo(info));
-import { StatusList, Toggle } from '@rokkit/ui';
-import { copy } from '$lib/content/layers';
 app.setScreen(f.data.project, copy.cutout.sub);
-app.setInfo('Checks', info);
-const views = [{ label: copy.cutout.cutout, value: 'cutout' }, { label: copy.cutout.original, value: 'original' }];
+const views = [{ label: copy.cutout.original, value: 'original' }, { label: copy.cutout.cutout, value: 'cutout' }];
 </script>
-{#snippet info()}<StatusList items={copy.cutout.checks} />{/snippet}
+{#snippet aside()}
+  <p class="eyebrow">Checks</p>
+  <StatusList items={copy.cutout.checks} />
+  <Button style="outline" size="sm" class="self-start" icon="i-solar:eraser-linear" label="Erase the shadow" />
+{/snippet}
+{#snippet actions()}
+  <span class="flex-1 grid md:flex-none"><Button style="outline" size="lg" label={copy.cutout.touch} /></span>
+  <span class="flex-[1.4] grid md:flex-none"><Button variant="primary" size="lg" label={copy.cutout.next} onclick={() => void goto(resolve('/snap/layers/objects'))} /></span>
+{/snippet}
 <svelte:head><title>Katachi · Cutout</title></svelte:head>
-<LayersWork prev={{ href: '/snap/layers/source', label: 'Source' }} nextLabel={copy.cutout.next} onNext={() => void goto(resolve('/snap/layers/objects'))}>
-  <div class="flex justify-center mb-3"><Toggle options={views} value={f.cutoutView} showLabels label="View" onchange={(v) => f.setCutoutView(v as 'original' | 'cutout')} /></div>
-  <div class="aspect-square max-w-[560px] mx-auto"><LayeredScene layers={f.layers} mode={f.cutoutView} /></div>
-</LayersWork>
+<StepScreen {aside} {actions} note={guide.cutout.text}>
+  <div class="flex flex-col gap-3 items-center md:h-full">
+    <div class="md:order-first lt-md:order-last"><Toggle options={views} value={f.cutoutView} label="View" onchange={(v) => f.setCutoutView(v as 'original' | 'cutout')} /></div>
+    <figure class="relative m-0 w-full max-w-[640px] aspect-square md:flex-1 md:max-h-[640px] rounded-lg overflow-hidden border border-paper-edge bg-paper-soft">
+      <span class="absolute left-2.5 top-2.5 z-1 meta rounded-sm bg-paper px-2 py-0.5 border border-paper-edge">background removed · outline</span>
+      <LayeredScene layers={f.layers} mode={f.cutoutView} />
+    </figure>
+  </div>
+</StepScreen>

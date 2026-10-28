@@ -66,11 +66,51 @@ export const steps = [
 ] as const;
 export type StepId = (typeof steps)[number]['id'];
 
+/** Studio (≥ md) step tabs, mockups/desktop D1–D6: one tab can own several routes (cutout is part of Segment). */
+export const desktopSteps = [
+  { id: 'import', label: 'Import', path: '/snap/layers/source', routes: ['source', 'reference'] },
+  { id: 'segment', label: 'Segment', path: '/snap/layers/objects', routes: ['cutout', 'objects'] },
+  { id: 'layers', label: 'Layers', path: '/snap/layers/layers', routes: ['layers', 'material'] },
+  { id: 'gaps', label: 'Gaps', path: '/snap/layers/gaps', routes: ['gaps'] },
+  { id: 'views', label: '6 views', path: '/snap/layers/views', routes: ['views'] },
+  { id: 'output', label: 'Output', path: '/snap/layers/cut', routes: ['cut'] }
+] as const;
+export type DesktopStepId = (typeof desktopSteps)[number]['id'];
+const routeOf = (path: string) => path.match(/^\/snap\/layers\/([a-z]+)$/)?.[1] ?? '';
+export function desktopStepFor(path: string): DesktopStepId | '' {
+  const r = routeOf(path);
+  return desktopSteps.find((s) => (s.routes as readonly string[]).includes(r))?.id ?? '';
+}
+/** Phone step strip, mockups/mobile 01–07 ("04 / 07 · Layers · next · gaps"); the branch screens (views, reference) have none. */
+export function phoneStep(path: string): { n: number; total: number; label: string; next: string | null; back: string | null } | null {
+  const i = steps.findIndex((s) => s.id === routeOf(path));
+  if (i < 0) return null;
+  return { n: i + 1, total: steps.length, label: steps[i].label, next: steps[i + 1]?.id ?? null, back: steps[i - 1]?.path ?? null };
+}
+
 export type Kind = 'flat' | '3d' | 'ref';
 export const kinds: { id: Kind; label: string; hint: string; next: string }[] = [
   { id: 'flat', label: 'Flat · layered art', hint: 'Paper, wood or acrylic layers stacked for depth. One photo is enough.', next: '/snap/layers/cutout' },
   { id: '3d', label: '3D object · 6 views', hint: 'A real object to rebuild in parts. I will ask for front, back, sides, top and bottom.', next: '/snap/layers/views' },
   { id: 'ref', label: 'Reference + changes', hint: 'Use this as the starting point and tell me what to change.', next: '/snap/layers/reference' }
+];
+
+/** D1 · start from (the kind follows the source) and "make it as". */
+export type SourceId = 'upload' | 'phone' | '3d' | 'ref';
+export const sources: { id: SourceId; label: string; hint: string; kind: Kind }[] = [
+  { id: 'upload', label: 'Upload an image', hint: 'PNG, JPG, HEIC · drag in or browse', kind: 'flat' },
+  { id: 'phone', label: 'From your phone', hint: 'Snap with Katachi mobile, lands here', kind: 'flat' },
+  { id: '3d', label: '3D object · 6 views', hint: 'Guided capture of every side', kind: '3d' },
+  { id: 'ref', label: 'Reference + changes', hint: 'Start from a picture, then edit it', kind: 'ref' }
+];
+export type MakeAs = 'auto' | 'paper' | 'wood' | 'acrylic';
+export const makeAs: { id: MakeAs; label: string }[] = [
+  { id: 'auto', label: 'Let Katachi pick' }, { id: 'paper', label: 'Paper layers' }, { id: 'wood', label: 'Laser wood' }, { id: 'acrylic', label: 'Acrylic' }
+];
+export type SegmentView = 'masks' | 'cutout' | 'original';
+export type RefineTool = 'pick' | 'box' | 'brush-add' | 'brush-erase';
+export const refineTools: { id: RefineTool; label: string }[] = [
+  { id: 'pick', label: 'Click to pick' }, { id: 'box', label: 'Box' }, { id: 'brush-add', label: 'Brush +' }, { id: 'brush-erase', label: 'Brush −' }
 ];
 
 export type GapChoice = 'extend' | 'leave' | 'imagine' | 'draw';
@@ -94,6 +134,9 @@ export const views: { id: ViewId; label: string }[] = [
   { id: 'left', label: 'Left' }, { id: 'top', label: 'Top' }, { id: 'base', label: 'Base' }
 ];
 
+export type Joinery = 'finger' | 'butt' | 'tabs';
+export const joinery: { id: Joinery; label: string }[] = [{ id: 'finger', label: 'Finger joints' }, { id: 'butt', label: 'Butt + glue' }, { id: 'tabs', label: 'Tabs' }];
+
 export const changes = [
   { n: 1, label: 'Sun → crescent moon', where: 'L2 sun' },
   { n: 2, label: 'Small cabin on the hills', where: 'L5 hills' },
@@ -112,7 +155,7 @@ export const devices: { id: DeviceId; label: string; adapter: string; status: st
 export const guide: Record<StepId, { text: string; chips: string[] }> = {
   source: { text: 'Looks like layered paper art in a round hoop. I’ll lift it off the wall, then split it into the parts you’d cut.', chips: ['It’s 3D', 'Change it first'] },
   cutout: { text: 'Background removed and the outline found: a circle, about Ø 300 mm. Check the edge, then I’ll find the objects.', chips: ['Erase the shadow', 'It’s square, not round'] },
-  objects: { text: 'I found 5 regions. Which should become parts? The hoop looks bought, so I left it out — toggle any region in Info.', chips: ['Keep the hoop', 'Raise the sun on a spacer', 'Split the mountains'] },
+  objects: { text: 'I found 5 regions. Which should become parts? The hoop looks bought, so I left it out — toggle any region, or click the image to add one.', chips: ['Keep the hoop', 'Raise the sun on a spacer', 'Split the mountains'] },
   layers: { text: 'Six colour groups, back to front. Pick a layer to see what shows and what hides behind the ones in front.', chips: ['Merge sun and sky', 'Split the hills'] },
   gaps: { text: 'Most back layers are hidden behind the ones in front. I’d keep the sky and the front two solid as the structure and open the rest.', chips: ['Do that', 'Imagine the hidden parts'] },
   material: { text: 'Matched each layer to the nearest colour in your supplies. Switch the whole set to wood if you’d rather laser it.', chips: ['Use wood instead', 'Darker greens'] },
@@ -124,7 +167,11 @@ export const copy = {
     title: 'New from an image', sub: 'source · upload or snap', file: 'mountain-sunset.png', fileMeta: '2048 × 2048 · from Photos',
     what: 'What is it?',
     agent: 'Looks like layered paper art in a round hoop. I’ll lift it off the wall, then split it into the parts you’d cut.',
-    change: 'Change it first', next: 'Find the outline'
+    change: 'Change it first', next: 'Find the outline',
+    startFrom: 'Start from', makeAs: 'Make it as', recent: 'mountain-sunset-wood.png',
+    drop: 'Drop an image to turn into layers', dropHint: 'Layered paper or wood art, a sketch, a photo of an object — I’ll find the outline and the parts.',
+    phone: 'Send from phone', phoneHint: 'Scan, snap, and it appears here. Best for 6-view captures.',
+    privacy: 'Images never leave your workspace without asking. Analysis runs on Muse; cut paths are computed locally.'
   },
   cutout: {
     sub: 'cutout · background removed', original: 'Original', cutout: 'Cutout',
@@ -135,14 +182,14 @@ export const copy = {
     ],
     touch: 'Touch up edge', next: 'Find the objects'
   },
-  objects: { sub: 'objects · 5 regions', agent: 'I found 5 regions. Which should become parts? The hoop looks bought — I left it out.', next: 'Split into layers' },
+  objects: { sub: 'objects · 5 regions', agent: 'I found 5 regions. Which should become parts? The hoop looks bought — I left it out.', next: 'Separate into layers', background: 'Wall and shadow' },
   layers: { sub: 'layers · colour groups', order: 'Back → front', next: 'Fill the gaps' },
   gaps: {
     sub: 'gaps · what sits behind',
     agent: 'Most of the back layers are hidden behind the ones in front. The photo can’t show what’s there — how should I fill it?',
     all: 'Use this for all layers', rule: 'Rule for all layers', next: 'Pick materials'
   },
-  material: { sub: 'material · per layer', next: 'Ready to cut' },
+  material: { sub: 'material · per layer', next: 'Stack & cut' },
   cut: {
     sub: 'cut · sheets ready', export: 'Export files',
     rows: [['Registration', '3 pin holes per sheet'], ['Stack', 'Ø 300 · back → front']] as [string, string][],

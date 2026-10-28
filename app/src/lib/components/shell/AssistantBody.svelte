@@ -1,22 +1,22 @@
 <script lang="ts">
 import type { Snippet } from 'svelte';
-import { Button, Tabs } from '@rokkit/ui';
+import { Button } from '@rokkit/ui';
 import ChatThread from '../ChatThread.svelte';
 import type { ChatAction } from '$lib/state/conversation.svelte';
-// The assistant's two views: the Katachi conversation, and the page's Info (step controls / inspector) when it has one.
-let { messages, info = null, tab = 'chat', suggestions = [], onTab, onAction, onSuggest }: {
+// The assistant column (mockups/desktop): the page's context card (inspector, rule, send-to) above the Katachi
+// conversation, then the step's suggestions.
+let { messages, info = null, suggestions = [], onAction, onSuggest }: {
   messages: { id: string; role: 'user' | 'assistant'; text: string; data?: { actions: ChatAction[] } }[];
-  info?: { title: string; body: Snippet } | null; tab?: 'chat' | 'info'; suggestions?: string[];
-  onTab: (t: 'chat' | 'info') => void; onAction: (a: ChatAction) => void; onSuggest: (text: string) => void;
+  info?: { title: string; body: Snippet } | null; suggestions?: string[];
+  onAction: (a: ChatAction) => void; onSuggest: (text: string) => void;
 } = $props();
-const tabs = $derived([{ label: 'Chat', value: 'chat' }, ...(info ? [{ label: info.title, value: 'info' }] : [])]);
 </script>
-{#if info}<div class="shrink-0 px-3 pt-2 hair-b"><Tabs options={tabs} value={tab} onchange={(v) => onTab(v as 'chat' | 'info')} /></div>{/if}
-<div class="flex-1 min-h-0 overflow-auto px-4 py-4">
-  {#if info && tab === 'info'}{@render info.body()}{:else}<ChatThread {messages} {onAction} />{/if}
+<div class="flex-1 min-h-0 overflow-auto flex flex-col gap-4 px-4 py-4">
+  {#if info}<section aria-label={info.title} class="shrink-0">{@render info.body()}</section>{/if}
+  <ChatThread {messages} {onAction} />
+  {#if suggestions.length}
+    <div class="flex flex-wrap gap-1.5 pl-8.5" aria-label="Suggestions" role="group">
+      {#each suggestions as s (s)}<Button style="outline" size="sm" class="rounded-full" label={s} onclick={() => onSuggest(s)} />{/each}
+    </div>
+  {/if}
 </div>
-{#if suggestions.length && !(info && tab === 'info')}
-  <div class="shrink-0 flex flex-wrap gap-1.5 px-4 pb-2" aria-label="Suggestions" role="group">
-    {#each suggestions as s (s)}<Button style="outline" size="sm" class="rounded-full" label={s} onclick={() => onSuggest(s)} />{/each}
-  </div>
-{/if}

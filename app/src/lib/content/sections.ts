@@ -1,4 +1,4 @@
-// The app's sections, in flow order. Copy only: the phone tabs and the studio rail both render this list.
+// The app's sections, in flow order. Copy only: the phone icon nav and the studio rail both render this list.
 export type SectionId = 'workshop' | 'capture' | 'convert' | 'layers' | 'canvas' | 'watch' | 'batch';
 export interface Section { id: SectionId; href: string; label: string; icon: string; /** path prefix that belongs to this section (defaults to href) */ match?: string }
 
@@ -12,7 +12,7 @@ export const sections: Section[] = [
   { id: 'batch', href: '/snap/batch', label: 'Batch', icon: 'i-solar:widget-4-linear' }
 ];
 
-/** Studio-only tools, shown in the rail below the divider (not in the phone tabs). */
+/** Studio-only tools, shown in the rail below the divider (not in the phone icon nav). */
 export interface Tool { id: 'materials' | 'annotations' | 'settings'; href: string; label: string; icon: string }
 export const tools: Tool[] = [
   { id: 'materials', href: '/snap/materials', label: 'Materials', icon: 'i-solar:palette-linear' },

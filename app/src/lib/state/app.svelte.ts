@@ -37,13 +37,11 @@ export class AppState {
     return log.map((e, i) => ({ id: `m${i}`, role: e.role, text: e.text, ...('actions' in e && e.actions ? { data: { actions: e.actions } } : {}) }));
   }
 
-  /** A page's own view for the assistant (step controls, inspector); the assistant shows Chat | Info. */
+  /** A page's context for the assistant column (inspector, rule, send-to): it sits above the Katachi chat. */
   info = $state<{ title: string; body: Snippet } | null>(null);
-  panelTab = $state<'chat' | 'info'>('chat');
-  setInfo(title: string, body: Snippet) { this.info = { title, body }; this.panelTab = 'info'; }
+  setInfo(title: string, body: Snippet) { this.info = { title, body }; }
   /** Pass the body you set: a leaving page must not clear the next page's info (it is set first). */
-  clearInfo(body?: Snippet) { if (body && this.info?.body !== body) return; this.info = null; this.panelTab = 'chat'; }
-  setPanelTab(t: 'chat' | 'info') { this.panelTab = t; }
+  clearInfo(body?: Snippet) { if (body && this.info?.body !== body) return; this.info = null; }
 
   /** Katachi guides each image → layers step once, with Previous / Next. */
   guidedSteps = $state<StepId[]>([]);

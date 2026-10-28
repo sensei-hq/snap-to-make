@@ -64,7 +64,7 @@ The mock separates phone and desktop by URL. The app renders **one route tree** 
 
 | Width | Layout |
 |---|---|
-| `< md` (< 1024 px): phones portrait and landscape, small tablets portrait | **Phone column**: app bar (mark, title, cost pill, theme), section tabs, content, composer docked at the bottom |
+| `< md` (< 1024 px): phones portrait and landscape, small tablets portrait | **Phone column**: app bar (back or mark, title, cost pill, theme), content, icon nav docked at the bottom; Katachi and its composer open as a sheet |
 | `≥ md` (≥ 1024 px): tablets landscape, laptops, desktops | **Studio**: nav rail (48 px) with the sections + panel toggle, main workspace, Katachi chat panel on the right (336 px, collapsible); stage content gets a centred column (`max-w-prose`) or a two-pane grid where the mock has one |
 | `≥ lg` (≥ 1320 px) | wider grids (two-pane stages side by side, chat always open) |
 

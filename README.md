@@ -93,7 +93,7 @@ The design mockups (`mockups/`, `docs/mockups/`) and the sample photo set (`docs
 ```text
 ```
 
-The layout is responsive from one route tree: below 1024 px a phone column (header, section tabs, docked composer); from 1024 px (tablet landscape and up) a studio with a section rail, the work in the middle and the Katachi chat or the editor's properties on the right.
+The layout is responsive from one route tree: below 1024 px a phone column (app bar with back, the page, an icon nav docked at the bottom with Katachi opening as a sheet); from 1024 px (tablet landscape and up) a studio with the icon rail, a top bar, the work in the middle and the Katachi column (the page's context card above the chat) or the editor's properties on the right. The image → layers screens follow the artboards in `mockups/desktop` (six step tabs, controls on the left) and `mockups/mobile` (seven-step strip, one column, actions docked above the nav).
 
 State and presentation are deliberately separated: **state classes (`*.svelte.ts`) own every transition and side effect; components only render props and fire events.** That is enforced by an architecture test (`bun run test:arch`), not just convention; the same test rejects raw colours, inline colour styles and emoji icons in presentation code, so every screen uses Rokkit components and named tokens (see [`docs/prd/07-design-language.md`](docs/prd/07-design-language.md)).
 

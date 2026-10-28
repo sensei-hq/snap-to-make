@@ -1,37 +1,57 @@
 <script lang="ts">
 import { goto } from '$app/navigation';
 import { resolve } from '$app/paths';
-import { onDestroy } from 'svelte';
-import LayersWork from '$lib/components/LayersWork.svelte';
+import { Button, Card, Switch, Toggle } from '@rokkit/ui';
+import StepScreen from '$lib/components/StepScreen.svelte';
 import LayeredScene from '$lib/components/illustrations/LayeredScene.svelte';
+import { copy, guide, refineTools, type RefineTool, type SegmentView } from '$lib/content/layers';
 import { useApp } from '$lib/state/context';
+// D2 · Segment + pick regions (studio) · 03 · Objects (phone)
 const app = useApp();
 const f = app.layers;
-onDestroy(() => app.clearInfo(info));
-import { Card } from '@rokkit/ui';
-import { InputCheckbox } from '@rokkit/forms';
-import { copy } from '$lib/content/layers';
 app.setScreen(f.data.project, copy.objects.sub);
-app.setInfo('Regions', info);
-const dot: Record<string, string> = { muted: 'bg-ink-soft', warn: 'bg-warning', accent: 'bg-accent', ok: 'bg-success', ink: 'bg-ink' };
+const fill: Record<string, string> = { muted: 'bg-ink-soft', warn: 'bg-warning', accent: 'bg-accent', ok: 'bg-success', ink: 'bg-ink' };
+const ring: Record<string, string> = { muted: 'border-ink-soft', warn: 'border-warning', accent: 'border-accent', ok: 'border-success', ink: 'border-ink' };
+const views = [{ label: 'Masks', value: 'masks' }, { label: 'Cutout', value: 'cutout' }, { label: 'Original', value: 'original' }];
+const tools = refineTools.map((t) => ({ label: t.label, value: t.id }));
 </script>
-{#snippet info()}
-  <section aria-label="Regions" class="flex flex-col gap-2">
-    <p class="flex justify-between"><span class="eyebrow">Regions</span><span class="readout">{f.kept.length} of {f.regions.length} kept · {f.keptPct}%</span></p>
+{#snippet aside()}
+  <section aria-label="Regions" class="flex flex-col gap-2.5">
+    <p class="flex justify-between items-center"><span class="eyebrow">Regions</span><span class="meta">{f.kept.length} of {f.regions.length} kept</span></p>
     <Card>
-      <ul class="divide-y divide-paper-edge">
+      <ul class="divide-y divide-paper-edge -my-1">
         {#each f.regions as r (r.id)}
-          <li><label class="flex items-center gap-3 min-h-12 px-3 cursor-pointer">
-            <span class="w-2 h-2 rounded-full shrink-0 {dot[r.tone]}"></span>
-            <span class="flex-1"><span class="block">{r.name}</span><span class="meta">{r.pct}% · {r.note}</span></span>
-            <InputCheckbox variant="default" name={r.id} value={r.on} onchange={() => f.toggleRegion(r.id)} />
-          </label></li>
+          <li class="flex items-center gap-2.5 min-h-[54px] py-1.5">
+            <span class="w-3.5 h-3.5 shrink-0 rounded-sm border-2 {ring[r.tone]} {r.on ? fill[r.tone] : ''}" aria-hidden="true"></span>
+            <span class="flex-1 min-w-0"><span class="block text-body">{r.name}</span><span class="meta">{r.pct}% · {r.note}</span></span>
+            <Switch value={r.on} options={[{ label: r.name, value: false }, { label: r.name, value: true }]} onchange={() => f.toggleRegion(r.id)} />
+          </li>
         {/each}
       </ul>
     </Card>
   </section>
+  <div class="lt-md:hidden flex flex-col gap-2.5 mt-1.5">
+    <p class="eyebrow">Refine</p>
+    <Toggle options={tools} value={f.refineTool} label="Refine" class="chips cols-2" onchange={(v) => f.setRefineTool(v as RefineTool)} />
+  </div>
+  <Card class="lt-md:hidden mt-auto">
+    <p class="eyebrow mb-1.5">Background</p>
+    <p class="flex justify-between text-ui"><span>{copy.objects.background}</span><span class="meta text-success">removed</span></p>
+    <p class="flex justify-between text-ui"><span>Outline</span><span class="meta text-ink">circle · Ø 300?</span></p>
+  </Card>
+{/snippet}
+{#snippet actions()}
+  <span class="flex-1 grid md:hidden"><Button style="outline" size="lg" label="Draw a region" /></span>
+  <span class="flex-[1.4] grid md:flex-none"><Button variant="primary" size="lg" iconRight="i-solar:arrow-right-linear" label={copy.objects.next} onclick={() => void goto(resolve('/snap/layers/layers'))} /></span>
 {/snippet}
 <svelte:head><title>Katachi · Objects</title></svelte:head>
-<LayersWork prev={{ href: '/snap/layers/cutout', label: 'Cutout' }} nextLabel={copy.objects.next} onNext={() => void goto(resolve('/snap/layers/layers'))}>
-  <div class="aspect-square max-w-[560px] mx-auto"><LayeredScene layers={f.layers} mode="regions" regions={f.regions} label="Regions found in the image, tinted by kind" /></div>
-</LayersWork>
+<StepScreen {aside} {actions} note={guide.objects.text}>
+  <div class="flex flex-col gap-3 items-center md:h-full">
+    <div class="lt-md:hidden"><Toggle options={views} value={f.segmentView} label="Show" onchange={(v) => f.setSegmentView(v as SegmentView)} /></div>
+    <figure class="relative m-0 w-full max-w-[640px] aspect-square md:flex-1 md:max-h-[640px] rounded-lg overflow-hidden border border-paper-edge bg-paper-soft">
+      <span class="absolute left-2.5 top-2.5 z-1 meta rounded-sm bg-paper px-2 py-0.5 border border-paper-edge">{f.kept.length} of {f.regions.length} kept · {f.keptPct}% of image</span>
+      {#if f.segmentView === 'masks'}<LayeredScene layers={f.layers} mode="regions" regions={f.regions} label="Regions found in the image, tinted by kind" />
+      {:else}<LayeredScene layers={f.layers} mode={f.segmentView} />{/if}
+    </figure>
+  </div>
+</StepScreen>

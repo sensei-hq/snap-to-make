@@ -1,13 +1,13 @@
 <script lang="ts">
 import { Button } from '@rokkit/ui';
-import KatachiMark from './KatachiMark.svelte';
 import type { Section, SectionId } from '$lib/content/sections';
-// Phone (< md) section tabs. The studio uses NavRail with the same list.
-let { sections, current }: { sections: Section[]; current: SectionId | '' } = $props();
+// Phone (< md) icon nav docked at the bottom: the rail's sections plus Katachi. The studio uses NavRail with the same list.
+let { sections, current, chatOpen = false, onOpenChat }: { sections: Section[]; current: SectionId | ''; chatOpen?: boolean; onOpenChat: () => void } = $props();
 </script>
-<nav aria-label="Snap sections" class="flex items-center gap-1.5 flex-wrap px-4 py-2.5 bg-paper hair-b">
-  <span class="mr-1 grid place-items-center w-8 h-8 rounded-md bg-brand-tile"><KatachiMark size={20} /></span>
+<nav aria-label="Snap sections" class="min-h-14 flex items-center justify-around gap-0.5 px-1 pt-1.5 pb-[max(0.375rem,env(safe-area-inset-bottom))] bg-paper-soft hair-t">
   {#each sections as s (s.id)}
-    <Button target="" href={s.href} size="sm" variant={current === s.id ? 'primary' : 'default'} style={current === s.id ? 'default' : 'ghost'} aria-current={current === s.id ? 'page' : undefined} label={s.label} />
+    <Button target="" href={s.href} icon={s.icon} title={s.label} aria-label={s.label} aria-current={current === s.id ? 'page' : undefined}
+      variant={current === s.id ? 'primary' : 'default'} style={current === s.id ? 'default' : 'ghost'} />
   {/each}
+  <Button style={chatOpen ? 'default' : 'ghost'} variant={chatOpen ? 'primary' : 'default'} icon="i-solar:chat-round-line-linear" aria-label="Open Katachi chat" aria-pressed={chatOpen} onclick={onOpenChat} />
 </nav>
