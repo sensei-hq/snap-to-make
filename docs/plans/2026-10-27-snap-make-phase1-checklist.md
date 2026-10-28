@@ -103,10 +103,11 @@ Rule: an item closes only with evidence (test run, URL check, file). Update this
 - [x] e2e `responsive.spec.ts` (390×844 and 1280×800) green; phone + studio screenshots checked. Found and fixed: Rokkit Button links render `target="_self"`, which SvelteKit treats as external (full reload) — every Button link passes `target=""` (arch-checked)
 
 ## 13. Snap → Make stage routes (Stage 13)
-- [ ] scene · plan · art · preview routes; canvas from the design
+- [x] scene · plan · art · preview routes; canvas from the design (nested real pieces)
 - [x] hood route (cost pill), capture source modes (Upload → Convert; 6 views / Reference disabled until Stage 14), suggestion chips → camera
-- [ ] `deriveParts()` from the measured mug; editable measurements; lid; composer edits
-- [ ] Hero e2e on phone + studio viewports; user verifies on the live URL (HANDOFF)
+- [x] `deriveCoasterSet()` from the measured mug; editable measurements; lid; composer edits (`walls N mm taller`); watch selection + acknowledge
+- [x] Hero e2e on phone + studio viewports (24/24 e2e)
+- [ ] User verifies the hero on the live URL (HANDOFF)
 
 ## 14. Image → layers UI (Stage 14)
 - [ ] `LayerFlowState` + `content/layers.ts`; 7 steps + views/reference branches
