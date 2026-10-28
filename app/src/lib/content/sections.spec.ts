@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { sections } from './sections';
 
-describe('app sections (phone tabs and studio rail share one list)', () => {
+describe('app sections (phone icon nav and studio rail share one list)', () => {
   it('lists the sections in flow order with stable ids and hrefs', () => {
     expect(sections.map((s) => s.id)).toEqual(['workshop', 'capture', 'convert', 'layers', 'canvas', 'watch', 'batch']);
     expect(sections.map((s) => s.href)).toEqual(['/snap', '/snap/capture', '/snap/convert', '/snap/layers/source', '/snap/canvas', '/snap/watch', '/snap/batch']);

@@ -18,7 +18,7 @@ test.describe('phone layout below 1024 px', () => {
 
 test.describe('studio layout at 1024 px and up (tablet landscape, desktop)', () => {
   test.use({ viewport: { width: 1280, height: 800 } });
-  test('shows the rail and the chat panel, hides the phone tabs', async ({ page }) => {
+  test('shows the rail and the chat panel, hides the phone icon nav', async ({ page }) => {
     await page.goto('/snap'); await page.waitForLoadState('networkidle');
     await expect(page.getByRole('navigation', { name: 'Studio sections' })).toBeVisible();
     await expect(page.getByRole('complementary', { name: 'Katachi chat' })).toBeVisible();

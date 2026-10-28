@@ -41,7 +41,7 @@ test.describe('image → layers · studio (1280×800)', () => {
     const assistant = page.getByRole('complementary', { name: 'Katachi chat' });
     const inspector = assistant.getByRole('region', { name: 'Layer', exact: true });
     await expect(inspector.getByRole('heading')).toHaveText('Snow ridge');
-    await page.getByRole('complementary', { name: 'Step controls' }).getByRole('option', { name: /Hills/ }).click();
+    await page.getByRole('complementary', { name: 'Step controls' }).getByRole('button', { name: /Hills/ }).click();
     await expect(inspector.getByRole('heading')).toHaveText('Hills');
     await expect(inspector).toContainText('5 of 6');
   });
@@ -49,7 +49,7 @@ test.describe('image → layers · studio (1280×800)', () => {
   test('walks import → output', async ({ page }) => {
     await page.goto('/snap/layers/source'); await page.waitForLoadState('networkidle');
     const controls = page.getByRole('complementary', { name: 'Step controls' });
-    await expect(controls.getByRole('option', { name: /Upload an image/ })).toBeVisible();
+    await expect(controls.getByRole('button', { name: /Upload an image/ })).toBeVisible();
     await expect(page.getByRole('complementary', { name: 'Katachi chat' })).toContainText('Send from phone');
     await next(page, /Continue with mountain-sunset/, /\/snap\/layers\/cutout$/);
     await next(page, 'Find the objects', /\/snap\/layers\/objects$/);
@@ -112,7 +112,7 @@ test.describe('image → layers · phone (390×844)', () => {
   test('layers: list with share bars; gaps: radio list and apply-to-all', async ({ page }) => {
     await page.goto('/snap/layers/layers'); await page.waitForLoadState('networkidle');
     const main = page.getByRole('main');
-    await main.getByRole('option', { name: /Hills/ }).click();
+    await main.getByRole('button', { name: /Hills/ }).click();
     await expect(main.getByRole('img', { name: /Layer 5, Hills/ })).toBeVisible();
     await next(page, 'Fill the gaps', /\/snap\/layers\/gaps$/);
     await main.getByRole('radio', { name: /Leave it open/ }).check();
