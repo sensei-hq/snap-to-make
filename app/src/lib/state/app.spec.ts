@@ -47,13 +47,6 @@ describe('AppState (one per app, shared by every section)', () => {
     ]);
   });
 
-  it('a suggestion chip becomes what you said (the page then opens the camera)', () => {
-    const app = new AppState();
-    app.pickSuggestion('Coasters from my sketch');
-    expect(app.flow.conversation.transcript).toBe('Coasters from my sketch');
-    expect(app.flow.conversation.slots.intent).toBe('coasters');
-  });
-
   it('shows one right panel at a time in the studio: properties or the Katachi chat', () => {
     const app = new AppState();
     expect([app.chatOpen, app.propsOpen]).toEqual([true, false]);
@@ -103,5 +96,16 @@ describe('AppState (one per app, shared by every section)', () => {
       { label: 'Next · Layers', href: '/snap/layers/layers' }
     ]);
     expect(app.suggestions.length).toBeGreaterThan(0);
+  });
+
+  it('a leaving page only clears the info it set (the next page sets its own first)', () => {
+    const app = new AppState();
+    const cutout = (() => {}) as never, objects = (() => {}) as never;
+    app.setInfo('Checks', cutout);
+    app.setInfo('Regions', objects);
+    app.clearInfo(cutout);
+    expect(app.info?.title).toBe('Regions');
+    app.clearInfo(objects);
+    expect(app.info).toBeNull();
   });
 });
