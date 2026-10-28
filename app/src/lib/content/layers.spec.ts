@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { desktopStepFor, desktopSteps, makeAs, phoneStep, sources } from './layers';
+import { desktopStepFor, desktopSteps, makeAs, phoneStep } from './layers';
 
 describe('image → layers steps (mockups/desktop D1–D6 · mockups/mobile 01–09)', () => {
   it('the studio shows six step tabs; each opens its first route', () => {
@@ -26,8 +26,7 @@ describe('image → layers steps (mockups/desktop D1–D6 · mockups/mobile 01�
     expect(phoneStep('/make/views')).toBeNull();
   });
 
-  it('D1 · start from: upload and phone are flat art; 3D and reference branch', () => {
-    expect(sources.map((s) => [s.id, s.kind])).toEqual([['upload', 'flat'], ['phone', 'flat'], ['3d', '3d'], ['ref', 'ref']]);
+  it('D1 · make it as: Katachi picks, paper, wood or acrylic (where the image comes from is Capture)', () => {
     expect(makeAs.map((m) => m.id)).toEqual(['auto', 'paper', 'wood', 'acrylic']);
   });
 });

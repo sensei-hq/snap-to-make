@@ -12,13 +12,9 @@ describe('LayerFlowState · image → layers (docs/design/01 S1–S9)', () => {
     expect(f.currentKind.next).toBe('/make/views');
   });
 
-  it('D1: the start source sets the kind; "make it as" paper or wood picks the layer set', () => {
+  it('D1: "make it as" paper or wood picks the layer set', () => {
     const f = new LayerFlowState();
-    expect([f.source, f.makeAs]).toEqual(['upload', 'auto']);
-    f.setSource('3d');
-    expect([f.kind, f.currentKind.next]).toEqual(['3d', '/make/views']);
-    f.setSource('phone');
-    expect(f.kind).toBe('flat');
+    expect(f.makeAs).toBe('auto');
     f.setMakeAs('wood');
     expect([f.makeAs, f.set]).toEqual(['wood', 'wood']);
     f.setMakeAs('acrylic');
