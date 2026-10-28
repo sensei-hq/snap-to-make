@@ -9,7 +9,10 @@ const rawColour = /#[0-9a-fA-F]{3,8}\b|\b(?:rgba?|hsla?|oklch)\(/;
 const inlineColourStyle = /style="[^"]*\b(?:color|background|border(?:-[a-z]+)?|outline|fill|stroke)\s*:/;
 const emojiIcon = /[\u{1F300}-\u{1FAFF}☀-➿]/u;
 
-const failures = { fetch: [], colour: [], style: [], emoji: [] };
+const failures = { fetch: [], colour: [], style: [], emoji: [], state: [] };
+// Pages read the shared AppState (useApp()); only the snap layout constructs state.
+const stateOwner = 'src/routes/snap/+layout.svelte';
+const newState = /new [A-Z][A-Za-z]*State\(/;
 function walk(dir) {
   for (const n of readdirSync(dir)) {
     const p = join(dir, n);
@@ -17,6 +20,7 @@ function walk(dir) {
     if (!/\.(svelte|ts)$/.test(n) || /\.spec\.ts$/.test(n) || p.includes('+server')) continue;
     const t = readFileSync(p, 'utf8');
     if (/fetch\(|\$lib\/server/.test(t)) failures.fetch.push(p);
+    if (p.startsWith('src/routes') && p !== stateOwner && newState.test(t)) failures.state.push(p);
     if (!n.endsWith('.svelte') || p.startsWith(illustrations)) continue;
     t.split('\n').forEach((line, i) => {
       const at = `${p}:${i + 1}`;
@@ -32,7 +36,8 @@ const messages = {
   fetch: 'fetch/server import in presentation',
   colour: 'raw colour literal outside src/lib/components/illustrations (use a named token)',
   style: 'inline colour style (use token utilities: bg-paper, text-ink-mute, border-paper-edge…)',
-  emoji: 'emoji used as an icon (use <Icon name=…>)'
+  emoji: 'emoji used as an icon (use a Solar icon class)',
+  state: 'page constructs its own state (read the shared AppState via useApp())'
 };
 let failed = false;
 for (const [k, list] of Object.entries(failures)) {
