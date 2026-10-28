@@ -46,7 +46,9 @@ test.describe('a project: start, name, gate, save, reopen (1280×800)', () => {
     await page.getByRole('main').getByRole('button', { name: 'Continue' }).click();
     await expect(page.getByRole('heading', { level: 1 })).toHaveText(/^Photo · /);
     await page.getByRole('main').getByRole('button', { name: 'Find the outline' }).click();
+    await expect(page).toHaveURL(/\/make\/cutout$/);
     await page.getByRole('navigation', { name: 'Studio sections' }).getByRole('link', { name: 'Canvas' }).click();
+    await expect(page).toHaveURL(/\/canvas$/);
     await page.getByRole('navigation', { name: 'Studio sections' }).getByRole('link', { name: 'Image to layers' }).click();
     await expect(page).toHaveURL(/\/make\/cutout$/);
   });
