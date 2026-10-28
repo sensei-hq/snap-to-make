@@ -17,8 +17,7 @@ $effect(() => app.setScreen('Workshop', flow.measureLabel ? 'scene · measured' 
 <svelte:window ondragover={(e) => e.preventDefault()} ondrop={onWindowDrop} />
 <div class="stage">
   <WorkshopShell listening={flow.conversation.listening} partial={flow.conversation.partial} listenLabel={flow.conversation.listenLabel}
-    onMicDown={() => flow.startListen()} onMicUp={() => flow.stopListen()}
-    onPick={(text) => { app.pickSuggestion(text); void goto(resolve('/snap/capture')); }} />
+    onMicDown={() => flow.startListen()} onMicUp={() => flow.stopListen()} />
   <div class="px-5 flex flex-col gap-2.5">
     <InputField name="typed" type="text" label="What are we making" placeholder="make four coasters 3 mm birch" bind:value={typed}
       onkeydown={(e: KeyboardEvent) => { if (e.key === 'Enter') void measure(); }} />

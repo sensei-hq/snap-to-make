@@ -2,11 +2,13 @@
 import { Button } from '@rokkit/ui';
 import BotAvatar from '../BotAvatar.svelte';
 import type { ChatAction } from '$lib/state/conversation.svelte';
-import ChatThread from '../ChatThread.svelte';
+import AssistantBody from './AssistantBody.svelte';
+import type { Snippet } from 'svelte';
 import AskBar from '../AskBar.svelte';
 // Studio (≥ md) right panel: the Katachi conversation and its composer.
-let { messages, onAsk, onMicDown, onMicUp, onClose, onAction }: {
-  messages: { id: string; role: 'user' | 'assistant'; text: string; data?: { actions: ChatAction[] } }[]; onAction?: (a: ChatAction) => void;
+let { messages, info = null, tab = 'chat', suggestions = [], onTab, onAsk, onMicDown, onMicUp, onClose, onAction }: {
+  messages: { id: string; role: 'user' | 'assistant'; text: string; data?: { actions: ChatAction[] } }[]; onAction: (a: ChatAction) => void;
+  info?: { title: string; body: Snippet } | null; tab?: 'chat' | 'info'; suggestions?: string[]; onTab: (t: 'chat' | 'info') => void;
   onAsk: (text: string) => void; onMicDown: () => void; onMicUp: () => void; onClose: () => void;
 } = $props();
 </script>
@@ -16,6 +18,6 @@ let { messages, onAsk, onMicDown, onMicUp, onClose, onAction }: {
     <div class="flex-1"><p class="font-heading text-lede leading-tight">Katachi</p><p class="meta">Muse models · Meta Model API</p></div>
     <Button style="ghost" size="sm" icon="i-solar:close-circle-linear" aria-label="Close chat" onclick={onClose} />
   </header>
-  <div class="flex-1 min-h-0 overflow-auto px-4 py-4"><ChatThread {messages} {onAction} /></div>
+  <AssistantBody {messages} {info} {tab} {suggestions} {onTab} {onAction} onSuggest={onAsk} />
   <AskBar onSubmit={onAsk} {onMicDown} {onMicUp} />
 </aside>

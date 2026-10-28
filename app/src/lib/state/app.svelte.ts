@@ -1,6 +1,10 @@
 import { vibe } from '@rokkit/states';
 import { FlowState } from './flow.svelte';
 import type { ChatAction } from './conversation.svelte';
+import type { Snippet } from 'svelte';
+import { guide, steps, type StepId } from '../content/layers';
+
+const WORKSHOP_CHIPS = ['Coasters from my sketch', 'Box that fits this', 'Ornaments for 40 names'];
 import { ConvertState } from './convert.svelte';
 import { WatchState } from './watch.svelte';
 import { BatchState } from './batch.svelte';
@@ -33,6 +37,31 @@ export class AppState {
     return log.map((e, i) => ({ id: `m${i}`, role: e.role, text: e.text, ...('actions' in e && e.actions ? { data: { actions: e.actions } } : {}) }));
   }
 
+  /** A page's own view for the assistant (step controls, inspector); the assistant shows Chat | Info. */
+  info = $state<{ title: string; body: Snippet } | null>(null);
+  panelTab = $state<'chat' | 'info'>('chat');
+  setInfo(title: string, body: Snippet) { this.info = { title, body }; this.panelTab = 'info'; }
+  /** Pass the body you set: a leaving page must not clear the next page's info (it is set first). */
+  clearInfo(body?: Snippet) { if (body && this.info?.body !== body) return; this.info = null; this.panelTab = 'chat'; }
+  setPanelTab(t: 'chat' | 'info') { this.panelTab = t; }
+
+  /** Katachi guides each image → layers step once, with Previous / Next. */
+  guidedSteps = $state<StepId[]>([]);
+  currentStep = $state<StepId | null>(null);
+  guideStep(id: StepId) {
+    this.currentStep = id;
+    if (this.guidedSteps.includes(id)) return;
+    this.guidedSteps = [...this.guidedSteps, id];
+    const i = steps.findIndex((s) => s.id === id);
+    const prev = steps[i - 1], next = steps[i + 1];
+    this.flow.conversation.say(guide[id].text, [
+      ...(prev ? [{ label: `Previous · ${prev.label}`, href: prev.path }] : []),
+      ...(next ? [{ label: `Next · ${next.label}`, href: next.path }] : [])
+    ]);
+  }
+  /** Suggestion chips for the composer: the current step's, else the workshop's. */
+  get suggestions() { return this.currentStep ? guide[this.currentStep].chips : WORKSHOP_CHIPS; }
+
   /** Phones show the assistant as a sheet over the work area. */
   sheetOpen = $state(false);
   toggleSheet() { this.sheetOpen = !this.sheetOpen; }
@@ -42,9 +71,6 @@ export class AppState {
   setDensity(d: 'comfortable' | 'compact') { vibe.density = d; }
   toggleProps() { this.propsOpen = !this.propsOpen; if (this.propsOpen) this.chatOpen = false; }
   setScreen(title: string, subtitle = '') { this.screen = { title, subtitle }; }
-
-  /** A suggestion chip is said for you; the page then opens the camera. */
-  pickSuggestion(text: string) { this.flow.conversation.ingestTranscript(text); }
 
   /** The composer (phone dock or studio chat panel) speaks to the workshop conversation. */
   async ask(text: string) {

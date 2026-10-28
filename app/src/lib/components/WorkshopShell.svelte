@@ -1,10 +1,8 @@
 <script lang="ts">
-import { Button } from '@rokkit/ui';
-let { listening = false, partial = '', listenLabel = '', onMicDown, onMicUp, onPick }: {
+let { listening = false, partial = '', listenLabel = '', onMicDown, onMicUp }: {
   listening?: boolean; partial?: string; listenLabel?: string;
-  onMicDown?: () => void; onMicUp?: () => void; onPick?: (text: string) => void;
+  onMicDown?: () => void; onMicUp?: () => void;
 } = $props();
-const chips = ['Coasters from my sketch', 'Box that fits this', 'Ornaments for 40 names'];
 </script>
 <section aria-label="Workshop intro" class="flex flex-col px-5 pt-10 pb-4 gap-8" aria-live="polite">
   <div class="flex flex-col items-center gap-4">
@@ -20,8 +18,5 @@ const chips = ['Coasters from my sketch', 'Box that fits this', 'Ornaments for 4
     </div>
     <p class="meta">{listening ? listenLabel : 'hold to talk'}</p>
     {#if listening && partial}<p class="text-lede text-ink-mute text-center max-w-[32ch]">{partial}</p>{/if}
-  </div>
-  <div class="flex flex-wrap gap-2">
-    {#each chips as c (c)}<Button style="outline" size="sm" class="rounded-full" label={c} onclick={() => onPick?.(c)} />{/each}
   </div>
 </section>

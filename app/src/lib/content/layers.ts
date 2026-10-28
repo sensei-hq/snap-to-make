@@ -108,6 +108,17 @@ export const devices: { id: DeviceId; label: string; adapter: string; status: st
   { id: 'file', label: 'Just the files', adapter: 'export · download', status: '', format: 'SVG · DXF · PDF', settings: '—', time: '—', cta: 'Export files' }
 ];
 
+/** Katachi's guidance as each step opens (chat), with suggestions for the composer. */
+export const guide: Record<StepId, { text: string; chips: string[] }> = {
+  source: { text: 'Looks like layered paper art in a round hoop. I’ll lift it off the wall, then split it into the parts you’d cut.', chips: ['It’s 3D', 'Change it first'] },
+  cutout: { text: 'Background removed and the outline found: a circle, about Ø 300 mm. Check the edge, then I’ll find the objects.', chips: ['Erase the shadow', 'It’s square, not round'] },
+  objects: { text: 'I found 5 regions. Which should become parts? The hoop looks bought, so I left it out — toggle any region in Info.', chips: ['Keep the hoop', 'Raise the sun on a spacer', 'Split the mountains'] },
+  layers: { text: 'Six colour groups, back to front. Pick a layer to see what shows and what hides behind the ones in front.', chips: ['Merge sun and sky', 'Split the hills'] },
+  gaps: { text: 'Most back layers are hidden behind the ones in front. I’d keep the sky and the front two solid as the structure and open the rest.', chips: ['Do that', 'Imagine the hidden parts'] },
+  material: { text: 'Matched each layer to the nearest colour in your supplies. Switch the whole set to wood if you’d rather laser it.', chips: ['Use wood instead', 'Darker greens'] },
+  cut: { text: 'Sheets are ready, each with 3 registration holes so the stack lines up on pins. Pick a device to send to.', chips: ['Just the files', 'How long will it take?'] }
+};
+
 export const copy = {
   source: {
     title: 'New from an image', sub: 'source · upload or snap', file: 'mountain-sunset.png', fileMeta: '2048 × 2048 · from Photos',
