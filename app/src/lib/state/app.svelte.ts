@@ -9,7 +9,6 @@ const flowPath = (id: FlowPage) => `/make/${id}`;
 const browserStore = () => new ProjectStore(typeof globalThis.localStorage?.getItem === 'function' ? globalThis.localStorage : undefined);
 
 const WORKSHOP_CHIPS = ['Coasters from my sketch', 'Box that fits this', 'Ornaments for 40 names'];
-import { ConvertState } from './convert.svelte';
 import { WatchState } from './watch.svelte';
 import { BatchState } from './batch.svelte';
 import { CaptureState } from './capture.svelte';
@@ -23,7 +22,6 @@ import { EditorState } from './editor.svelte';
 export class AppState {
   session = new SessionState();
   flow = new FlowState();
-  convert = new ConvertState();
   watch = new WatchState();
   batch = new BatchState();
   capture = $state(new CaptureState());
@@ -88,6 +86,25 @@ export class AppState {
     this.store.save(record);
     this.store.setCurrent(record.id);
     this.projects = this.store.list();
+  }
+  // Import · Katachi turns "what do you want to make of it" into a plan (Muse dissection, /api/convert)
+  variations = $state<{ title: string; change: string }[]>([]);
+  async askForBrief(description: string) {
+    const text = description.trim();
+    if (!text) return;
+    this.flow.conversation.ingestTranscript(text);
+    const group = this.layers.makeAs === 'paper' ? 'cricut-paper' : 'laser-cut';
+    const r = await fetch('/api/convert', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ imageDataUrl: this.project?.image || undefined, description: text, group }) })
+      .then((x) => (x.ok ? x.json() : null)).catch(() => null);
+    if (!r?.objective) { this.flow.conversation.say('I couldn’t reach Muse just now — try again in a moment.'); return; }
+    this.variations = (r.variations ?? []).slice(0, 3);
+    this.flow.conversation.say(`${r.objective}. Pick a direction and I’ll plan the layers around it:`, this.variations.map((v, i) => ({ label: v.title, id: `variation:${i}` })));
+  }
+  chooseVariation(i: number) {
+    const v = this.variations[i];
+    if (!v) return;
+    this.layers.setBrief(`${v.title} — ${v.change}`);
+    this.flow.conversation.say(`Going with ${v.title}.`);
   }
   open(id: string) { const p = this.store.load(id); if (p) { this.apply(p); this.store.setCurrent(id); } }
 

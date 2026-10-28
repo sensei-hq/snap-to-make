@@ -9,6 +9,9 @@ export class LayerFlowState {
   kind = $state<Kind>('flat');
   get currentKind() { return kinds.find((k) => k.id === this.kind) ?? kinds[0]; }
   setKind(k: Kind) { this.kind = k; }
+  // D1 · the plan Katachi and you agreed at Import (objective + chosen variation)
+  brief = $state('');
+  setBrief(b: string) { this.brief = b; }
   // D1 · what to make it as (paper or wood picks the set)
   makeAs = $state<MakeAs>('auto');
   setMakeAs(m: MakeAs) { this.makeAs = m; if (m === 'paper' || m === 'wood') this.setSet(m); }
@@ -137,7 +140,7 @@ export class LayerFlowState {
   }
 
   // project save / reopen: every choice above, as plain data
-  private static readonly SAVED = ['kind', 'makeAs', 'cutoutView', 'keep', 'segmentView', 'refineTool', 'set', 'stack', 'sel', 'gapChoice', 'applyAll', 'gapRule', 'overrides', 'done', 'joinery', 'skipped', 'device', 'showSolid', 'showHidden', 'job'] as const;
+  private static readonly SAVED = ['kind', 'brief', 'makeAs', 'cutoutView', 'keep', 'segmentView', 'refineTool', 'set', 'stack', 'sel', 'gapChoice', 'applyAll', 'gapRule', 'overrides', 'done', 'joinery', 'skipped', 'device', 'showSolid', 'showHidden', 'job'] as const;
   /** a fresh flow's choices (New starts from these) */
   static defaults() { return new LayerFlowState().snapshot(); }
   snapshot(): Record<string, unknown> {

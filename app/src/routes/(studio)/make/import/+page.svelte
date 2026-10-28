@@ -2,6 +2,7 @@
 import { goto } from '$app/navigation';
 import { resolve } from '$app/paths';
 import { Button, Toggle } from '@rokkit/ui';
+import { InputField } from '@rokkit/forms';
 import StepScreen from '$lib/components/StepScreen.svelte';
 import LayeredScene from '$lib/components/illustrations/LayeredScene.svelte';
 import { copy, guide, kinds, makeAs, type Kind, type MakeAs } from '$lib/content/layers';
@@ -15,6 +16,9 @@ const go = () => void goto(resolve(f.currentKind.next as '/make/cutout'));
 const kindOptions = kinds.map((k) => ({ label: k.label, value: k.id }));
 const makeOptions = makeAs.map((m) => ({ label: m.label, value: m.id }));
 const image = $derived(app.project?.image ?? '');
+let wish = $state('');
+let asking = $state(false);
+async function ask() { asking = true; await app.askForBrief(wish); asking = false; }
 </script>
 {#snippet aside()}
   <p class="eyebrow">{copy.import.what}</p>
@@ -22,6 +26,9 @@ const image = $derived(app.project?.image ?? '');
   <p class="text-ui text-ink-mute">{f.currentKind.hint}</p>
   <p class="eyebrow mt-2">{copy.import.makeAs}</p>
   <Toggle options={makeOptions} value={f.makeAs} label="Make it as" class="chips" onchange={(v) => f.setMakeAs(v as MakeAs)} />
+  <InputField name="wish" type="textarea" label="What do you want to make of it?" placeholder="A piece for the hallway, warmer colours" bind:value={wish} />
+  <span class="self-start"><Button style="outline" size="sm" icon="i-solar:magic-stick-linear" label="Ask Katachi" loading={asking} disabled={asking || !wish.trim()} onclick={() => void ask()} /></span>
+  {#if f.brief}<p class="text-ui text-ink">Plan: {f.brief}</p>{/if}
   <p class="lt-md:hidden mt-auto text-ui text-ink-soft">{copy.import.privacy}</p>
 {/snippet}
 {#snippet actions()}

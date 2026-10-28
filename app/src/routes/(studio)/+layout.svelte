@@ -25,6 +25,7 @@ const ask = (text: string) => void app.ask(text);
 const act = (a: ChatAction) => {
   if (a.href) return void goto(resolve(a.href as '/workshop'));
   if (a.id === 'capture.measure') void app.flow.analyse().then(() => goto(resolve('/scene')));
+  if (a.id?.startsWith('variation:')) app.chooseVariation(Number(a.id.split(':')[1]));
 };
 // Autosave: any change to the project or its flow choices is written to the saved project.
 $effect(() => { void app.layers.snapshot(); if (app.project) void $state.snapshot(app.project); untrack(() => app.save()); });
