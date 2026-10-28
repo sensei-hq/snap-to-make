@@ -1,8 +1,40 @@
-// Server-only guard (R-PL-2/4/5/7). Invite list comes from snap.invites at runtime; pure helpers tested here.
+// Server-only guard (R-PL-2/4/5/7): invite codes, signed sessions, the public paths, the budget.
+
+/** Invite codes come only from the SNAP_INVITE_CODES secret — nothing built in. */
+export function inviteCodes(raw: string | undefined): string[] {
+  return (raw ?? '').split(',').map((c) => c.trim()).filter(Boolean);
+}
+
 export function checkInvite(code: string, attested18: boolean, validCodes: string[]): { ok: boolean; reason?: string } {
-  if (!attested18) return { ok: false, reason: 'Age attestation required' };
-  if (!validCodes.includes(code.trim())) return { ok: false, reason: 'Invalid invite code' };
+  if (!code.trim()) return { ok: false, reason: 'Enter your invite code' };
+  if (!attested18) return { ok: false, reason: 'Confirm you are 18 or over' };
+  if (!validCodes.includes(code.trim())) return { ok: false, reason: 'That invite code isn’t valid' };
   return { ok: true };
+}
+
+// Session cookie value: "<id>.<HMAC-SHA256(id) base64url>" — Web Crypto, so it runs on Workers.
+const enc = new TextEncoder();
+const b64url = (buf: ArrayBuffer) => btoa(String.fromCharCode(...new Uint8Array(buf))).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+const hmacKey = (secret: string) => crypto.subtle.importKey('raw', enc.encode(secret), { name: 'HMAC', hash: 'SHA-256' }, false, ['sign']);
+async function mac(id: string, secret: string) { return b64url(await crypto.subtle.sign('HMAC', await hmacKey(secret), enc.encode(id))); }
+
+export async function signSession(id: string, secret: string): Promise<string> { return `${id}.${await mac(id, secret)}`; }
+
+/** The session id when the token is ours and untouched; otherwise null. */
+export async function verifySession(token: string | undefined, secret: string): Promise<string | null> {
+  const dot = token?.lastIndexOf('.') ?? -1;
+  if (!token || dot <= 0) return null;
+  const id = token.slice(0, dot), sig = token.slice(dot + 1);
+  const expected = await mac(id, secret);
+  if (sig.length !== expected.length) return null;
+  let diff = 0;
+  for (let i = 0; i < sig.length; i++) diff |= sig.charCodeAt(i) ^ expected.charCodeAt(i);
+  return diff === 0 ? id : null;
+}
+
+/** Reachable without a session: the gate page, its API and the static shell. */
+export function isPublicPath(path: string): boolean {
+  return path === '/' || path === '/api/gate' || path.startsWith('/_app/') || /^\/(favicon\.svg|manifest\.webmanifest|service-worker\.js|robots\.txt)$/.test(path);
 }
 export class BudgetGuard {
   spentSession = 0; spentDay = 0;

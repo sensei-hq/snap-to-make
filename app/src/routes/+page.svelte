@@ -13,15 +13,19 @@ const consents = [
 async function enter() { if (await session.enterFromForm()) location.href = '/workshop'; }
 </script>
 <svelte:head><title>Katachi · Welcome</title></svelte:head>
-<div class="phone-col relative">
+<!-- phones: one column; desktop: the pitch beside the form -->
+<div class="relative min-h-dvh bg-paper text-ink font-sans text-body md:grid md:grid-cols-2">
   <ThemeSwitcherToggle variant="single" class="absolute top-2 right-2" />
-  <div class="flex-1 flex flex-col px-6 pt-14">
+  <section aria-label="Katachi" class="flex flex-col px-6 pt-14 md:px-16 md:py-16 md:justify-center md:bg-paper-soft md:border-r md:border-paper-edge">
     <p class="flex items-center gap-2.5"><span class="grid place-items-center w-10 h-10 rounded-md bg-brand-tile"><KatachiMark size={28} /></span><span class="font-heading text-title">Katachi</span></p>
     <p class="eyebrow mt-10">Snap → Make · demo</p>
-    <h1 class="font-heading text-display font-normal tracking-display mt-3">Show it. Say it.<br />Burn it.</h1>
-    <p class="mt-3.5 text-ink-mute">Point your phone at a sketch and the thing it must fit. Katachi measures, designs and writes the cut file.</p>
-    <div class="mt-8 flex flex-col gap-5">
-      <InputField name="invite" type="text" label="Invite code" placeholder="MAKER-2026" autocomplete="off" bind:value={session.code} />
+    <h1 class="font-heading text-display md:text-hero font-normal tracking-display mt-3">Show it. Say it.<br />Burn it.</h1>
+    <p class="mt-3.5 text-ink-mute max-w-[44ch]">Point your phone at a sketch and the thing it must fit. Katachi measures, designs and writes the cut file.</p>
+    <p class="lt-md:hidden meta mt-10">Muse models · on the Meta Model API</p>
+  </section>
+  <section aria-label="Enter" class="flex flex-col px-6 pt-8 pb-8 md:justify-center md:px-16 md:max-w-[520px] md:w-full md:mx-auto">
+    <div class="flex flex-col gap-5">
+      <InputField name="invite" type="text" label="Invite code" placeholder="Your invite code" autocomplete="off" bind:value={session.code} />
       <div class="flex flex-col divide-y divide-paper-edge">
         {#each consents as c (c.key)}
           <label class="flex gap-3 items-start py-2.5 cursor-pointer">
@@ -31,10 +35,10 @@ async function enter() { if (await session.enterFromForm()) location.href = '/wo
         {/each}
       </div>
     </div>
-  </div>
-  <div class="px-6 pt-4 pb-8 flex flex-col gap-2.5">
-    {#if session.msg}<p role="status" class="text-ui text-danger">{session.msg}</p>{/if}
-    <Button size="lg" variant="primary" class="w-full" label="Enter the workshop" iconRight="i-solar:arrow-right-linear" onclick={enter} />
-    <p class="meta text-center">Muse models · on the Meta Model API</p>
-  </div>
+    <div class="pt-6 flex flex-col gap-2.5">
+      {#if session.msg}<p role="status" class="text-ui {session.gated ? 'text-success' : 'text-danger'}">{session.msg}</p>{/if}
+      <Button size="lg" variant="primary" class="w-full" label="Enter the workshop" iconRight="i-solar:arrow-right-linear" onclick={enter} />
+      <p class="md:hidden meta text-center">Muse models · on the Meta Model API</p>
+    </div>
+  </section>
 </div>
