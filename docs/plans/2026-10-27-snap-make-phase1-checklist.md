@@ -95,15 +95,16 @@ Rule: an item closes only with evidence (test run, URL check, file). Update this
 - [x] /snap/convert UI: drop/import + camera, description+comment, group select, variations -> agree -> breakdown; e2e 9/9; deployed
 
 ## 12. App shell: shared state + responsive (Stage 12) · `docs/roadmap/12-app-shell-responsive.md`
-- [ ] UnoCSS breakpoints md 1024 / lg 1320
-- [ ] `AppState` context in `routes/snap/+layout.svelte`; pages use `useApp()` (arch check: no `new FlowState(` in routes)
-- [ ] Phone shell < md: app bar (mark, title, cost pill → hood, theme), section tabs, docked composer
-- [ ] Studio shell ≥ md: nav rail, workspace, Katachi chat panel (collapsible)
-- [ ] Page titles "Katachi · …"; `/` → gate
-- [ ] e2e `responsive.spec.ts` (390×844 and 1280×800); screenshots compared with the mock
+- [x] UnoCSS breakpoints md 1024 / lg 1320
+- [x] `AppState` context in `routes/snap/+layout.svelte`; pages use `useApp()` (arch check: no `new …State(` in routes)
+- [x] Phone shell < md: app bar (mark, title, cost pill → hood, theme), section tabs, docked composer
+- [x] Studio shell ≥ md: nav rail, workspace, Katachi chat panel (collapsible)
+- [x] Page titles "Katachi · …"; `/` → gate
+- [x] e2e `responsive.spec.ts` (390×844 and 1280×800) green; phone + studio screenshots checked. Found and fixed: Rokkit Button links render `target="_self"`, which SvelteKit treats as external (full reload) — every Button link passes `target=""` (arch-checked)
 
 ## 13. Snap → Make stage routes (Stage 13)
-- [ ] scene · plan · art · preview · hood routes; canvas from the design; capture source modes
+- [ ] scene · plan · art · preview routes; canvas from the design
+- [x] hood route (cost pill), capture source modes (Upload → Convert; 6 views / Reference disabled until Stage 14), suggestion chips → camera
 - [ ] `deriveParts()` from the measured mug; editable measurements; lid; composer edits
 - [ ] Hero e2e on phone + studio viewports; user verifies on the live URL (HANDOFF)
 

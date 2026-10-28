@@ -1,8 +1,8 @@
-# Checkpoint — Snap → Make Phase 1
+# Checkpoint — Katachi · Snap → Make Phase 1
 
-- Slice: Zen-Sumi theme on Rokkit components — deployed to https://snap-to-make.sensei-hq.com (Worker `snap-to-make`, version d9b20b59, META_API_KEY secret set; live Muse Spark verified via /api/convert source=live).
-- Done: tokens pinned to the design mock (`app/src/lib/design/tokens.spec.ts`); arch test bans raw colours, inline colour styles and emoji icons outside `illustrations/`; every screen on @rokkit/ui + @rokkit/forms (zen-sumi); fonts via @fontsource; theme persists across reloads; gate consents are native checkboxes; package + Worker renamed `snap-to-make` with custom domain `snap-to-make.sensei-hq.com`.
-- Gates: 110 unit tests, 12/12 e2e, arch/lint/check 0 errors, coverage 91.4%, `deploy:dry` ok; `rokkit doctor` all PASS (chart WARN only, no charts); `dbd doctor` + `dbd inspect` clean.
-- Next command: `cd app && bun run test:e2e` before each `bun run deploy`.
-- Open: Vimeo kickoff + Agents 101 transcripts are privacy-locked (403); user to export captions or run yt-dlp with browser cookies into `docs/transcripts/`. Caliper truth samples, Ray 5 burn film, final submission assembly.
-- Known broken: none. Old Worker from the previous brand deleted 2026-10-27 (its workers.dev URL now 404s).
+- Slice: Stage 12 app shell + responsive layout (done) and the first Stage 13 flow fixes (hood route, chips, camera source modes). Pushed, not yet deployed.
+- Done: Burn-E → Katachi rename committed; brand colours are Rokkit tokens; UI gap analysis `docs/design/06-ui-gap-analysis.md`; roadmap stages 12–15; plan decisions (responsive, shared state). Shared `AppState` via `useApp()`; phone tabs + docked composer below 1024 px, studio rail + Katachi chat panel from 1024 px.
+- Gates: 123 unit, 20/20 e2e, arch/lint/check 0 errors, coverage ≥ 90% on domain/devices/state, rokkit doctor PASS (chart WARN only).
+- Next command: Stage 13 — `docs/roadmap/13-snap-make-stages.md` (scene, plan, art, preview routes; `deriveParts()` from the measured mug; canvas from the design). Then `cd app && bun run deploy`.
+- Open: Stage 14 layers UI waits on `docs/design/04-gap-analysis.md` #1–7; mock `static/layers/*` images are third-party derived and never ship. Rokkit Button `target="_self"` default breaks SvelteKit client navigation — worth fixing in Rokkit.
+- Known broken: none in code. Live site still serves the pre-shell build until the next deploy.
