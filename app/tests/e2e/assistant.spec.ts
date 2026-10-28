@@ -20,6 +20,15 @@ test.describe('three parts: nav · work area · assistant (1280×800)', () => {
     await expect(assistant.getByRole('log')).toContainText('merge sun and sky');
     await expect(assistant.getByRole('button', { name: 'Voice input' })).toBeVisible();
   });
+  test('the assistant is Rokkit ChatShell: default messages, suggestions and send in the composer', async ({ page }) => {
+    await page.goto('/workshop'); await page.waitForLoadState('networkidle');
+    const assistant = page.getByRole('complementary', { name: 'Katachi chat' });
+    await expect(assistant.locator('[data-chat-shell]')).toHaveCount(1);
+    await expect(assistant.locator('[data-chat-message][data-role="assistant"] [data-chat-body]').first()).toContainText('what are we making today');
+    const composer = assistant.locator('[data-chat-composer]');
+    await expect(composer.getByRole('group', { name: 'Suggestions' }).getByRole('button', { name: 'Coasters from my sketch' })).toBeVisible();
+    await expect(composer.getByRole('button', { name: 'Send' })).toBeVisible();
+  });
   test('measuring posts the reply in the assistant', async ({ page }) => {
     await page.route('**/api/scene', (r) => r.fulfill({ json: { measure: { status: 'measured', targets: [{ valueMm: 82 }] }, trace: [] } }));
     await page.goto('/workshop'); await page.waitForLoadState('networkidle');
