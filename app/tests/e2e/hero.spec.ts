@@ -7,25 +7,25 @@ async function fixtures(page: Page) {
 
 async function hero(page: Page) {
   await fixtures(page);
-  await page.goto('/snap'); await page.waitForLoadState('networkidle');
+  await page.goto('/workshop'); await page.waitForLoadState('networkidle');
   await page.getByPlaceholder('make four coasters 3 mm birch').fill('make four coasters 3 mm birch');
   await page.getByRole('button', { name: /snap & measure/i }).click();
   // Scene: measured, editable.
-  await expect(page).toHaveURL(/\/snap\/scene$/);
+  await expect(page).toHaveURL(/\/scene$/);
   await expect(page.getByText(/Ø 82 mm/).first()).toBeVisible();
   await page.getByRole('button', { name: 'Looks right' }).click();
   // Plan: derived from the mug (coaster 95 mm).
-  await expect(page).toHaveURL(/\/snap\/plan$/);
+  await expect(page).toHaveURL(/\/plan$/);
   await expect(page.getByLabel('Build plan')).toContainText('holder-base');
   await expect(page.getByLabel('Build plan')).toContainText('95 × 95 mm');
   await page.getByRole('button', { name: 'Looks good' }).click();
   // Art → preview → canvas.
-  await expect(page).toHaveURL(/\/snap\/art$/);
+  await expect(page).toHaveURL(/\/art$/);
   await page.getByRole('button', { name: /Use take/ }).click();
-  await expect(page).toHaveURL(/\/snap\/preview$/);
+  await expect(page).toHaveURL(/\/preview$/);
   await expect(page.getByRole('region', { name: 'Preview' })).toContainText('Ø 95 mm');
   await page.getByRole('button', { name: 'Make it' }).click();
-  await expect(page).toHaveURL(/\/snap\/canvas$/);
+  await expect(page).toHaveURL(/\/canvas$/);
   await expect(page.getByRole('img', { name: /Nested sheet layout/ })).toBeVisible();
   await page.getByRole('button', { name: 'Play' }).click();
   await expect(page.getByLabel('Simulate')).toContainText(/engrave|cut/);
@@ -46,7 +46,7 @@ test.describe('hero journey · phone (390×844)', () => {
 
 test('canvas: "make the walls 5 mm taller" re-plans and the lid offer updates the sheet', async ({ page }) => {
   await fixtures(page);
-  await page.goto('/snap/canvas'); await page.waitForLoadState('networkidle');
+  await page.goto('/canvas'); await page.waitForLoadState('networkidle');
   await expect(page.getByText(/Walls at 40 mm/)).toBeVisible();
   const ask = page.getByRole('complementary', { name: 'Katachi chat' }).getByRole('textbox');
   await ask.fill('Make the walls 5 mm taller'); await ask.press('Enter');
@@ -57,7 +57,7 @@ test('canvas: "make the walls 5 mm taller" re-plans and the lid offer updates th
 
 test('scene: fixing a number changes the plan', async ({ page }) => {
   await fixtures(page);
-  await page.goto('/snap'); await page.waitForLoadState('networkidle');
+  await page.goto('/workshop'); await page.waitForLoadState('networkidle');
   await page.getByRole('button', { name: /snap & measure/i }).click();
   await page.getByRole('button', { name: 'Edit Mug base' }).click();
   await page.getByRole('spinbutton', { name: /Mug base/ }).fill('90');

@@ -39,11 +39,11 @@ describe('AppState (one per app, shared by every section)', () => {
     const app = new AppState();
     expect(app.messages).toEqual([{ id: 'm0', role: 'assistant', text: 'Hi Dev — what are we making today?' }]);
     app.flow.conversation.ingestTranscript('make four coasters');
-    app.flow.conversation.say('Build plan ready.', [{ label: 'Open the plan', href: '/snap/plan' }]);
+    app.flow.conversation.say('Build plan ready.', [{ label: 'Open the plan', href: '/plan' }]);
     expect(app.messages).toEqual([
       { id: 'm0', role: 'assistant', text: 'Hi Dev — what are we making today?' },
       { id: 'm1', role: 'user', text: 'make four coasters' },
-      { id: 'm2', role: 'assistant', text: 'Build plan ready.', data: { actions: [{ label: 'Open the plan', href: '/snap/plan' }] } }
+      { id: 'm2', role: 'assistant', text: 'Build plan ready.', data: { actions: [{ label: 'Open the plan', href: '/plan' }] } }
     ]);
   });
 
@@ -85,13 +85,13 @@ describe('AppState (one per app, shared by every section)', () => {
 
   it('guides each layers step once in the chat, with Previous / Next and the step’s suggestions', () => {
     const app = new AppState();
-    app.guideStep('objects');
-    app.guideStep('objects');
+    app.guideStep('segment');
+    app.guideStep('segment');
     const steps = app.messages.filter((m) => m.data?.actions?.some((a) => a.label.startsWith('Next')));
     expect(steps).toHaveLength(1);
     expect(steps[0].data?.actions).toEqual([
-      { label: 'Previous · Cutout', href: '/snap/layers/cutout' },
-      { label: 'Next · Layers', href: '/snap/layers/layers' }
+      { label: 'Previous · Cutout', href: '/make/cutout' },
+      { label: 'Next · Layers', href: '/make/layers' }
     ]);
     expect(app.suggestions.length).toBeGreaterThan(0);
   });

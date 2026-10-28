@@ -3,20 +3,20 @@ import { LayerFlowState } from './layer-flow.svelte';
 import { kinds, layerSets, steps } from '../content/layers';
 
 describe('LayerFlowState · image → layers (docs/design/01 S1–S9)', () => {
-  it('walks seven steps; the kind picker routes flat art to the cutout, 3D to six views, reference to changes', () => {
-    expect(steps.map((s) => s.id)).toEqual(['source', 'cutout', 'objects', 'layers', 'gaps', 'material', 'cut']);
-    expect(Object.fromEntries(kinds.map((k) => [k.id, k.next]))).toEqual({ flat: '/snap/layers/cutout', '3d': '/snap/layers/views', ref: '/snap/layers/reference' });
+  it('walks six steps; the kind picker routes flat art to the cutout, 3D to six views, reference to changes', () => {
+    expect(steps.map((s) => s.id)).toEqual(['import', 'cutout', 'segment', 'layers', 'gaps', 'output']);
+    expect(Object.fromEntries(kinds.map((k) => [k.id, k.next]))).toEqual({ flat: '/make/cutout', '3d': '/make/views', ref: '/make/reference' });
     const f = new LayerFlowState();
     expect(f.kind).toBe('flat');
     f.setKind('3d');
-    expect(f.currentKind.next).toBe('/snap/layers/views');
+    expect(f.currentKind.next).toBe('/make/views');
   });
 
   it('D1: the start source sets the kind; "make it as" paper or wood picks the layer set', () => {
     const f = new LayerFlowState();
     expect([f.source, f.makeAs]).toEqual(['upload', 'auto']);
     f.setSource('3d');
-    expect([f.kind, f.currentKind.next]).toEqual(['3d', '/snap/layers/views']);
+    expect([f.kind, f.currentKind.next]).toEqual(['3d', '/make/views']);
     f.setSource('phone');
     expect(f.kind).toBe('flat');
     f.setMakeAs('wood');

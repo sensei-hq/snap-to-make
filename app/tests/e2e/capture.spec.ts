@@ -3,7 +3,7 @@ import { test, expect } from '@playwright/test';
 test.describe('capture wizard (studio)', () => {
   test.use({ viewport: { width: 1280, height: 800 } });
   test('six sides: shoot, see which side is next, retake, view full size', async ({ page }) => {
-    await page.goto('/snap/capture'); await page.waitForLoadState('networkidle');
+    await page.goto('/capture'); await page.waitForLoadState('networkidle');
     await page.getByRole('radio', { name: '6 sides' }).click();
     await expect(page.getByText('Shoot the front · 1 of 6')).toBeVisible();
     await page.getByRole('button', { name: 'Take photo' }).click();
@@ -18,7 +18,7 @@ test.describe('capture wizard (studio)', () => {
   });
 
   test('upload mixes with camera shots in the same slots', async ({ page }) => {
-    await page.goto('/snap/capture'); await page.waitForLoadState('networkidle');
+    await page.goto('/capture'); await page.waitForLoadState('networkidle');
     await page.getByRole('radio', { name: '6 sides' }).click();
     await page.getByRole('button', { name: 'Take photo' }).click();
     await page.getByRole('radio', { name: 'Upload' }).click();

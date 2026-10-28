@@ -3,8 +3,8 @@ import { sections } from './sections';
 
 describe('app sections (phone icon nav and studio rail share one list)', () => {
   it('lists the sections in flow order with stable ids and hrefs', () => {
-    expect(sections.map((s) => s.id)).toEqual(['workshop', 'capture', 'convert', 'layers', 'canvas', 'watch', 'batch']);
-    expect(sections.map((s) => s.href)).toEqual(['/snap', '/snap/capture', '/snap/convert', '/snap/layers/source', '/snap/canvas', '/snap/watch', '/snap/batch']);
+    expect(sections.map((s) => s.id)).toEqual(['workshop', 'capture', 'layers', 'canvas', 'watch', 'batch']);
+    expect(sections.map((s) => s.href)).toEqual(['/workshop', '/capture', '/make/import', '/canvas', '/watch', '/batch']);
   });
 
   it('gives every section a label and a Solar icon for the rail', () => {
@@ -18,18 +18,18 @@ describe('app sections (phone icon nav and studio rail share one list)', () => {
 describe('sectionFor (which tab / rail item is current)', () => {
   it('matches the longest section prefix, so stage routes keep their section', async () => {
     const { sectionFor } = await import('./sections');
-    expect(sectionFor('/snap')).toBe('workshop');
-    expect(sectionFor('/snap/scene')).toBe('workshop');
-    expect(sectionFor('/snap/watch')).toBe('watch');
-    expect(sectionFor('/snap/layers/layers')).toBe('layers');
-    expect(sectionFor('/snap/layers/views')).toBe('layers');
-    expect(sectionFor('/snap/hood')).toBe('workshop');
+    expect(sectionFor('/workshop')).toBe('workshop');
+    expect(sectionFor('/scene')).toBe('workshop');
+    expect(sectionFor('/watch')).toBe('watch');
+    expect(sectionFor('/make/layers')).toBe('layers');
+    expect(sectionFor('/make/views')).toBe('layers');
+    expect(sectionFor('/hood')).toBe('workshop');
   });
 });
 
 describe('studio tools (rail only)', () => {
   it('lists materials, annotations and settings below the divider', async () => {
     const { tools } = await import('./sections');
-    expect(tools.map((t) => [t.id, t.href])).toEqual([['materials', '/snap/materials'], ['annotations', '/snap/annotations'], ['settings', '/snap/settings']]);
+    expect(tools.map((t) => [t.id, t.href])).toEqual([['materials', '/materials'], ['annotations', '/annotations'], ['settings', '/settings']]);
   });
 });

@@ -4,29 +4,26 @@ import { desktopStepFor, desktopSteps, makeAs, phoneStep, sources } from './laye
 describe('image → layers steps (mockups/desktop D1–D6 · mockups/mobile 01–09)', () => {
   it('the studio shows six step tabs; each opens its first route', () => {
     expect(desktopSteps.map((s) => s.label)).toEqual(['Import', 'Segment', 'Layers', 'Gaps', '6 views', 'Output']);
-    expect(desktopSteps.map((s) => s.path)).toEqual([
-      '/snap/layers/source', '/snap/layers/objects', '/snap/layers/layers', '/snap/layers/gaps', '/snap/layers/views', '/snap/layers/cut'
-    ]);
+    expect(desktopSteps.map((s) => s.path)).toEqual(['/make/import', '/make/segment', '/make/layers', '/make/gaps', '/make/views', '/make/output']);
   });
 
-  it('every route of the flow lights one studio tab (cutout is part of Segment, material of Layers)', () => {
-    expect(desktopStepFor('/snap/layers/source')).toBe('import');
-    expect(desktopStepFor('/snap/layers/reference')).toBe('import');
-    expect(desktopStepFor('/snap/layers/cutout')).toBe('segment');
-    expect(desktopStepFor('/snap/layers/objects')).toBe('segment');
-    expect(desktopStepFor('/snap/layers/layers')).toBe('layers');
-    expect(desktopStepFor('/snap/layers/material')).toBe('layers');
-    expect(desktopStepFor('/snap/layers/gaps')).toBe('gaps');
-    expect(desktopStepFor('/snap/layers/views')).toBe('views');
-    expect(desktopStepFor('/snap/layers/cut')).toBe('output');
-    expect(desktopStepFor('/snap/canvas')).toBe('');
+  it('every route of the flow lights one studio tab (cutout is part of Segment, reference part of Import)', () => {
+    expect(desktopStepFor('/make/import')).toBe('import');
+    expect(desktopStepFor('/make/reference')).toBe('import');
+    expect(desktopStepFor('/make/cutout')).toBe('segment');
+    expect(desktopStepFor('/make/segment')).toBe('segment');
+    expect(desktopStepFor('/make/layers')).toBe('layers');
+    expect(desktopStepFor('/make/gaps')).toBe('gaps');
+    expect(desktopStepFor('/make/views')).toBe('views');
+    expect(desktopStepFor('/make/output')).toBe('output');
+    expect(desktopStepFor('/canvas')).toBe('');
   });
 
-  it('the phone strip counts seven steps and names the next one; branch screens have no strip', () => {
-    expect(phoneStep('/snap/layers/source')).toEqual({ n: 1, total: 7, label: 'Source', next: 'cutout', back: null });
-    expect(phoneStep('/snap/layers/gaps')).toEqual({ n: 5, total: 7, label: 'Gaps', next: 'material', back: '/snap/layers/layers' });
-    expect(phoneStep('/snap/layers/cut')).toEqual({ n: 7, total: 7, label: 'Cut', next: null, back: '/snap/layers/material' });
-    expect(phoneStep('/snap/layers/views')).toBeNull();
+  it('the phone strip counts six steps (no Material: the medium is picked at Import) and names the next one; branch screens have no strip', () => {
+    expect(phoneStep('/make/import')).toEqual({ n: 1, total: 6, label: 'Import', next: 'cutout', back: null });
+    expect(phoneStep('/make/gaps')).toEqual({ n: 5, total: 6, label: 'Gaps', next: 'output', back: '/make/layers' });
+    expect(phoneStep('/make/output')).toEqual({ n: 6, total: 6, label: 'Output', next: null, back: '/make/gaps' });
+    expect(phoneStep('/make/views')).toBeNull();
   });
 
   it('D1 · start from: upload and phone are flat art; 3D and reference branch', () => {
