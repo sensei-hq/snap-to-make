@@ -51,6 +51,16 @@ describe('LayerFlowState · image → layers (docs/design/01 S1–S9)', () => {
     expect(f.joinery).toBe('tabs');
   });
 
+  it('a snapshot of every choice restores into a fresh flow (projects save and reopen)', () => {
+    const f = new LayerFlowState();
+    f.setKind('3d'); f.setMakeAs('wood'); f.toggleRegion('sun'); f.selectLayer(2); f.setGapRule('leave'); f.toggleSolid(1); f.setDevice('xtool'); f.setJoinery('tabs');
+    const g = new LayerFlowState();
+    g.restore(JSON.parse(JSON.stringify(f.snapshot())));
+    expect(g.snapshot()).toEqual(f.snapshot());
+    expect([g.kind, g.set, g.selected.n, g.gapRule, g.currentDevice.id]).toEqual(['3d', 'wood', 2, 'leave', 'xtool']);
+    expect(g.regions.find((r) => r.id === 'sun')?.on).toBe(false);
+  });
+
   it('S4: keeps regions by default except the bought frame; toggling updates the kept share', () => {
     const f = new LayerFlowState();
     expect(f.regions.find((r) => r.id === 'frame')?.on).toBe(false);

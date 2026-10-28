@@ -1,4 +1,5 @@
 import { test, expect } from '@playwright/test';
+import { seedProject } from './seed';
 
 test.describe('phone layout below 1024 px', () => {
   test.use({ viewport: { width: 390, height: 844 } });
@@ -45,6 +46,7 @@ test.describe('studio layout at 1024 px and up (tablet landscape, desktop)', () 
 });
 
 test('the root is the gate; old /snap links redirect to the root routes', async ({ page }) => {
+  await seedProject(page);
   await page.goto('/');
   await expect(page).toHaveTitle('Katachi · Welcome');
   await page.goto('/snap/layers/layers');

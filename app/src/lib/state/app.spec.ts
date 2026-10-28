@@ -106,4 +106,48 @@ describe('AppState (one per app, shared by every section)', () => {
     app.clearInfo(objects);
     expect(app.info).toBeNull();
   });
+
+  it('a project starts empty, is named by its first step, and gates the steps you have not reached', async () => {
+    const { MemoryStorage, ProjectStore } = await import('./project.svelte');
+    const store = new ProjectStore(new MemoryStorage());
+    const app = new AppState(store);
+    expect(app.project).toBeNull();
+    expect(app.canVisit('import')).toBe(false);
+    app.newProject();
+    expect(app.project?.name).toBe('');
+    app.startFromCapture({ fileName: 'alpine-forest.png', images: ['data:image/png;base64,AAAA'], mode: 'single' });
+    expect(app.project).toMatchObject({ name: 'Alpine forest', kind: 'flat', reached: 0 });
+    expect(app.title).toBe('Alpine forest');
+    expect([app.canVisit('import'), app.canVisit('cutout'), app.canVisit('layers')]).toEqual([true, true, false]);
+    app.visit('cutout'); app.visit('segment');
+    expect([app.canVisit('layers'), app.canVisit('gaps')]).toEqual([true, false]);
+    expect(store.list().map((p) => p.name)).toEqual(['Alpine forest']);
+  });
+
+  it('six sides start a 3D project at the six-view step', async () => {
+    const { MemoryStorage, ProjectStore } = await import('./project.svelte');
+    const app = new AppState(new ProjectStore(new MemoryStorage()));
+    app.newProject();
+    app.startFromCapture({ images: ['a', 'b', 'c', 'd', 'e', 'f'], mode: 'multi', at: new Date(2026, 9, 28, 9, 30) });
+    expect(app.project).toMatchObject({ kind: '3d', name: 'Photo · 28 Oct, 09:30', path: '/make/views' });
+    expect(app.canVisit('views')).toBe(true);
+  });
+
+  it('saves on change and reopens a project where it was left', async () => {
+    const { MemoryStorage, ProjectStore } = await import('./project.svelte');
+    const store = new ProjectStore(new MemoryStorage());
+    const a = new AppState(store);
+    a.newProject();
+    a.startFromCapture({ fileName: 'lake.jpg', images: ['x'], mode: 'single' });
+    a.visit('cutout'); a.visit('segment'); a.visit('layers');
+    a.layers.selectLayer(2);
+    a.save();
+    const b = new AppState(store);
+    expect(b.project?.name).toBe('Lake');
+    expect([b.layers.selected.n, b.project?.path]).toEqual([2, '/make/layers']);
+    b.newProject();
+    expect(b.project?.name).toBe('');
+    b.open(store.list().find((p) => p.name === 'Lake')!.id);
+    expect(b.project?.path).toBe('/make/layers');
+  });
 });

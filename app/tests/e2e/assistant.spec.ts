@@ -1,4 +1,5 @@
 import { test, expect } from '@playwright/test';
+import { seedProject } from './seed';
 
 test.describe('three parts: nav · work area · assistant (1280×800)', () => {
   test.use({ viewport: { width: 1280, height: 800 } });
@@ -11,6 +12,7 @@ test.describe('three parts: nav · work area · assistant (1280×800)', () => {
     await expect(page.getByRole('main')).not.toContainText('what are we making today');
   });
   test('the composer sends with its arrow button (Rokkit ChatComposer toolbar); the voice button sits beside it', async ({ page }) => {
+    await seedProject(page);
     await page.goto('/make/layers'); await page.waitForLoadState('networkidle');
     const assistant = page.getByRole('complementary', { name: 'Katachi chat' });
     await assistant.getByRole('textbox').fill('merge sun and sky');

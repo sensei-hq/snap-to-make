@@ -1,4 +1,5 @@
 import { test, expect, type Page } from '@playwright/test';
+import { seedProject } from './seed';
 
 async function next(page: Page, name: RegExp | string, url: RegExp) {
   await page.getByRole('main').getByRole('button', { name }).click();
@@ -8,6 +9,7 @@ async function next(page: Page, name: RegExp | string, url: RegExp) {
 // mockups/desktop D1–D6: nav rail · top bar with six step tabs · left controls · work area · Katachi column
 test.describe('image → layers · studio (1280×800)', () => {
   test.use({ viewport: { width: 1280, height: 800 } });
+  test.beforeEach(({ page }) => seedProject(page));
 
   test('six step tabs; cutout lights Segment, reference lights Import', async ({ page }) => {
     await page.goto('/make/cutout'); await page.waitForLoadState('networkidle');
@@ -86,6 +88,7 @@ test.describe('image → layers · studio (1280×800)', () => {
 // mockups/mobile 01–09: app bar with back · seven-step strip · one column · actions · icon nav at the bottom
 test.describe('image → layers · phone (390×844)', () => {
   test.use({ viewport: { width: 390, height: 844 } });
+  test.beforeEach(({ page }) => seedProject(page));
 
   test('step strip, back, inline controls and Katachi note; the icon nav opens the chat', async ({ page }) => {
     await page.goto('/make/import'); await page.waitForLoadState('networkidle');
