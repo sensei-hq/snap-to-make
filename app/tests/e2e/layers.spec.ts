@@ -51,9 +51,9 @@ test.describe('image → layers · studio (1280×800)', () => {
   test('walks import → output', async ({ page }) => {
     await page.goto('/make/import'); await page.waitForLoadState('networkidle');
     const controls = page.getByRole('complementary', { name: 'Step controls' });
-    await expect(controls.getByRole('button', { name: /Upload an image/ })).toBeVisible();
-    await expect(page.getByRole('complementary', { name: 'Katachi chat' })).toContainText('Send from phone');
-    await next(page, /Continue with mountain-sunset/, /\/make\/cutout$/);
+    await expect(controls.getByRole('radio', { name: /Flat · layered art/ })).toBeChecked();
+    await expect(page.getByRole('main').getByRole('link', { name: 'Retake' })).toBeVisible();
+    await next(page, 'Find the outline', /\/make\/cutout$/);
     await next(page, 'Find the objects', /\/make\/segment$/);
     await next(page, /Separate into layers/, /\/make\/layers$/);
     await next(page, /Review all gaps/, /\/make\/gaps$/);
