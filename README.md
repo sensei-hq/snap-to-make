@@ -61,15 +61,17 @@ Meta calls need a server-side key: copy `app/.env.example` to `app/.env` and set
 snap-to-make/
 ├── app/                 # The Snap → Make PWA (SvelteKit 2 + Svelte 5 + Rokkit). Start here.
 │   └── src/
-│       ├── routes/      # Pages (/snap, /snap/canvas views, /snap/watch, /snap/batch, /snap/welcome)
+│       ├── routes/      # /snap/welcome (gate) · /snap/(studio): workshop → scene → plan → art → preview → canvas,
+│       │                # layers/{source…cut, views, reference}, convert, watch, batch, hood, materials, annotations, settings
 │       │                # + server routes (/api/scene|design|art|preview|watch|batch|gate) owning the API key
 │       ├── lib/domain/  # Pure, tested core: zod schemas (SceneAnalysis/DesignSpec), measurement math,
 │       │                # ObjectSpec + templates, deterministic geometry, nesting
 │       ├── lib/devices/ # Device adapters: laser (full: G-code/SVG/.burn), simulator (playback),
 │       │                # cricut + printer3d (Phase 2 stubs) behind one interface + contract tests
-│       ├── lib/state/   # Svelte rune state classes (*.svelte.ts): all transitions, reactivity, async.
+│       ├── lib/state/   # Svelte rune state classes (*.svelte.ts): one AppState (useApp()) holds flow, layers, editor, …
 │       ├── lib/components/ # Presentation only (Rokkit components): props in, events out — no fetch, no store writes.
 │       ├── lib/design/  # Zen-Sumi palette + token spec pinned to the design mock
+│       ├── lib/content/ # copy and fixtures only (sections, layers flow, materials)
 │       └── lib/server/  # Server-only: Meta clients, budget/invite guard, cost/trace ledger.
 ├── database/            # dbd-managed schema (files are the source of truth)
 │   ├── ddl/table/<schema>/<table>.ddl   # one file per table (snap, staging)
@@ -90,6 +92,8 @@ The design mockups (`mockups/`, `docs/mockups/`) and the sample photo set (`docs
 
 ```text
 ```
+
+The layout is responsive from one route tree: below 1024 px a phone column (header, section tabs, docked composer); from 1024 px (tablet landscape and up) a studio with a section rail, the work in the middle and the Katachi chat or the editor's properties on the right.
 
 State and presentation are deliberately separated: **state classes (`*.svelte.ts`) own every transition and side effect; components only render props and fire events.** That is enforced by an architecture test (`bun run test:arch`), not just convention; the same test rejects raw colours, inline colour styles and emoji icons in presentation code, so every screen uses Rokkit components and named tokens (see [`docs/prd/07-design-language.md`](docs/prd/07-design-language.md)).
 

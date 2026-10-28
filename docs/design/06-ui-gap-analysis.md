@@ -82,6 +82,17 @@ The mock's `static/layers/*` (ref-paper, ref-wood, forest-*, lake-*) are derived
 
 Katachi everywhere in `app/src`; no user-visible "Burn-E" remains. Remaining items: no page `<title>`s (the mock titles every page "Katachi · …"), and `BURN_E_KILL_SWITCH` in `app/.env.example` is unread by the code (rename to `KATACHI_KILL_SWITCH` when the kill switch is wired).
 
+## Status (2026-10-28)
+
+| Slice | State |
+|---|---|
+| U1 shell + shared state + responsive | **Done.** Phone tabs below 1024 px, studio rail + chat from 1024 px, `useApp()`, page titles, gate as entry |
+| U2 Snap → Make stages | **Done.** scene · plan · art · preview · canvas · hood routes; geometry derived from the measured mug (`domain/holder.ts`); canvas from the real plan; lid, wall edits, watch selection |
+| U3 Image → layers | **UI done on a fixture.** Seven steps + six-view and reference branches, phone and studio, on the app's own code-drawn "Mountain sunset". Live data waits on doc 04 #1–7 |
+| U4 Desktop editor + tools | **Mostly done.** Toolbar, zoom, grid, Properties / Layers / Job panel, one right panel at a time; materials, annotations, settings (density). Not built: chat action cards patching the editor, rulers, projects (needs auth, P2) |
+
+Gaps still open from §1: the laser adapter emits only the holder base and one long wall (doc 04 #8), so the canvas shows those; art takes are still drawn stand-ins until Muse Image art is wired to the canvas.
+
 ## 8. Build order
 
 | # | Slice | Depends on | Size | Roadmap |
