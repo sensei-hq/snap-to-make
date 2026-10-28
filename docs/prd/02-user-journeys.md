@@ -1,5 +1,21 @@
 # 02 — User Journeys
 
+## J0 ★ The craft journey (canonical, 2026-10-28)
+Every other journey is a path through this one. Spec and rationale: [design/07](../design/07-ux-journey-review.md).
+
+| # | Step | User does | Katachi does | Models (via `MuseAgents`) |
+|---|---|---|---|---|
+| 0 | Landing | Reads what it makes and how; enters with the invite code | Hero illustration, how it works, gate | — |
+| 0 | Home | Says or types what they're making, or picks Layered picture · 3D object · Remix · Sketch it; or resumes a recent craft | Picks the starting point and sets up Capture | Voice Transcribe, Spark (intent) |
+| 1 | Capture | Snaps, uploads or sketches; one image or six sides | Names the craft, describes the picture | Spark |
+| 2 | Shape | Confirms what it is and what to make it as; checks the outline; keeps regions | Cutout, outline, regions; cleans a sketch | SAM 3.1, Muse Image |
+| 3 | Layers | Reorders, merges, splits; picks what fills hidden areas, or reviews parts & joins (3D); tells Katachi changes in the chat | Groups layers or unfolds parts; keeps chat notes on the layer | Spark, Muse Image |
+| 4 | Sheets | Picks a device (default from Settings); feeds, cuts and checks one sheet at a time | Traces and nests the sheets | code (adapters) |
+| 5 | Assemble | Follows the steps; ticks them off; **Save craft** | Writes the steps; can picture it finished | Spark, Muse Image |
+| — | Crafts | Finds, reopens or deletes crafts | Gallery with progress | — |
+
+J1 (coasters) is the same journey for a joined craft that must fit something. Its measure and art steps return inside Shape with the integrated build (R-UX-11).
+
 ## J1 ★ Hero journey: "Coasters for a friend" (THE demo)
 **Actor:** Dev, a hobby maker with a Longer Ray 5 (10 W). **Time budget:** under 5 minutes of software time.
 

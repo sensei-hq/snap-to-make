@@ -4,7 +4,7 @@ import { resolve } from '$app/paths';
 import { Button, Card, Switch, Toggle } from '@rokkit/ui';
 import StepScreen from '$lib/components/StepScreen.svelte';
 import LayeredScene from '$lib/components/illustrations/LayeredScene.svelte';
-import { copy, guide, refineTools, type RefineTool, type SegmentView } from '$lib/content/layers';
+import { copy, refineTools, type RefineTool, type SegmentView } from '$lib/content/layers';
 import { useApp } from '$lib/state/context';
 // D2 · Segment + pick regions (studio) · 03 · Objects (phone)
 const app = useApp();
@@ -45,7 +45,7 @@ const tools = refineTools.map((t) => ({ label: t.label, value: t.id }));
   <span class="flex-[1.4] grid md:flex-none"><Button variant="primary" size="lg" iconRight="i-solar:arrow-right-linear" label={copy.segment.next} onclick={() => void goto(resolve('/make/layers'))} /></span>
 {/snippet}
 <svelte:head><title>Katachi · Objects</title></svelte:head>
-<StepScreen {aside} {actions} note={guide.segment.text}>
+<StepScreen {aside} {actions} note={app.noteFor('segment')}>
   <div class="flex flex-col gap-3 items-center md:h-full">
     <div class="lt-md:hidden"><Toggle options={views} value={f.segmentView} label="Show" onchange={(v) => f.setSegmentView(v as SegmentView)} /></div>
     <figure class="relative m-0 w-full max-w-[640px] aspect-square md:flex-1 md:max-h-[640px] rounded-lg overflow-hidden border border-paper-edge bg-paper-soft">

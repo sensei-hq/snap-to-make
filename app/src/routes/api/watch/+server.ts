@@ -1,6 +1,6 @@
 import { json } from '@sveltejs/kit';
 import { BurnEventsSchema } from '$lib/domain/schemas';
-const EVENTS = { events: [{ atSec: 4, kind: 'ok', note: 'Cutting coaster 1' }, { atSec: 22, kind: 'smoke_heavy', note: 'Heavy smoke — check extraction' }, { atSec: 41, kind: 'flare', note: 'Flare on coaster 3 — pause and check air assist' }, { atSec: 58, kind: 'ok', note: 'Sheet complete' }] };
+const EVENTS = { events: [{ atSec: 4, kind: 'ok', note: 'Cut started · sheet seated on the pins' }, { atSec: 22, kind: 'smoke_heavy', note: 'Heavy smoke — check extraction' }, { atSec: 41, kind: 'flare', note: 'Flare near the upper edge' }, { atSec: 58, kind: 'ok', note: 'Sheet complete' }] };
 export async function POST() {
   const parsed = BurnEventsSchema.safeParse(EVENTS);
   if (!parsed.success) return json({ error: 'Invalid burn events' }, { status: 502 });

@@ -17,6 +17,7 @@ IDs: `R-<module>-<n>`. Phase: **P1** (demo-critical) · **P1+** (stretch this we
 | GL | Glimmer offline copilot | Muse Glimmer (local) | P1+ |
 | UT | Under-the-hood trace & cost | all | P1 |
 | PL | Platform: proxy, budget, privacy | — | P1 |
+| UX | Craft journey: landing, home, steps, crafts, settings | Spark (guides), all via MuseAgents | P1 |
 
 ---
 
@@ -132,3 +133,22 @@ IDs: `R-<module>-<n>`. Phase: **P1** (demo-critical) · **P1+** (stretch this we
 | R-PL-5 | 18+ attestation checkbox on first launch (ToS). | P1 |
 | R-PL-6 | Supabase auth, saved projects ("My Workshop", J7) and subscriptions for the Maker/Seller plans (01 §1.6). | P2 |
 | R-PL-7 | Retry with exponential backoff on 429/503; graceful degraded modes (e.g., skip the preview if Muse Image fails). | P1 |
+
+## UX — Craft journey (docs/design/07)
+One journey from start to finish; every screen, route, nav item and chat message points at it. Screens: [06-screens](06-screens.md).
+| ID | Requirement | Phase |
+|---|---|---|
+| R-UX-1 | **Landing** (`/`, signed out) shows what Katachi makes (an illustration: picture → cut layers → finished piece), **how it works** in five steps with the Muse model behind each, and the gate. Works at 390 px and 1440 px. AC: `journey.spec.ts › landing`. | P1 |
+| R-UX-2 | **Home** (`/workshop`): start a craft by talking, typing or picking a starting point (Layered picture · 3D object · Remix · Sketch it); **Continue** shows the open craft's step; **Recent crafts** grid. Two columns from 1024 px. AC: `journey.spec.ts`, `assistant.spec.ts`. | P1 |
+| R-UX-3 | The journey has **five steps with fixed names**: Capture · Shape · Layers · Sheets · Assemble. Phone strip, studio tabs, chat and saved progress all use them (`content/journey.ts`). Steps open only once reached. | P1 |
+| R-UX-4 | Capture takes a **camera shot, upload or sketch**; one image or six sides (preset by the starting point). | P1 |
+| R-UX-5 | Layers names the build: **stacked layers** (flat, remix) or **joined parts** (3D, with joinery). | P1 |
+| R-UX-6 | **Assemble** step: numbered instructions derived from the craft (`domain/assembly.ts`), tick-off, then **Save craft** marks it finished with its layers, instructions and notes. | P1 |
+| R-UX-7 | A chat message on a craft step is a **refinement note** tied to the step (and the selected layer on Layers), saved with the craft and shown on Assemble. | P1 |
+| R-UX-8 | **Crafts** gallery (`/crafts`): All · In progress · Finished; open, delete (confirmed inline); an example craft when empty. | P1 |
+| R-UX-9 | **Settings → My devices**: status, bed, format and a **default device** that new crafts send to; adapters listed separately; pairing labelled P2. | P1 |
+| R-UX-10 | **State owns every model/agent interaction.** Pages and components render props and fire events; `AppState` methods call `MuseAgents` (`lib/state/muse.svelte.ts`), the single place that talks to Meta models. Jobs not wired yet are **placeholders** that return fixtures in the live shape and are labelled "placeholder" in the step's activity strip. Enforced by `bun run test:arch`. | P1 |
+| R-UX-11 | `/scene`, `/plan`, `/art`, `/preview` redirect to Home; their capabilities return inside the journey with the integrated build (measure → Shape, art cleanup → Shape, preview → Assemble). | P1 |
+| R-UX-12 | Every model call appears in the chat with its model, action, cost and time; placeholder calls show an estimated cost and are tagged. | P1 |
+| R-UX-13 | Model results are written into state fields the pages already read (fixtures are only starting values), so wiring a live call needs no page change. | P1 |
+| R-UX-14 | Burn Watch lists the craft's cuts like Sheets (status, Send / Watch, Download .zip); the work area edits the craft's sheets. | P1 |

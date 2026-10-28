@@ -8,7 +8,7 @@ Codename **meta-snap**. Built for the **Meta Global AI Developer Hackathon** (Oc
 This PRD is the **single source of truth** for the hackathon build. It is written so that:
 1. the **app** (`app/`, SvelteKit + Svelte 5 + Rokkit) can be built screen by screen (see [05-architecture.md](05-architecture.md) and [06-screens.md](06-screens.md));
 2. the **pitch deck and white paper** reuse the same story, diagrams and visual language (see [07-design-language.md](07-design-language.md) and [09-demo-and-submission.md](09-demo-and-submission.md));
-3. **Muse Code** (Meta's coding agent) can implement it module by module from the requirement IDs (see [03-requirements.md](03-requirements.md) and [08-roadmap.md](08-roadmap.md)).
+3. a **coding agent** can implement it module by module from the requirement IDs (see [03-requirements.md](03-requirements.md) and [08-roadmap.md](08-roadmap.md)).
 
 ## Documents
 

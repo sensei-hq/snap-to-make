@@ -5,7 +5,7 @@ import { Button, Toggle } from '@rokkit/ui';
 import { InputField } from '@rokkit/forms';
 import StepScreen from '$lib/components/StepScreen.svelte';
 import LayeredScene from '$lib/components/illustrations/LayeredScene.svelte';
-import { copy, guide, kinds, makeAs, type Kind, type MakeAs } from '$lib/content/layers';
+import { copy, kinds, makeAs, type Kind, type MakeAs } from '$lib/content/layers';
 import { useApp } from '$lib/state/context';
 // D1 · Import (studio) · 01 · Source (phone): the captured image, what it is, and what to make it as.
 // Getting the image in is Capture's job (New → camera or upload).
@@ -36,7 +36,7 @@ async function ask() { asking = true; await app.askForBrief(wish); asking = fals
   <span class="flex-[1.4] grid md:flex-none"><Button variant="primary" size="lg" iconRight="i-solar:arrow-right-linear" label={copy.import.next} onclick={go} /></span>
 {/snippet}
 <svelte:head><title>Katachi · Import</title></svelte:head>
-<StepScreen {aside} {actions} note={guide.import.text}>
+<StepScreen {aside} {actions} note={app.noteFor('import')}>
   <figure class="relative m-0 w-full max-w-[640px] mx-auto aspect-square md:aspect-auto md:h-full md:max-h-[640px] rounded-lg overflow-hidden border border-paper-edge bg-paper-soft">
     {#if image}<img src={image} alt={`Captured: ${app.title}`} class="absolute inset-0 w-full h-full object-contain" />
     {:else}<LayeredScene layers={f.layers} mode="original" />{/if}

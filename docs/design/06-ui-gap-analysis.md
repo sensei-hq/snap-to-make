@@ -1,5 +1,7 @@
 # 06 · UI gap analysis: app vs mockups
 
+> **2026-10-28:** flow decisions moved to [07-ux-journey-review.md](07-ux-journey-review.md). The two flows below are now one craft journey; the coaster stage routes redirect to Home.
+
 [04-gap-analysis.md](04-gap-analysis.md) covers the *pipeline* (pixels → geometry). This doc covers the *screens*. It compares `app/` with the runnable mock `mockups/svelte` (local only) and with [01-image-pipeline.md](01-image-pipeline.md), as of 2026-10-27, after the Katachi rename.
 
 ## Summary

@@ -16,8 +16,9 @@ Read in order:
 | [04-gap-analysis.md](04-gap-analysis.md) | What the code does today vs what this design needs, file by file, in build order |
 | [05-sketch-to-make.md](05-sketch-to-make.md) | Phase 2: sketch → interpreted model → style + devices → full build |
 | [06-ui-gap-analysis.md](06-ui-gap-analysis.md) | The app's screens vs the mockups: phone and desktop, responsive layout, shared state, asset rule, build order (roadmap 12–15) |
+| [07-ux-journey-review.md](07-ux-journey-review.md) | **Start here for UX.** The one craft journey (Capture · Shape · Layers · Sheets · Assemble), gaps G1–G21 with resolutions, and the state/agent boundary. Supersedes 06 for flow decisions |
 
-Mockups for these flows:
+Mockups for these flows (frozen as visual reference since 2026-10-28; the running app is the prototype, see 07 G20):
 
 - `mockups/svelte` (runnable SvelteKit);
 - the "Katachi · Snap → Make" design canvas (Overview, Mobile Snap → Make, Mobile Image → Layers, Desktop Image → Layers).

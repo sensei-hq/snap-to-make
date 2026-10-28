@@ -45,7 +45,7 @@ async function useThese() {
     <Button style={c.showGrid ? 'default' : 'ghost'} variant={c.showGrid ? 'primary' : 'default'} size="sm" icon="i-solar:hashtag-square-linear" aria-label="Toggle 3×3 grid" aria-pressed={c.showGrid} onclick={() => c.toggleGrid()} />
   </div>
   <div class="flex-1 min-h-0">
-    <MediaStage url={c.viewing?.url ?? ''} alt={c.viewing ? `${c.viewing.label} view` : ''} prompt={c.viewing ? `${c.viewing.label} · tap Retake to shoot again` : c.source === 'sketch' ? '' : c.prompt} showGrid={c.showGrid}>
+    <MediaStage url={c.shown?.url ?? ''} alt={c.shown ? `${c.shown.label} view` : ''} prompt={c.viewing ? `${c.viewing.label} · tap Retake to shoot again` : c.source === 'sketch' && !c.done ? '' : c.prompt} showGrid={c.showGrid}>
       {#if c.source === 'camera'}<CameraView bind:this={camera} />
       {:else if c.source === 'sketch' && !c.done}<SketchPad bind:this={pad} onDrawn={(v) => (inked = v)} />
       {:else if !c.done}<div class="absolute inset-0 grid place-items-center"><Button size="lg" icon="i-solar:gallery-linear" label={c.mode === 'single' ? 'Choose a photo' : 'Choose images'} onclick={() => files?.click()} /></div>{/if}

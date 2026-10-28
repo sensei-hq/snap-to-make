@@ -1,11 +1,11 @@
 <script lang="ts">
 import { Button } from '@rokkit/ui';
 import type { Snippet } from 'svelte';
-import type { ChatAction } from '$lib/state/conversation.svelte';
+import type { ChatAction, ModelCall } from '$lib/state/conversation.svelte';
 import KatachiChat from './KatachiChat.svelte';
 // Studio (≥ md) right column: "Katachi · Muse on", then the assistant (page context above the chat).
 let { messages, info = null, suggestions = [], onAsk, onMicDown, onMicUp, onClose, onAction }: {
-  messages: { id: string; role: 'user' | 'assistant'; text: string; data?: { actions: ChatAction[] } }[]; onAction: (a: ChatAction) => void;
+  messages: { id: string; role: 'user' | 'assistant'; text: string; data?: { actions?: ChatAction[]; call?: ModelCall } }[]; onAction: (a: ChatAction) => void;
   info?: { title: string; body: Snippet } | null; suggestions?: string[];
   onAsk: (text: string) => void; onMicDown: () => void; onMicUp: () => void; onClose: () => void;
 } = $props();

@@ -11,7 +11,7 @@ let { title, subtitle = '', pill = '', back = null, center }: { title: string; s
 <header class="h-14 md:h-[54px] shrink-0 flex items-center gap-2.5 pl-4 pr-2 md:pl-5 bg-paper-soft hair-b">
   <span class="md:hidden -ml-1">
     {#if back}<a href={resolve(back as '/workshop')} aria-label="Back" class="grid place-items-center w-9 h-11 text-ink hover:no-underline"><span class="i-solar:alt-arrow-left-linear text-lede" aria-hidden="true"></span></a>
-    {:else}<span class="grid place-items-center w-8 h-8 rounded-md bg-brand-tile"><KatachiMark size={20} /></span>{/if}
+    {:else}<a href={resolve('/')} aria-label="About Katachi" class="grid place-items-center w-8 h-8 rounded-md bg-brand-tile"><KatachiMark size={20} /></a>{/if}
   </span>
   <div class="min-w-0 flex-1 md:flex-none md:w-[220px]">
     <h1 class="font-heading text-lede md:text-body font-normal leading-tight truncate">{title}</h1>

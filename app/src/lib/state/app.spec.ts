@@ -165,7 +165,7 @@ describe('AppState (one per app, shared by every section)', () => {
     expect(sent).toMatchObject({ imageDataUrl: 'data:image/png;base64,AAAA', description: 'a piece for the hallway', group: 'laser-cut' });
     const last = app.messages.at(-1)!;
     expect(last.text).toContain('A layered lake panel');
-    expect(last.data?.actions.map((a) => a.label)).toEqual(['Night sky', 'Autumn']);
+    expect(last.data?.actions?.map((a) => a.label)).toEqual(['Night sky', 'Autumn']);
     app.chooseVariation(1);
     expect(app.layers.brief).toBe('Autumn — warm trees');
     expect(app.layers.snapshot().brief).toBe('Autumn — warm trees');

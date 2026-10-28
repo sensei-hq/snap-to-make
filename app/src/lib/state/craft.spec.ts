@@ -73,3 +73,27 @@ describe('the craft journey in AppState (docs/design/07)', () => {
     expect(app.layers.device).toBe('xtool');
   });
 });
+
+describe('Burn Watch per cut (like Sheets)', () => {
+  it('sending the next sheet starts the cut and watches it; results stay per cut', async () => {
+    const calls: string[] = [];
+    globalThis.fetch = (async (u: string) => { calls.push(u); return { json: async () => ({ events: [{ atSec: 42, kind: 'flare', note: 'Flare on the sky sheet' }], clipSec: 58 }) }; }) as unknown as typeof fetch;
+    const { app } = fresh();
+    app.startCraft('flat');
+    app.startFromCapture({ images: ['x'], mode: 'single' });
+    app.sendSheet();
+    await new Promise((r) => setTimeout(r, 0));
+    expect([app.layers.job.phase, app.watch.sheet, app.watch.alertsOn(1), app.watch.alertsOn(2)]).toEqual(['cutting', 1, 1, null]);
+    app.watch.acknowledge();
+    expect(app.watch.alertsOn(1)).toBe(0);
+    expect(calls).toEqual(['/api/watch']);
+  });
+
+  it('the work area renames a sheet and changes its material', () => {
+    const { app } = fresh();
+    app.layers.renameLayer(2, '  Moon ');
+    app.layers.setLayerMaterial(2, 'Silver cardstock');
+    app.layers.renameLayer(2, '   ');
+    expect(app.layers.layers[1]).toMatchObject({ name: 'Moon', material: 'Silver cardstock' });
+  });
+});

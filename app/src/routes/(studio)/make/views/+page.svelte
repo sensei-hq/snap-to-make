@@ -12,13 +12,7 @@ const app = useApp();
 const f = app.layers;
 $effect(() => app.setScreen(app.title, `${copy.views.sub} · ${f.done.length} of 6 in`));
 const ctx = stepContext(app, 'Parts', parts);
-const has = (id: string) => f.done.includes(id as never);
-const rows = $derived<[string, string, boolean][]>([
-  ['Front · back', '160 × 210 · hole Ø 34', has('front') && has('back')],
-  ['Sides ×2', f.sidesKnown ? '150 × 170 · 45°' : 'needs a side', f.sidesKnown],
-  ['Roof ×2', has('top') ? '170 × 120 · 45°' : 'pitch unknown', has('top')],
-  ['Floor', has('base') ? '150 × 150' : 'needs base', has('base')]
-]);
+const rows = $derived<[string, string, boolean][]>(f.partRows.map((p) => [p.name, p.ok ? p.size : p.missing, p.ok]));
 const missing = $derived(f.views.filter((v) => !v.ok).map((v) => v.label.toLowerCase()));
 const build = () => void goto(resolve('/make/output'));
 const joins = joinery.map((j) => ({ label: j.label, value: j.id }));

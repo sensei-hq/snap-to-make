@@ -6,7 +6,7 @@ import StepScreen from '$lib/components/StepScreen.svelte';
 import LayeredScene from '$lib/components/illustrations/LayeredScene.svelte';
 import LayerSwatch from '$lib/components/illustrations/LayerSwatch.svelte';
 import { InputCheckbox } from '@rokkit/forms';
-import { copy, gapChoices, guide, type GapChoice } from '$lib/content/layers';
+import { copy, gapChoices, type GapChoice } from '$lib/content/layers';
 import { useApp } from '$lib/state/context';
 import { stepContext } from '$lib/state/step-context.svelte';
 // D3 · Layer stack editor (studio) · 04 · Colour-graded layers (phone)
@@ -76,7 +76,7 @@ const selLabel = $derived(`Layer ${f.selected.n}, ${f.selected.name}: ${[f.showS
   <span class="lt-md:hidden"><Button variant="primary" size="lg" iconRight="i-solar:arrow-right-linear" label="Review all gaps" onclick={go} /></span>
 {/snippet}
 <svelte:head><title>Katachi · Layers</title></svelte:head>
-<StepScreen {aside} {actions} note={guide.layers.text}>
+<StepScreen {aside} {actions} note={app.noteFor('layers')}>
   <figure class="md:hidden relative m-0 h-[214px] rounded-lg overflow-hidden border border-paper-edge bg-paper-soft p-2">
     <LayeredScene layers={f.layers} mode="layer" selected={f.selected.n} solid={f.showSolid} hidden={f.showHidden} label={selLabel} />
     <span class="absolute left-2.5 top-2.5 meta rounded-sm bg-paper px-2 py-0.5 border border-paper-edge">L{f.selected.n} · {f.selected.name}</span>

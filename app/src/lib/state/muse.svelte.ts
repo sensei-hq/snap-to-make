@@ -1,9 +1,11 @@
 import { agentJobs, type AgentJobId } from '../content/agents';
-import { regions, layerSets, type Kind, type MakeAs } from '../content/layers';
+import { copy, regions, layerSets, type Kind, type MakeAs } from '../content/layers';
+import { fixtureParts, type Check, type Outline, type Part, type Region } from './layer-flow.svelte';
+import type { AssemblyStep } from '../domain/assembly';
 import { startFor, type Start } from '../content/journey';
 
 /** One run of a model or agent job for a craft, as the UI shows it. */
-export interface AgentTask { key: string; job: AgentJobId; craftId: string; status: 'running' | 'done' | 'placeholder' | 'failed'; summary: string }
+export interface AgentTask { key: string; job: AgentJobId; craftId: string; status: 'running' | 'done' | 'placeholder' | 'failed'; summary: string; costUsd?: number; ms?: number }
 
 const tick = () => new Promise<void>((r) => queueMicrotask(r));
 
@@ -15,17 +17,22 @@ const tick = () => new Promise<void>((r) => queueMicrotask(r));
  */
 export class MuseAgents {
   tasks = $state<AgentTask[]>([]);
+  /** told about every finished job (AppState posts it in the chat with its model, action and cost) */
+  onFinish: ((t: AgentTask) => void) | null = null;
 
   private async run<T>(job: AgentJobId, craftId: string, work: () => Promise<{ result: T; summary: string }>): Promise<T> {
     const key = `${craftId}:${job}:${this.tasks.length}`;
     this.tasks = [...this.tasks, { key, job, craftId, status: 'running', summary: agentJobs[job].label }];
     const set = (patch: Partial<AgentTask>) => { this.tasks = this.tasks.map((t) => (t.key === key ? { ...t, ...patch } : t)); };
+    const started = Date.now();
+    const finish = (patch: Partial<AgentTask>) => { set({ ...patch, ms: Date.now() - started }); const t = this.tasks.find((x) => x.key === key); if (t) this.onFinish?.(t); };
     try {
       const { result, summary } = await work();
-      set({ status: agentJobs[job].status === 'live' ? 'done' : 'placeholder', summary });
+      // placeholders report the job's typical cost as an estimate; live jobs report what the server billed
+      finish({ status: agentJobs[job].status === 'live' ? 'done' : 'placeholder', summary, costUsd: agentJobs[job].estUsd });
       return result;
     } catch (e) {
-      set({ status: 'failed', summary: `${agentJobs[job].label} failed` });
+      finish({ status: 'failed', summary: `${agentJobs[job].label} failed`, costUsd: 0 });
       throw e;
     }
   }
@@ -43,28 +50,34 @@ export class MuseAgents {
   }
   // ── Capture
   describeCapture(craftId: string, kind: Kind) {
-    return this.run('capture.describe', craftId, async () => { await tick(); return { result: { subject: kind === '3d' ? 'birdhouse' : 'layered paper art in a hoop' }, summary: kind === '3d' ? 'Sees a birdhouse, six sides' : 'Sees layered paper art in a round hoop' }; });
+    const subject = kind === '3d' ? 'a birdhouse' : 'layered paper art in a round hoop';
+    return this.run('capture.describe', craftId, async () => { await tick(); return { result: { subject }, summary: `Sees ${subject}` }; });
   }
   // ── Shape
   cleanSketch(craftId: string) {
     return this.run('shape.cleanSketch', craftId, async () => { await tick(); return { result: { variants: 3 }, summary: '3 line-art takes of your sketch' }; });
   }
   cutout(craftId: string) {
-    return this.run('shape.cutout', craftId, async () => { await tick(); return { result: { outline: 'circle', diameterMm: 300 }, summary: 'Background removed · circle outline, Ø 300 mm' }; });
+    const outline: Outline = { shape: 'circle', sizeMm: 300 };
+    const checks = copy.cutout.checks.map((c) => ({ ...c })) as Check[];
+    return this.run('shape.cutout', craftId, async () => { await tick(); return { result: { outline, checks }, summary: `Background removed · ${outline.shape} outline, Ø ${outline.sizeMm} mm` }; });
   }
   segment(craftId: string) {
-    return this.run('shape.segment', craftId, async () => { await tick(); return { result: regions, summary: `${regions.length} regions found` }; });
+    const found: Region[] = regions.map((r) => ({ ...r }));
+    return this.run('shape.segment', craftId, async () => { await tick(); return { result: found, summary: `${found.length} regions found` }; });
   }
   // ── Layers
   planLayers(craftId: string, makeAs: MakeAs) {
     const set = layerSets[makeAs === 'wood' ? 'wood' : 'paper'];
-    return this.run('layers.plan', craftId, async () => { await tick(); return { result: set.layers, summary: `${set.layers.length} layers · ${set.label.toLowerCase()}` }; });
+    const layers = set.layers.map((l) => ({ ...l, shapes: [...l.shapes] }));
+    return this.run('layers.plan', craftId, async () => { await tick(); return { result: layers, summary: `${layers.length} layers · ${set.label.toLowerCase()}` }; });
   }
   imagineGaps(craftId: string) {
     return this.run('layers.imagineGaps', craftId, async () => { await tick(); return { result: { filled: 0 }, summary: 'Ready to fill hidden areas when you ask' }; });
   }
   unfold(craftId: string) {
-    return this.run('layers.unfold', craftId, async () => { await tick(); return { result: { parts: 7 }, summary: '7 parts · front, back, 2 sides, 2 roof, floor' }; });
+    const parts: Part[] = fixtureParts.map((p) => ({ ...p, needs: [...p.needs] }));
+    return this.run('layers.unfold', craftId, async () => { await tick(); return { result: parts, summary: `${parts.length} part groups · front, back, sides, roof, floor` }; });
   }
   /** Spark turns a chat note into edit operations (merge, split, raise, recolour) on the layer it names. */
   applyRefinement(craftId: string, note: { step: string; layer?: string; text: string }) {
@@ -75,8 +88,9 @@ export class MuseAgents {
     return this.run('sheets.vectorise', craftId, async () => { await tick(); return { result: { sheets }, summary: `${sheets} sheets traced and nested` }; });
   }
   // ── Assemble
-  writeInstructions(craftId: string, steps: number) {
-    return this.run('assemble.instructions', craftId, async () => { await tick(); return { result: { steps }, summary: `${steps} assembly steps` }; });
+  /** Placeholder: returns the code-derived steps it is given; the live job has Spark rewrite them from the ObjectSpec. */
+  writeInstructions(craftId: string, draft: AssemblyStep[]) {
+    return this.run('assemble.instructions', craftId, async () => { await tick(); return { result: draft, summary: `${draft.length} assembly steps` }; });
   }
   renderFinished(craftId: string) {
     return this.run('assemble.render', craftId, async () => { await tick(); return { result: { image: '' }, summary: 'Photo of the finished piece' }; });

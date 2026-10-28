@@ -3,13 +3,13 @@ import { vibe } from '@rokkit/states';
 import { Button, Card, List, Toggle } from '@rokkit/ui';
 import { ThemeSwitcherToggle } from '@rokkit/app';
 import { ADAPTERS } from '$lib/devices/registry';
-import { devices, type DeviceId } from '$lib/content/layers';
+import type { DeviceId } from '$lib/content/layers';
 import { useApp } from '$lib/state/context';
 // Settings (docs/design/07 G19): my machines with status and a default (Sheets sends there), the adapters
 // Katachi supports, and the workspace (density, theme).
 const app = useApp();
 $effect(() => app.setScreen('Settings', 'devices · workspace'));
-const machines = devices.filter((d) => d.id !== 'file');
+const machines = $derived(app.devices.filter((d) => d.id !== 'file'));
 const densities = [{ label: 'Comfortable', value: 'comfortable' }, { label: 'Compact', value: 'compact' }];
 const adapters = Object.values(ADAPTERS).map((a) => ({ label: a.label, value: a.id, kind: a.kind }));
 const tone = (s: string) => (s === 'offline' ? 'text-ink-faint' : 'text-success');

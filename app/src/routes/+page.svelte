@@ -8,6 +8,7 @@ import { howItWorks } from '$lib/content/journey';
 import { layerSets } from '$lib/content/layers';
 import { useApp } from '$lib/state/context';
 // Landing (signed out): what Katachi makes, how the Muse models do it, and the gate (docs/design/07 G1–G3).
+let { data }: { data: { signedIn: boolean } } = $props();
 const session = useApp().session;
 const layers = layerSets.paper.layers;
 const consents = [
@@ -39,6 +40,15 @@ const pad = (n: number) => String(n).padStart(2, '0');
         <HeroJourney {layers} />
       </div>
 
+      {#if data.signedIn}
+        <Card class="p-5 md:p-6 flex flex-col gap-4 md:sticky md:top-6">
+          <section aria-label="Welcome back" class="flex flex-col gap-4">
+            <div class="flex flex-col gap-1"><p class="eyebrow">You're in</p><p class="text-ui text-ink-mute">Your invite is active on this browser.</p></div>
+            <Button size="lg" variant="primary" class="w-full" label="Open the workshop" iconRight="i-solar:arrow-right-linear" href="/workshop" target="" />
+            <Button style="outline" class="w-full" label="Your crafts" href="/crafts" target="" />
+          </section>
+        </Card>
+      {:else}
       <Card class="p-5 md:p-6 flex flex-col gap-5 md:sticky md:top-6">
         <div class="flex flex-col gap-1"><p class="eyebrow">Enter the workshop</p><p class="text-ui text-ink-mute">Invite-only during the hackathon.</p></div>
         <InputField name="invite" type="text" label="Invite code" placeholder="Your invite code" autocomplete="off" bind:value={session.code} />
@@ -53,6 +63,7 @@ const pad = (n: number) => String(n).padStart(2, '0');
         {#if session.msg}<p role="status" class="text-ui {session.gated ? 'text-success' : 'text-danger'}">{session.msg}</p>{/if}
         <Button size="lg" variant="primary" class="w-full" label="Enter the workshop" iconRight="i-solar:arrow-right-linear" onclick={enter} />
       </Card>
+      {/if}
     </section>
 
     <section aria-label="How it works" class="py-12 md:py-16">

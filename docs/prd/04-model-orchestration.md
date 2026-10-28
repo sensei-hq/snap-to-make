@@ -87,9 +87,6 @@ One conversation loop (Responses API, `previous_response_id` for state; system p
 ### F. Muse Glimmer: offline copilot (P1+)
 - Runs locally via LM Studio or Ollama (OpenAI-compatible `http://localhost:…/v1`). Same `edit_design` tool schema as Spark. Apache 2.0. Shows the open-weights side of the story.
 
-### G. Muse Code: the builder
-- The implementation is driven by Muse Code from this PRD (`AGENTS.md` points it here). The white paper reports how much was built with it.
-
 ## 4.3 Sequence: hero journey
 ```
 User(voice) → Server → VoiceTranscribe (WS) → final transcript

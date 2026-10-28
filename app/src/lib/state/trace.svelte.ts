@@ -2,7 +2,9 @@ export interface TraceEntry { model: string; purpose: string; latencyMs: number;
 export class TraceState {
   entries = $state<TraceEntry[]>([]);
   constructor(private capUsd = 1) {}
-  add(e: TraceEntry) { this.entries = [...this.entries, e]; }
+  /** told about every live call (AppState posts it in the chat) */
+  onAdd: ((e: TraceEntry) => void) | null = null;
+  add(e: TraceEntry) { this.entries = [...this.entries, e]; this.onAdd?.(e); }
   get totalCostUsd() { return this.entries.reduce((s, e) => s + e.costUsd, 0); }
   get modelCount() { return this.entries.reduce<string[]>((acc, e) => (acc.includes(e.model) ? acc : [...acc, e.model]), []).length; }
   get budgetTripped() { return this.totalCostUsd >= this.capUsd; }

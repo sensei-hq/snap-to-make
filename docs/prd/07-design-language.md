@@ -25,7 +25,7 @@ Palettes (`kami` paper, `sumi` ink, `shu` vermillion, `hisui`, `kohaku`, `beni`,
 
 The camera screen is always dark (it pins `data-mode="dark"` and uses the `camera` token). Photo stand-ins (scene, viewfinder, preview, burn clip, art takes) are illustrations and keep their photographic colours.
 
-**Model chips** (Under the hood, deck, white paper): Voice Transcribe `#9B7BFF` · Spark 1.3 `#3E8BFF` · SAM 3.1 `#2FC2B5` · Muse Image `#FF6FAE` · Wonder `#FF8A1F` · Glimmer `#B4E05A` · Muse Code `#A39A8A`.
+**Model chips** (Under the hood, deck, white paper): Voice Transcribe `#9B7BFF` · Spark 1.3 `#3E8BFF` · SAM 3.1 `#2FC2B5` · Muse Image `#FF6FAE` · Wonder `#FF8A1F` · Glimmer `#B4E05A`.
 
 ## 7.3 Typography
 - **Display:** Fraunces 400/500 (`typography.display` → `font-heading`): screen titles, the gate headline, section titles.

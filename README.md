@@ -50,8 +50,7 @@ bun run dev        # http://127.0.0.1:5174 (set SNAP_INVITE_CODES in app/.env)
 ```
 
 - Gate: http://127.0.0.1:5174/ — a code from `SNAP_INVITE_CODES`, the three ticks, enter. Every page and `/api/*` needs the signed session it sets.
-- Workshop: http://127.0.0.1:5174/workshop — **New project** (capture → the make flow → cuts, saved as you go) or **Open**; or type or say “make four coasters 3 mm birch”, snap a photo, build the plan, switch the device, hit Play in Simulate.
-- Image to layers: `/make` (resumes the current project) · Burn Watch: `/watch` · Wonder batch: `/batch`.
+- Home: http://127.0.0.1:5174/workshop — say or type what you're making, or pick **Layered picture · 3D object · Remix · Sketch it**; then Capture → Shape → Layers → Sheets → Assemble → **Save craft**. Crafts: `/crafts` · Burn Watch: `/watch` · Wonder batch: `/batch`. The flow is specified in [docs/design/07](docs/design/07-ux-journey-review.md).
 
 Meta calls need a server-side key: copy `app/.env.example` to `app/.env` and set `META_API_KEY`. Without it, the server serves clearly-labelled demo fixtures so the whole flow still runs offline. The key never reaches the browser.
 

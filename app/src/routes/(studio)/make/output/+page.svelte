@@ -4,7 +4,7 @@ import { InputField } from '@rokkit/forms';
 import StepScreen from '$lib/components/StepScreen.svelte';
 import LayeredScene from '$lib/components/illustrations/LayeredScene.svelte';
 import LayerSwatch from '$lib/components/illustrations/LayerSwatch.svelte';
-import { copy, devices, guide } from '$lib/content/layers';
+import { copy, guide } from '$lib/content/layers';
 import { useApp } from '$lib/state/context';
 import { stepContext } from '$lib/state/step-context.svelte';
 // D6 · Output + device (studio) · 07 · Stack & cut (phone). Cutters take one sheet at a time:
@@ -18,22 +18,16 @@ const pad = (n: number) => String(n).padStart(2, '0');
 const sheetSize = $derived(f.set === 'paper' ? '12 × 12 in' : '300 × 300 mm');
 const cutting = $derived(f.currentDevice.id !== 'file');
 const statusText = { cut: 'cut', current: 'next', waiting: '' } as const;
-// The device reports progress while it cuts (simulated here until the adapters are live).
-$effect(() => {
-  if (f.job.phase !== 'cutting') return;
-  const t = setInterval(() => f.advanceCut(8), 200);
-  return () => clearInterval(t);
-});
 </script>
 {#snippet output()}
   <div class="flex flex-col gap-3">
-    <InputField type="radio" name="device" label="Send to" options={devices} value={f.currentDevice} onchange={(d: any) => f.setDevice(d.id)} />
+    <InputField type="radio" name="device" label="Send to" options={app.devices} value={f.currentDevice} onchange={(d: any) => f.setDevice(d.id)} />
     <Card><dl class="divide-y divide-paper-edge -my-1">{#each rows as [k, v] (k)}<div class="flex justify-between gap-3 min-h-11 items-center"><dt>{k}</dt><dd class="readout text-ink text-right">{v}</dd></div>{/each}</dl></Card>
     <p class="text-ui text-ink-mute mt-1">When the sheets are cut, Assemble walks you through putting them together.</p>
   </div>
 {/snippet}
 {#snippet actions()}
-  <span class="flex-1 grid md:flex-none"><Button style="outline" size="lg" icon="i-solar:download-linear" label={ctx.wide ? 'Download .zip' : copy.output.export} /></span>
+  <span class="flex-1 grid md:flex-none"><Button style="outline" size="lg" icon="i-solar:download-linear" label={ctx.wide ? 'Download .zip' : copy.output.export} onclick={() => app.exportSheets()} /></span>
   <span class="flex-[1.3] grid md:flex-none"><Button target="" href="/make/assemble" variant={f.job.phase === 'done' || !cutting ? 'primary' : 'default'} style={f.job.phase === 'done' || !cutting ? 'default' : 'outline'} size="lg" iconRight="i-solar:arrow-right-linear" label="Assemble" /></span>
 {/snippet}
 <svelte:head><title>Katachi · Output</title></svelte:head>
@@ -46,13 +40,13 @@ $effect(() => {
           {#if f.job.phase === 'done'}
             <p class="eyebrow">All sheets cut</p>
             <h2 class="font-heading text-title font-normal">{f.layers.length} sheets ready to stack</h2>
-            <p class="text-ui text-ink-mute">{copy.output.assembly[0]}</p>
+            <p class="text-ui text-ink-mute">Next: {app.assembly[1]?.title ?? 'assemble'}.</p>
           {:else}
             <p class="eyebrow">Sheet {f.job.sheet} of {f.layers.length} · {f.currentDevice.label}</p>
             <h2 class="font-heading text-title font-normal">{f.jobLayer.name}</h2>
             {#if f.job.phase === 'feed'}
               <p class="flex items-center gap-2 text-body"><LayerSwatch colour={f.jobLayer.colour} size="sm" />{f.feedText} · {sheetSize}</p>
-              <div class="flex gap-2"><Button variant="primary" icon="i-solar:play-linear" label={`${f.currentDevice.cta} sheet ${f.job.sheet}`} onclick={() => f.beginCut()} /></div>
+              <div class="flex gap-2"><Button variant="primary" icon="i-solar:play-linear" label={`${f.currentDevice.cta} sheet ${f.job.sheet}`} onclick={() => app.sendSheet()} /></div>
             {:else if f.job.phase === 'cutting'}
               <p class="text-ui text-ink-mute">Cutting… {f.job.progress}%</p>
               <ProgressBar value={f.job.progress} max={100} />

@@ -22,6 +22,7 @@ for (const viewport of [{ width: 1440, height: 900 }, { width: 390, height: 844 
       if (studio) await expect(page.getByRole('navigation', { name: 'Craft steps' }).getByRole('link', { name: /Capture/ })).toHaveAttribute('aria-current', 'step');
       else await expect(page.getByRole('navigation', { name: 'Craft steps' })).toContainText('01 / 05 · Capture');
       await page.setInputFiles('input[type="file"]', [{ name: 'lake-at-dusk.png', mimeType: 'image/png', buffer: png }]);
+      await expect(main(page).getByRole('img', { name: 'Photo view' })).toBeVisible();
       await shot(page, '01-capture');
       await main(page).getByRole('button', { name: 'Continue' }).click();
 
@@ -30,6 +31,11 @@ for (const viewport of [{ width: 1440, height: 900 }, { width: 390, height: 844 
       await main(page).getByRole('button', { name: 'Find the outline' }).click();
       await expect(page.getByRole('list', { name: 'Katachi\'s models on this step' })).toContainText('SAM 3.1');
       await expect(page.getByRole('list', { name: 'Katachi\'s models on this step' })).toContainText('placeholder');
+      if (studio) {
+        const call = page.getByRole('complementary', { name: 'Katachi chat' }).locator('[data-model-call]').filter({ hasText: 'SAM 3.1' }).first();
+        await expect(call).toContainText('est. $0.0025');
+        await expect(call).toContainText('placeholder');
+      }
       await shot(page, '02-shape');
       await main(page).getByRole('button', { name: 'Find the objects' }).click();
       await main(page).getByRole('button', { name: /Separate into layers/ }).click();

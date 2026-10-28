@@ -27,6 +27,8 @@ export class CaptureState {
     return `Shoot the ${c.label.toLowerCase()} · ${this.slots.findIndex((s) => s.id === c.id) + 1} of ${this.slots.length}`;
   }
   get viewing() { return this.slots.find((s) => s.id === this.viewingId && s.url) ?? null; }
+  /** what the stage shows: the slot picked for a full-size view, else the latest shot once every slot is filled */
+  get shown() { return this.viewing ?? (this.done ? this.media.at(-1) ?? null : null); }
   /** captured images, in slot order (the work area's collection) */
   get media() { return this.slots.filter((s) => s.url).map((s) => ({ id: s.id, label: s.label, url: s.url!, source: s.source! })); }
 

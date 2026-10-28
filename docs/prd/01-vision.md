@@ -30,7 +30,6 @@ Each step needs a different kind of intelligence. Meta's Muse family covers all 
 | Imagining the result | **Muse Image** | Turns a rough sketch into clean engrave art; renders the finished object in the user's material and setting |
 | A project manager | **Muse Wonder** | Long-running batch jobs ("50 personalized ornaments"): planning, nesting, materials list, job sequencing |
 | Working offline in the shop | **Muse Glimmer** (open weights, P1+) | A local command copilot when there's no internet |
-| Building it | **Muse Code** | Used to implement this PRD (development story) |
 
 **Tagline for judges:** *Six Meta models, one workshop buddy: from what you see and say to something you can hold.*
 

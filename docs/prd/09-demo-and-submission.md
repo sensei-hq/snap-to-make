@@ -4,7 +4,7 @@
 | Criterion | Weight* | How Katachi scores |
 |---|---|---|
 | Impact | 30% | Millions of idle desktop lasers/cutters; idea → object in minutes; paid tiers; Cricut reach |
-| Use of Meta AI tooling | 25% | **6 Meta models + Muse Code**, each in its strongest role; live "Under the hood" proof with per-call cost |
+| Use of Meta AI tooling | 25% | **6 Meta models**, each in its strongest role; live "Under the hood" proof with per-call cost |
 | Demo | 25% | A physical object at the end; glowing SAM masks; photoreal preview; voice-driven |
 | Technical depth | 20% | Structured-output orchestration, SAM-based metrology, deterministic geometry, video tracking, background agent, open-weights offline mode, eval table |
 *From a secondary source (reconscribe.com); the official weights are pending.
@@ -20,7 +20,7 @@
 | 1:50–2:15 | Overhead: the laser burning (time-lapse); Burn Watch flags a flare | "Spark and SAM watch the burn." |
 | 2:15–2:35 | Batch: 40 names → Wonder plan (4 sheets, 3 h 10 m, $18) → ornaments time-lapse | "Muse Wonder runs the whole production plan in the background." |
 | 2:35–2:50 | Finished coasters in hand next to the original sketch; offline badge (Glimmer) | "Six Meta models. One workshop buddy." |
-| 2:50–3:00 | End card: logo, URL, "Built with Muse Code on the Meta Model API" | |
+| 2:50–3:00 | End card: logo, URL, "Powered by Meta's Muse models" | |
 
 ## 9.3 Pitch deck (10 slides, Workshop template)
 1. **Title:** Katachi: Show it. Say it. Burn it. (hero photo: sketch → coasters)
@@ -32,7 +32,7 @@
 7. **Beyond one design:** Wonder batch production plan + Burn Watch
 8. **Under the hood:** real trace numbers: calls, latency, $/design, margin
 9. **Business:** personas, pricing ($7.99 Maker), roadmap P2/P3 (glasses, machine streaming, Maker OS)
-10. **Team & ask:** Jerry, the builder's story (woodworker + engineer), "Built with Muse Code"
+10. **Team & ask:** Jerry, the builder's story (woodworker + engineer)
 
 ## 9.4 White paper outline (6–8 pages): "From Pixels to Parts: Orchestrating Meta's Muse Models for Physical Making"
 1. Abstract (1 paragraph)
@@ -44,7 +44,7 @@
 7. Operations: Burn Watch (video tracking) and Wonder production planning (agent tool loop)
 8. Cost, latency and privacy (the trace table; free-credit/Contributor data terms; budget guard)
 9. Limitations and future work (P2/P3)
-10. Appendix: schemas, prompts, and how much was built with Muse Code
+10. Appendix: schemas, prompts, and how it was built
 
 ## 9.5 Submission checklist
 - [ ] Track: **Indie** · Theme: **Build for Your World** (mention Push the Frontier: manufacturing)
@@ -53,5 +53,5 @@
 - [ ] Repo/README with the architecture diagram and "which Meta model does what"
 - [ ] Deck PDF + white paper PDF (Workshop template)
 - [ ] Under-the-hood trace export + eval table
-- [ ] Credits/attribution: "Built with Muse Code", "AI preview" labels; laser safety note
+- [ ] Credits/attribution: the toolchain stated honestly (01 §3 of the submission notes), "AI preview" labels; laser safety note
 - [ ] Submitted by **Nov 4, noon ET**

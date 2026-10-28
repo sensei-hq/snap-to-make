@@ -50,10 +50,15 @@ test.describe('studio layout at 1024 px and up (tablet landscape, desktop)', () 
   });
 });
 
-test('signed in, the gate at / opens the workshop; old /snap links redirect to the root routes', async ({ page }) => {
+test('signed in, the landing stays reachable and offers the workshop; old /snap links redirect to the root routes', async ({ page }) => {
   await seedProject(page);
-  await page.goto('/');
+  await page.goto('/'); await page.waitForLoadState('networkidle');
+  await expect(page.getByRole('region', { name: 'How it works' })).toBeVisible();
+  await expect(page.getByRole('textbox', { name: /Invite code/ })).toHaveCount(0);
+  await page.getByRole('link', { name: 'Open the workshop' }).click();
   await expect(page).toHaveURL(/\/workshop$/);
+  await page.getByRole('link', { name: 'About Katachi' }).first().click();
+  await expect(page).toHaveURL(/\/$/);
   await page.goto('/snap/layers/layers');
   await expect(page).toHaveURL(/\/make\/layers$/);
   await page.goto('/snap/convert');

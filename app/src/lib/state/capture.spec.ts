@@ -73,3 +73,17 @@ describe('CaptureState · one wizard for camera and upload', () => {
     expect(c.showGrid).toBe(true);
   });
 });
+
+describe('the capture stage shows what was captured', async () => {
+  const { CaptureState } = await import('./capture.svelte');
+  it('the photo appears as soon as it is taken; a picked slot wins', () => {
+    const c = new CaptureState();
+    expect(c.shown).toBeNull();
+    c.upload(['data:a']);
+    expect(c.shown?.url).toBe('data:a');
+    c.setMode('multi');
+    expect(c.shown).toBeNull();
+    c.view('front');
+    expect(c.shown?.url).toBe('data:a');
+  });
+});

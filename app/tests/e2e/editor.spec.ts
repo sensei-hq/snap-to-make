@@ -1,22 +1,23 @@
 import { test, expect } from '@playwright/test';
+import { seedProject } from './seed';
 
 test.describe('desktop editor and studio tools (1280×800)', () => {
   test.use({ viewport: { width: 1280, height: 800 } });
 
-  test('the canvas becomes an editor: toolbar, zoom, properties panel replaces the chat', async ({ page }) => {
+  test('the work area edits the open craft: pick a sheet, rename it, change its laser settings', async ({ page }) => {
+    await seedProject(page);
     await page.goto('/canvas'); await page.waitForLoadState('networkidle');
     const toolbar = page.getByRole('toolbar', { name: 'Editor' });
-    await expect(toolbar).toBeVisible();
     await toolbar.getByRole('button', { name: 'Zoom in' }).click();
     await expect(toolbar).toContainText('125%');
-    await page.getByRole('button', { name: 'Toggle properties panel' }).click();
-    const props = page.getByRole('complementary', { name: 'Properties' });
-    await expect(props).toBeVisible();
-    await expect(page.getByRole('complementary', { name: 'Katachi chat' })).toBeHidden();
-    await props.getByRole('radio', { name: 'Engrave' }).click();
+    await page.getByRole('navigation', { name: 'Sheets' }).getByRole('button', { name: /Sun/ }).click();
+    const sheet = page.getByRole('complementary', { name: 'Sheet' });
+    await expect(sheet).toContainText('Sheet 02');
+    await sheet.getByRole('textbox', { name: 'Name' }).fill('Moon');
+    await sheet.getByRole('textbox', { name: 'Name' }).press('Tab');
+    await expect(page.getByRole('navigation', { name: 'Sheets' })).toContainText('Moon');
+    await sheet.getByRole('radio', { name: 'Engrave' }).click();
     await expect(toolbar).toContainText('engrave · 35% power');
-    await props.getByRole('tab', { name: 'Job' }).click();
-    await expect(props).toContainText('Fits the bed');
   });
 
   test('settings switches density; materials lists the starting presets', async ({ page }) => {
@@ -28,11 +29,14 @@ test.describe('desktop editor and studio tools (1280×800)', () => {
   });
 });
 
-test.describe('phone keeps the simple canvas', () => {
+test.describe('phone work area', () => {
   test.use({ viewport: { width: 390, height: 844 } });
-  test('no editor toolbar below 1024 px', async ({ page }) => {
+  test('without a craft it says what it is for; with one, the sheet is on the bed and no toolbar', async ({ page }) => {
     await page.goto('/canvas'); await page.waitForLoadState('networkidle');
-    await expect(page.getByRole('img', { name: /Nested sheet layout/ })).toBeVisible();
+    await expect(page.getByRole('region', { name: 'No craft open' })).toBeVisible();
+    await seedProject(page);
+    await page.goto('/canvas'); await page.waitForLoadState('networkidle');
+    await expect(page.getByRole('img', { name: /on the bed/ })).toBeVisible();
     await expect(page.getByRole('toolbar', { name: 'Editor' })).toBeHidden();
   });
 });

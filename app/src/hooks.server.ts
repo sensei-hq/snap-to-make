@@ -12,7 +12,6 @@ export const handle: Handle = async ({ event, resolve }) => {
   const secret = sessionSecret();
   const id = secret ? await verifySession(event.cookies.get(SESSION_COOKIE), secret) : null;
   event.locals.session = id ? { id } : null;
-  if (path === '/' && id) redirect(303, '/workshop');
   if (!id && !isPublicPath(path)) {
     if (path.startsWith('/api/')) return json({ ok: false, reason: 'Enter through the gate first' }, { status: 401 });
     redirect(303, '/');

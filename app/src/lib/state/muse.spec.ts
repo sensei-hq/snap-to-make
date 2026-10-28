@@ -39,3 +39,38 @@ describe('AppState runs the step jobs once per craft and shows them per step', (
     expect(app.activity().at(-1)).toMatchObject({ model: 'Muse Spark 1.3', status: 'placeholder', summary: 'Will apply “raise the sun”' });
   });
 });
+
+describe('model results flow into state, and every call shows in the chat with its cost', () => {
+  it('a job result replaces the starting values the pages read (swap the fixture for a live call and the flow carries on)', async () => {
+    const app = new AppState(new ProjectStore(new MemoryStorage()));
+    app.startCraft('flat');
+    app.startFromCapture({ images: ['x'], mode: 'single' });
+    app.layers.applyCutout({ outline: { shape: 'rect', sizeMm: 420 }, checks: [{ status: 'pass', text: 'Wall removed' }] });
+    expect(app.noteFor('cutout')).toContain('a rect, about 420 mm');
+    app.layers.applyRegions([{ id: 'sky', name: 'Sky', pct: 60, note: '', tone: 'warn', keep: true }]);
+    expect([app.layers.regions.length, app.noteFor('segment')]).toEqual([1, expect.stringContaining('I found 1 regions')]);
+    app.layers.applyLayers(app.layers.layers.slice(0, 3));
+    expect(app.assembly).toHaveLength(5);
+  });
+
+  it('opening a step applies its job result to state', async () => {
+    const app = new AppState(new ProjectStore(new MemoryStorage()));
+    app.startCraft('3d');
+    app.startFromCapture({ images: ['x'], mode: 'multi' });
+    app.layers.applyParts([]);
+    app.visit('views');
+    await settle();
+    expect(app.layers.parts.length).toBeGreaterThan(0);
+    expect(app.layers.subject).toBe('a birdhouse');
+  });
+
+  it('posts each call in the chat: model, action, cost (estimated for placeholders), time', async () => {
+    const app = new AppState(new ProjectStore(new MemoryStorage()));
+    app.startCraft('a layered lake');
+    await settle();
+    const call = app.messages.find((m) => m.data?.call)?.data?.call;
+    expect(call).toMatchObject({ model: 'Muse Spark 1.3', status: 'placeholder', costUsd: 0.004 });
+    app.trace.add({ model: 'sam-3.1', purpose: 'outline_the_mug', latencyMs: 640, costUsd: 0.0025 });
+    expect(app.messages.at(-1)?.data?.call).toEqual({ model: 'sam-3.1', action: 'outline the mug', costUsd: 0.0025, ms: 640, status: 'live' });
+  });
+});

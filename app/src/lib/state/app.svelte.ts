@@ -1,10 +1,10 @@
 import { vibe } from '@rokkit/states';
 import { FlowState } from './flow.svelte';
-import type { ChatAction } from './conversation.svelte';
+import type { ChatAction, ModelCall } from './conversation.svelte';
 import type { Snippet } from 'svelte';
-import { guide, steps, type DeviceId, type StepId } from '../content/layers';
+import { devices, guide, steps, type DeviceId, type StepId } from '../content/layers';
 import { journey, journeyIndexOf, journeyStepFor, starts, type Start, type StartId } from '../content/journey';
-import { assemblySteps } from '../domain/assembly';
+import { assemblySteps, type AssemblyStep } from '../domain/assembly';
 import { agentJobs, jobsOnVisit } from '../content/agents';
 import { MuseAgents } from './muse.svelte';
 
@@ -43,6 +43,10 @@ export class AppState {
   projects = $state<ProjectRecord[]>([]);
   constructor(private store: ProjectStore = browserStore()) {
     this.projects = store.list();
+    // every model call shows in the chat with its action and cost: live calls from the trace, craft jobs from MuseAgents
+    this.flow.trace.onAdd = (e) => this.flow.conversation.logCall({ model: e.model, action: e.purpose.replace(/_/g, ' '), costUsd: e.costUsd, ms: e.latencyMs, status: 'live' });
+    this.muse.onFinish = (t) => this.flow.conversation.logCall({ model: agentJobs[t.job].model, action: t.summary, costUsd: t.costUsd ?? 0, ms: t.ms ?? 0,
+      status: t.status === 'failed' ? 'failed' : t.status === 'done' ? 'live' : 'placeholder' });
     const d = store.getSetting(DEVICE_KEY) as DeviceId | null;
     if (d) this.defaultDevice = d;
     const id = store.current();
@@ -50,6 +54,8 @@ export class AppState {
     if (saved) this.apply(saved);
   }
   private apply(p: ProjectRecord) {
+    this.instructions = null;
+    this.watch.reset();
     this.layers.restore({ ...LayerFlowState.defaults(), ...p.choices });
     this.project = p;
   }
@@ -58,6 +64,8 @@ export class AppState {
   newProject() {
     const now = Date.now();
     this.capture = new CaptureState();
+    this.instructions = null;
+    this.watch.reset();
     this.layers.restore(LayerFlowState.defaults());
     this.layers.setDevice(this.defaultDevice);
     this.project = { id: crypto.randomUUID(), name: '', createdAt: now, updatedAt: now, reached: -1, kind: 'flat', path: '/capture', image: '', choices: {}, status: 'draft' };
@@ -86,7 +94,7 @@ export class AppState {
     this.project = { ...p, name: p.name || projectName({ fileName, at: when, prefix }), kind, image: images[0] ?? p.image,
       reached: Math.max(p.reached, 0), path: flowPath(mode === 'multi' ? 'views' : kind === 'ref' ? 'reference' : 'import') };
     this.save();
-    void this.muse.describeCapture(p.id, kind);
+    void this.muse.describeCapture(p.id, kind).then((r) => this.layers.applySubject(r.subject));
     if (this.capture.media.some((m) => m.source === 'sketch')) void this.muse.cleanSketch(p.id);
   }
   /** Home · release the mic: what was heard starts a craft (returns where to go), or nothing was heard. */
@@ -122,13 +130,15 @@ export class AppState {
     if (!craft || this.project?.example) return;
     for (const job of jobsOnVisit[id] ?? []) {
       if (this.muse.has(craft, job)) continue;
-      if (job === 'shape.cutout') void this.muse.cutout(craft);
-      else if (job === 'shape.segment') void this.muse.segment(craft);
-      else if (job === 'layers.plan') void this.muse.planLayers(craft, this.layers.makeAs);
+      // each result is written into the flow state; the pages only ever read that state
+      const f = this.layers;
+      if (job === 'shape.cutout') void this.muse.cutout(craft).then((r) => f.applyCutout(r));
+      else if (job === 'shape.segment') void this.muse.segment(craft).then((r) => f.applyRegions(r));
+      else if (job === 'layers.plan') void this.muse.planLayers(craft, f.makeAs).then((r) => f.applyLayers(r));
       else if (job === 'layers.imagineGaps') void this.muse.imagineGaps(craft);
-      else if (job === 'layers.unfold') void this.muse.unfold(craft);
-      else if (job === 'sheets.vectorise') void this.muse.vectorise(craft, this.layers.layers.length);
-      else if (job === 'assemble.instructions') void this.muse.writeInstructions(craft, this.assembly.length);
+      else if (job === 'layers.unfold') void this.muse.unfold(craft).then((r) => f.applyParts(r));
+      else if (job === 'sheets.vectorise') void this.muse.vectorise(craft, f.layers.length);
+      else if (job === 'assemble.instructions') void this.muse.writeInstructions(craft, this.assembly).then((r) => { this.instructions = r; });
     }
   }
   /** What the models and agents did for the open craft (optionally one journey step), for the activity strip. */
@@ -136,6 +146,24 @@ export class AppState {
     return this.muse.forCraft(this.project?.id)
       .map((t) => ({ key: t.key, model: agentJobs[t.job].model, step: agentJobs[t.job].step, status: t.status, summary: t.summary }))
       .filter((t) => !step || t.step === step);
+  }
+  // ── Sheets and Burn Watch: send a cut to the device, watch it, export the files
+  /** Send the current sheet to the device (progress simulated until adapters stream it) and watch that cut. */
+  sendSheet() {
+    const n = this.layers.job.sheet;
+    this.layers.beginCut({ simulate: true });
+    void this.watch.watchSheet(n);
+  }
+  /** Burn Watch on a cut: the current sheet is sent first; any other cut is (re)watched from its clip. */
+  watchCut(n: number) {
+    if (n === this.layers.job.sheet && this.layers.job.phase === 'feed') this.sendSheet();
+    else void this.watch.watchSheet(n);
+  }
+  /** Download .zip: the vectorised sheets (placeholder until sheets.vectorise is wired). */
+  exportSheets() {
+    if (!this.project) return;
+    void this.muse.vectorise(this.project.id, this.layers.layers.length).then(() =>
+      this.flow.conversation.say(`The .zip will hold ${this.layers.layers.length} sheet files (SVG + device format) once tracing is wired — for now the sheets are previews.`));
   }
   /** Assemble · Muse Image pictures the finished piece (placeholder). */
   renderFinished() { if (this.project) void this.muse.renderFinished(this.project.id); }
@@ -189,8 +217,20 @@ export class AppState {
     const finished = p.status === 'finished';
     return { index: i, total: journey.length, finished, label: finished ? 'Finished' : `Step ${i + 1} of ${journey.length} · ${journey[i].label}` };
   }
-  /** Assemble · the instructions for the open craft. */
-  get assembly() { return assemblySteps({ kind: this.layers.kind, layers: this.layers.layers, set: this.layers.data, joinery: this.layers.joinery }); }
+  /** Assemble · Spark's instructions once written for this craft, else the code-derived draft from its layers or parts. */
+  instructions = $state<AssemblyStep[] | null>(null);
+  get assembly(): AssemblyStep[] { return this.instructions ?? assemblySteps({ kind: this.layers.kind, layers: this.layers.layers, set: this.layers.data, joinery: this.layers.joinery }); }
+  /** Katachi's word on a step, from what the models found (falls back to the step's guide copy). */
+  noteFor(id: StepId): string {
+    const f = this.layers;
+    switch (id) {
+      case 'import': return `Looks like ${f.subject}. Tell me what to make of it, or go on and I’ll find the outline.`;
+      case 'cutout': return `Background removed and the outline found: a ${f.outline.shape}, about ${f.outline.shape === 'circle' ? 'Ø ' : ''}${f.outline.sizeMm} mm. Check the edge, then I’ll find the objects.`;
+      case 'segment': return `I found ${f.regions.length} regions. Which should become parts? Toggle any region, or click the image to add one.`;
+      case 'layers': return `${f.layers.length} layers, back to front. Pick a layer to see what shows and what hides behind the ones in front.`;
+      default: return guide[id].text;
+    }
+  }
   /** Assemble · Save craft: finished, with its layers, instructions and chat notes. */
   finishCraft() {
     if (!this.project) return;
@@ -199,6 +239,8 @@ export class AppState {
     this.flow.conversation.say(`Saved “${this.project.name}” to your crafts — layers, ${this.assembly.length} assembly steps and ${this.layers.notes.length} notes.`, [{ label: 'Open crafts', href: '/crafts' }]);
   }
 
+  /** Settings · the user's machines (demo list until pairing arrives, P2); Sheets and Settings read it from here. */
+  get devices() { return devices; }
   // Settings · the machine Sheets sends to by default (remembered in this browser)
   defaultDevice = $state<DeviceId>('cricut');
   setDefaultDevice(d: DeviceId) {
@@ -211,9 +253,12 @@ export class AppState {
   get costPill() { return this.trace.label; }
 
   /** The Katachi assistant thread in Rokkit ChatMessage shape: greeting, then every entry of the conversation log. */
-  get messages(): { id: string; role: 'user' | 'assistant'; text: string; data?: { actions: ChatAction[] } }[] {
+  get messages(): { id: string; role: 'user' | 'assistant'; text: string; data?: { actions?: ChatAction[]; call?: ModelCall } }[] {
     const log = [{ role: 'assistant' as const, text: 'Hi Dev — what are we making today?' }, ...this.flow.conversation.log];
-    return log.map((e, i) => ({ id: `m${i}`, role: e.role, text: e.text, ...('actions' in e && e.actions ? { data: { actions: e.actions } } : {}) }));
+    return log.map((e, i) => {
+      const data = { ...('actions' in e && e.actions ? { actions: e.actions } : {}), ...('call' in e && e.call ? { call: e.call } : {}) };
+      return { id: `m${i}`, role: e.role, text: e.text, ...(Object.keys(data).length ? { data } : {}) };
+    });
   }
 
   /** A page's context for the assistant column (inspector, rule, send-to): it sits above the Katachi chat. */
@@ -231,7 +276,7 @@ export class AppState {
     this.guidedSteps = [...this.guidedSteps, id];
     const i = steps.findIndex((s) => s.id === id);
     const prev = steps[i - 1], next = steps[i + 1];
-    this.flow.conversation.say(guide[id].text, [
+    this.flow.conversation.say(this.noteFor(id), [
       ...(prev ? [{ label: `Previous · ${prev.label}`, href: prev.path }] : []),
       ...(next ? [{ label: `Next · ${next.label}`, href: next.path }] : [])
     ]);

@@ -1,6 +1,8 @@
 // State only: slots + transcript. Presentation renders from this; no fetching here in P1 shell.
 export interface ChatAction { label: string; href?: string; id?: string }
-export interface LogEntry { role: 'user' | 'assistant'; text: string; actions?: ChatAction[] }
+/** A model or agent call shown in the chat: which model, what it did, what it cost (estimated for placeholders). */
+export interface ModelCall { model: string; action: string; costUsd: number; ms: number; status: 'live' | 'placeholder' | 'failed' }
+export interface LogEntry { role: 'user' | 'assistant'; text: string; actions?: ChatAction[]; call?: ModelCall }
 export interface Slots { intent?: string; qty?: number; material?: string; thicknessMm?: number; deviceId?: string; art?: string }
 const NUMWORDS: Record<string, number> = { one: 1, two: 2, three: 3, four: 4, five: 5, six: 6, seven: 7, eight: 8, nine: 9, ten: 10 };
 export class ConversationState {
@@ -37,5 +39,7 @@ export class ConversationState {
       ...(material ? { material } : {}),
       ...(intent ? { intent: intent === 'coaster' ? 'coasters' : intent } : {}) };
   }
+  /** post a model call into the thread */
+  logCall(call: ModelCall) { this.log = [...this.log, { role: 'assistant', text: `${call.model} · ${call.action}`, call }]; }
   say(text: string, actions?: ChatAction[]) { this.log = [...this.log, { role: 'assistant', text, ...(actions ? { actions } : {}) }]; }
 }
