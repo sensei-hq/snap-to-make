@@ -32,10 +32,12 @@ test.describe('image → layers · phone', () => {
 test.describe('image → layers · studio', () => {
   test.use({ viewport: { width: 1280, height: 800 } });
   test('walks the same seven steps', async ({ page }) => { await walk(page); });
-  test('the camera forks into six views and reference', async ({ page }) => {
+  test('six captured sides unfold into the six-view step', async ({ page }) => {
     await page.goto('/snap/capture'); await page.waitForLoadState('networkidle');
-    await page.getByRole('navigation', { name: 'Source' }).getByRole('link', { name: '6 views' }).click();
+    await page.getByRole('radio', { name: '6 sides' }).click();
+    for (let i = 0; i < 6; i++) await page.getByRole('button', { name: 'Take photo' }).click();
+    await expect(page.getByText('All 6 sides captured')).toBeVisible();
+    await page.getByRole('button', { name: 'Unfold into parts' }).first().click();
     await expect(page).toHaveURL(/\/snap\/layers\/views$/);
-    await expect(page.getByRole('region', { name: 'Views', exact: true })).toContainText('Left');
   });
 });
