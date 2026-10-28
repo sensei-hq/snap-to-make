@@ -5,7 +5,7 @@
 - [x] White paper draft: docs/submission/white-paper.md ([TRACE] filled from live run)
 - [x] Deck outline: docs/submission/deck-outline.md
 - [x] Trace export: docs/submission/trace-export.json (Spark 4,955 ms / $0.0057)
-- [x] Sample conversion study: 32/33 convertible (docs/sample, git-ignored)
+- [x] Sample conversion study: 32/33 convertible (samples/, git-ignored)
 
 ## Pending deploy (approval-enabled session)
 - [ ] `cd app && bun run test:e2e && bun run deploy` — ships SAM segment overlays on Convert

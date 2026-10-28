@@ -15,6 +15,7 @@ Read in order:
 | [03-device-adapters.md](03-device-adapters.md) | Object → Impl architecture. Adapters split into planner, emitter and connector so Cricut, 3D printers, CNC and more plug in after the hackathon |
 | [04-gap-analysis.md](04-gap-analysis.md) | What the code does today vs what this design needs, file by file, in build order |
 | [05-sketch-to-make.md](05-sketch-to-make.md) | Phase 2: sketch → interpreted model → style + devices → full build |
+| [06-ui-gap-analysis.md](06-ui-gap-analysis.md) | The app's screens vs the mockups: phone and desktop, responsive layout, shared state, asset rule, build order (roadmap 12–15) |
 
 Mockups for these flows:
 

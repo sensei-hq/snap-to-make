@@ -88,8 +88,30 @@ Rule: an item closes only with evidence (test run, URL check, file). Update this
 - [ ] Draft package EOD D7 · **Final submit EOD D8** · D9 buffer
 
 ## 11. Convert pipeline (Stage 11)
-- [x] docs/sample/ git-ignored; 33 samples classified live (Spark vision) -> docs/sample/manifest.local.json: 32/33 convertible (14 layered, 15 composite-3d, 3 pattern-shape; 1 mug correctly rejected)
+- [x] Sample set git-ignored (now `samples/`); 33 samples classified live (Spark vision) -> `samples/manifest.local.json`: 32/33 convertible (14 layered, 15 composite-3d, 3 pattern-shape; 1 mug correctly rejected)
 - [x] Domain convert + shrink scaling (design = final / ratio, calibrated) + build breakdown (pieces cut->final, materials, tools, assembly)
 - [x] Shrink adapter registered (plan/validate/preview; emit Phase 2 labelled)
 - [x] /api/convert live vision verified on coffin.jpg with user comment (variations honour the comment)
 - [x] /snap/convert UI: drop/import + camera, description+comment, group select, variations -> agree -> breakdown; e2e 9/9; deployed
+
+## 12. App shell: shared state + responsive (Stage 12) · `docs/roadmap/12-app-shell-responsive.md`
+- [ ] UnoCSS breakpoints md 1024 / lg 1320
+- [ ] `AppState` context in `routes/snap/+layout.svelte`; pages use `useApp()` (arch check: no `new FlowState(` in routes)
+- [ ] Phone shell < md: app bar (mark, title, cost pill → hood, theme), section tabs, docked composer
+- [ ] Studio shell ≥ md: nav rail, workspace, Katachi chat panel (collapsible)
+- [ ] Page titles "Katachi · …"; `/` → gate
+- [ ] e2e `responsive.spec.ts` (390×844 and 1280×800); screenshots compared with the mock
+
+## 13. Snap → Make stage routes (Stage 13)
+- [ ] scene · plan · art · preview · hood routes; canvas from the design; capture source modes
+- [ ] `deriveParts()` from the measured mug; editable measurements; lid; composer edits
+- [ ] Hero e2e on phone + studio viewports; user verifies on the live URL (HANDOFF)
+
+## 14. Image → layers UI (Stage 14)
+- [ ] `LayerFlowState` + `content/layers.ts`; 7 steps + views/reference branches
+- [ ] Phone steps < md, three-column studio ≥ md; app-drawn fixtures only (no mock images)
+- [ ] Live layered sample once doc 04 #1–7 land (HANDOFF)
+
+## 15. Desktop editor + rail screens (Stage 15, stretch)
+- [ ] Editor state + toolbar, canvas, Properties/Layers/Job, chat action cards
+- [ ] Rail screens: materials, settings (density), annotations; projects after auth (P2)

@@ -40,3 +40,10 @@ Plan: [../plans/2026-10-27-snap-make-phase1-plan.md](../plans/2026-10-27-snap-ma
 | 08 UI flow II: art, preview, canvas, Make, Under-the-hood | [08-ui-flow-2.md](08-ui-flow-2.md) | HANDOFF: full hero + feature freeze |
 | 09 Burn Watch, gate, hardening, Wonder batch (P1+) | [09-watch-hardening.md](09-watch-hardening.md) | AUTO |
 | 10 E2E, eval, deploy, submission package | [10-e2e-submission.md](10-e2e-submission.md) | HANDOFF: draft package (D7) → final submit (D8) |
+| 11 Convert pipeline: image/description → objective → breakdown | [11-convert-pipeline.md](11-convert-pipeline.md) | HANDOFF: sample set |
+| 12 App shell: shared state + responsive layout (phone < 1024 px, studio ≥ 1024 px) | [12-app-shell-responsive.md](12-app-shell-responsive.md) | AUTO |
+| 13 Snap → Make stage routes (mock parity) | [13-snap-make-stages.md](13-snap-make-stages.md) | HANDOFF: hero on phone + laptop |
+| 14 Image → layers flow UI (phone steps + studio) | [14-image-layers-ui.md](14-image-layers-ui.md) | AUTO → HANDOFF: live layered sample |
+| 15 Desktop editor + rail screens | [15-desktop-studio.md](15-desktop-studio.md) | AUTO (stretch) |
+
+UI gaps vs the mockups: [`docs/design/06-ui-gap-analysis.md`](../design/06-ui-gap-analysis.md). Pipeline gaps: [`docs/design/04-gap-analysis.md`](../design/04-gap-analysis.md).

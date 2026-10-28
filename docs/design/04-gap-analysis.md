@@ -27,7 +27,7 @@ The checkpoint reports 110 unit tests and 12/12 e2e, deployed. The structure is 
 | # | Gap | Today | Change | Size |
 |---|---|---|---|---|
 | 1 | **SAM masks** | `parseSamBoxes` reads boxes only; `samMask` discards the result | Decode one-bit masks (`@meta-sam/parser` per PRD 04-C, or a small RLE decoder) into a `Mask { w, h, bits: Uint8Array }`; store as one-bit PNG in `snap.media` | M |
-| 2 | **Raster toolkit** | none | `domain/raster/`: `Mask` ops (dilate, erode, fill holes, components, area, centroid), ellipse/rect fit, OKLab conversion, k-means (sub-sampled), mode filter, island removal. Pure TS, unit tested on `docs/sample` crops | L |
+| 2 | **Raster toolkit** | none | `domain/raster/`: `Mask` ops (dilate, erode, fill holes, components, area, centroid), ellipse/rect fit, OKLab conversion, k-means (sub-sampled), mode filter, island removal. Pure TS, unit tested on `samples/` crops (local only) | L |
 | 3 | **ImageBrief (S2)** | `analyseScene` sends a *hard-coded text* description and no image; `convert` sends the image but returns pieces, not regions | New `analyze_image` with the `ImageBrief` schema (doc 01), generated from zod; `/api/scene` and `/api/convert` both call it with the real image | S |
 | 4 | **Cutout + objects (S3–S4)** | `/api/segment` returns one box | `/api/segment` → `{ subjectMaskId, outline, regions[] }`; fan-out SAM in parallel | M |
 | 5 | **LayerStack (S5a + S6)** | `FALLBACK_PIECES.layered` = 3 fixed layers; `KIND_SIZE` guesses sizes | `domain/layers.ts`: `gradeLayers(subject, regions, k)`, `orderLayers()`, `hiddenMasks()`, `applyFillPolicy()`. New route `/api/layers` (code-only, plus the optional Spark naming) | L |
