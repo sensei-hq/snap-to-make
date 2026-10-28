@@ -13,7 +13,7 @@ test.describe('phone layout below 1024 px', () => {
     await expect(page.getByRole('navigation', { name: 'Studio sections' })).toBeHidden();
     await expect(page.getByRole('complementary', { name: 'Katachi chat' })).toBeHidden();
     await nav.getByRole('button', { name: 'Open Katachi chat' }).click();
-    await expect(page.getByRole('dialog', { name: 'Katachi chat' }).getByRole('group', { name: 'Ask Katachi' })).toBeVisible();
+    await expect(page.getByRole('dialog', { name: 'Katachi chat' }).locator('[data-chat-composer]')).toBeVisible();
   });
 });
 
