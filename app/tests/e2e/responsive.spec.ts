@@ -52,3 +52,15 @@ test('the root is the gate; old /snap links redirect to the root routes', async 
   await page.goto('/snap/convert');
   await expect(page).toHaveURL(/\/make\/import$/);
 });
+
+test.describe('the studio frame is pinned to the viewport', () => {
+  test.use({ viewport: { width: 1280, height: 650 } });
+  test('the window never scrolls on desktop, even with something tall below the frame', async ({ page }) => {
+    for (const path of ['/workshop', '/make/layers', '/canvas']) {
+      await page.goto(path); await page.waitForLoadState('networkidle');
+      await page.evaluate(() => { const d = document.createElement('div'); d.style.height = '2000px'; document.body.append(d); });
+      await page.keyboard.press('Space'); await page.mouse.wheel(0, 2000); await page.waitForTimeout(200);
+      expect(await page.evaluate(() => scrollY)).toBe(0);
+    }
+  });
+});
