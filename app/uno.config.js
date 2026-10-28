@@ -39,6 +39,8 @@ export default defineConfig({
   shortcuts: {
     // A studio page's content column: phone width below md, a centred reading column in the studio.
     stage: 'mx-auto w-full max-w-[430px] md:max-w-[760px] md:py-4 flex flex-col',
+    // Image → layers steps: art beside its controls in the studio, stacked on phones.
+    'layers-grid': 'mx-auto w-full max-w-[430px] grid gap-4 p-4 items-start md:max-w-none md:p-6 md:grid-cols-[minmax(0,1fr)_320px]',
     'phone-col': 'mx-auto w-full max-w-[430px] min-h-dvh flex flex-col bg-paper text-ink font-sans text-body md:border-x md:border-paper-edge',
     eyebrow: 'font-mono text-micro font-medium uppercase tracking-eyebrow text-ink-soft',
     meta: 'font-mono text-micro font-medium text-ink-soft tabular',

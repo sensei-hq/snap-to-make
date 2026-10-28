@@ -4,6 +4,7 @@ import { WatchState } from './watch.svelte';
 import { BatchState } from './batch.svelte';
 import { CaptureState } from './capture.svelte';
 import { SessionState } from './session.svelte';
+import { LayerFlowState } from './layer-flow.svelte';
 
 // One per app, created by routes/snap/+layout.svelte and read by every page through useApp(),
 // so section state (and the session's cost trace) survives navigation.
@@ -14,6 +15,7 @@ export class AppState {
   watch = new WatchState();
   batch = new BatchState();
   capture = new CaptureState();
+  layers = new LayerFlowState();
   chatOpen = $state(true);
   screen = $state({ title: 'Workshop', subtitle: '' });
 

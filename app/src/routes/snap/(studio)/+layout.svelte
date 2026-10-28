@@ -1,6 +1,6 @@
 <script lang="ts">
 import { page } from '$app/state';
-import { sections } from '$lib/content/sections';
+import { sections, sectionFor } from '$lib/content/sections';
 import { useApp } from '$lib/state/context';
 import ScreenHeader from '$lib/components/ScreenHeader.svelte';
 import AppNav from '$lib/components/AppNav.svelte';
@@ -9,8 +9,7 @@ import NavRail from '$lib/components/shell/NavRail.svelte';
 import ChatPanel from '$lib/components/shell/ChatPanel.svelte';
 let { children } = $props();
 const app = useApp();
-// Longest matching href wins, so /snap/watch is Burn Watch, not Workshop.
-const current = $derived([...sections].sort((a, b) => b.href.length - a.href.length).find((s) => page.url.pathname === s.href || page.url.pathname.startsWith(`${s.href}/`))?.id ?? '');
+const current = $derived(sectionFor(page.url.pathname));
 const ask = (text: string) => void app.ask(text);
 </script>
 <!-- Phone (< md): header, tabs, page, docked composer. Studio (≥ md, incl. tablet landscape): rail, header + page, chat panel. -->
