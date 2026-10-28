@@ -12,6 +12,6 @@ describe('KatachiMark keeps the logo colours of katachi.svg in both themes', () 
     expect(source).not.toMatch(/fill="currentColor"/);
   });
   it('declares the logo ink #25282D as a brand token', () => {
-    expect((config.overrides as Record<string, string>)['brand-ink']).toBe('#25282D');
+    expect((config.overrides as unknown as Record<string, string>)['brand-ink']).toBe('#25282D');
   });
 });

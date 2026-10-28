@@ -16,7 +16,7 @@ async function enter() { if (await session.enterFromForm()) location.href = '/sn
 <div class="phone-col relative">
   <ThemeSwitcherToggle variant="single" class="absolute top-2 right-2" />
   <div class="flex-1 flex flex-col px-6 pt-14">
-    <p class="flex items-center gap-2.5"><KatachiMark size={28} class="text-ink" /><span class="font-heading text-title">Katachi</span></p>
+    <p class="flex items-center gap-2.5"><span class="grid place-items-center w-10 h-10 rounded-md bg-brand-tile"><KatachiMark size={28} /></span><span class="font-heading text-title">Katachi</span></p>
     <p class="eyebrow mt-10">Snap → Make · demo</p>
     <h1 class="font-heading text-display font-normal tracking-display mt-3">Show it. Say it.<br />Burn it.</h1>
     <p class="mt-3.5 text-ink-mute">Point your phone at a sketch and the thing it must fit. Katachi measures, designs and writes the cut file.</p>

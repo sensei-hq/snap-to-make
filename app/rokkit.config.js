@@ -49,8 +49,11 @@ export default {
     texture: { light: 'oklch(0.580 0.010 50)', dark: 'oklch(0.600 0.010 85)' },
     camera: 'oklch(0.140 0.008 255)',
     // Katachi mark layer colours (repo root katachi.svg): fixed brand colours, same in both modes
+    'brand-ink': '#25282D',
     'brand-tan': '#D8AE82',
-    'brand-stone': '#DDD8D0'
+    'brand-stone': '#DDD8D0',
+    // light tile the mark sits on, so its dark ink reads on the dark theme too
+    'brand-tile': '#F4F0E8'
   },
   typography: {
     display: "'Fraunces', 'Iowan Old Style', Georgia, serif",
